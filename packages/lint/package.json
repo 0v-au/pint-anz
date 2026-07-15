@@ -1,0 +1,74 @@
+{
+  "name": "@pint-anz/lint",
+  "version": "0.1.0",
+  "description": "Validate UBL invoices against PINT A-NZ (Peppol Australia & New Zealand) business rules. Zero-config CLI and library, built for CI.",
+  "keywords": [
+    "peppol",
+    "pint",
+    "pint-anz",
+    "e-invoicing",
+    "einvoicing",
+    "ubl",
+    "schematron",
+    "validation",
+    "australia",
+    "new-zealand",
+    "gst",
+    "abn"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "pint-anz-lint": "./bin/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "bin",
+    "dist",
+    "rulesets"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:fixtures": "node ./scripts/verify-fixtures.js",
+    "lint": "eslint src bin",
+    "prepublishOnly": "pnpm build && pnpm test"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "fast-xml-parser": "^4.5.0",
+    "picocolors": "^1.1.0",
+    "saxon-js": "^2.7.0"
+  },
+  "devDependencies": {
+    "@pint-anz/fixtures": "workspace:*",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "pintAnz": {
+    "rulesetVersion": "TODO-pin-current-PINT-ANZ-release",
+    "rulesetSource": "https://github.com/A-NZ-PEPPOL/A-NZ-PEPPOL-BIS-3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TODO-org/TODO-repo.git",
+    "directory": "packages/lint"
+  },
+  "homepage": "https://github.com/TODO-org/TODO-repo/tree/main/packages/lint#readme",
+  "bugs": "https://github.com/TODO-org/TODO-repo/issues",
+  "publishConfig": {
+    "access": "public"
+  }
+}
