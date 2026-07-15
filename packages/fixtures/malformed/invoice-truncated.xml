@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: invoice-truncated
+  expects: MALFORMED XML
+  ruleset: 1.1.2
+  notes: A structurally valid invoice cut off mid-element inside AccountingSupplierParty; the document ends before any closing tags.
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>invoice-truncated</cbc:ID>
+  <cbc:IssueDate>2026-07-01</cbc:IssueDate>
+  <cbc:DueDate>2026-07-31</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-001</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+      <cac:PostalAddress>
+        <cbc:StreetName>1 Example Street</cbc:StreetName>
+        <cbc:CityName>Canberra

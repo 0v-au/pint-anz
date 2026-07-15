@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: order-unsupported-document
+  expects: REJECTED
+  ruleset: 1.1.2
+  notes: A minimal well-formed UBL Order document; preflight only accepts Invoice or CreditNote roots, so this is rejected as an unsupported document type.
+-->
+<Order xmlns="urn:oasis:names:specification:ubl:schema:xsd:Order-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>order-unsupported-document</cbc:ID>
+  <cbc:IssueDate>2026-07-01</cbc:IssueDate>
+  <cac:BuyerCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">91888222000</cbc:EndpointID>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Example AU Buyer Pty Ltd</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:BuyerCustomerParty>
+  <cac:SellerSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:SellerSupplierParty>
+</Order>

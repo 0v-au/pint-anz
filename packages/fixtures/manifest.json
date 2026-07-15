@@ -9,6 +9,2456 @@
   },
   "fixtures": [
     {
+      "id": "aligned-ibr-001-aunz-wrong-scheme",
+      "path": "./invalid/aligned-ibr-001-aunz.wrong-scheme.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibr-001-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian seller legal identifier incorrectly uses the NZBN/GLN scheme."
+    },
+    {
+      "id": "aligned-ibr-002-aunz",
+      "path": "./invalid/aligned-ibr-002-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibr-002-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "NZ seller CompanyID uses scheme 0002 instead of the required NZBN scheme 0088."
+    },
+    {
+      "id": "aligned-ibr-004-aunz",
+      "path": "./invalid/aligned-ibr-004-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibr-004-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AU buyer CompanyID uses scheme 0002 instead of the required ABN scheme 0151."
+    },
+    {
+      "id": "aligned-ibr-005-aunz",
+      "path": "./invalid/aligned-ibr-005-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibr-005-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "NZ buyer CompanyID uses scheme 0002 instead of the required NZBN scheme 0088."
+    },
+    {
+      "id": "aligned-ibrp-001-aunz",
+      "path": "./invalid/aligned-ibrp-001-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-001-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "CustomizationID does not start with the required urn:peppol:pint:billing-1@aunz-1 prefix."
+    },
+    {
+      "id": "aligned-ibrp-002",
+      "path": "./invalid/aligned-ibrp-002.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-002"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "ProfileID does not match the required urn:peppol:bis:billing business process value."
+    },
+    {
+      "id": "aligned-ibrp-003",
+      "path": "./invalid/aligned-ibrp-003.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-003"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Neither a buyer reference nor an order reference is provided."
+    },
+    {
+      "id": "aligned-ibrp-004",
+      "path": "./invalid/aligned-ibrp-004.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-004"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Item net price does not equal gross price minus price discount amount."
+    },
+    {
+      "id": "aligned-ibrp-005",
+      "path": "./invalid/aligned-ibrp-005.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-005"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Prepaid amount is expressed with three fraction digits instead of the maximum two."
+    },
+    {
+      "id": "aligned-ibrp-006",
+      "path": "./invalid/aligned-ibrp-006.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-006"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Both tax point date and tax point date code are provided; they are mutually exclusive."
+    },
+    {
+      "id": "aligned-ibrp-008",
+      "path": "./invalid/aligned-ibrp-008.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-008"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two PaymentTerms blocks are provided; invoice terms MUST occur at most once."
+    },
+    {
+      "id": "aligned-ibrp-018",
+      "path": "./invalid/aligned-ibrp-018.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-018"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Credit transfer payment means (code 30) is provided without any payee financial account, so the payment account identifier is entirely absent."
+    },
+    {
+      "id": "aligned-ibrp-021",
+      "path": "./invalid/aligned-ibrp-021.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-021"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two TaxTotal elements each carrying tax subtotals are provided; only one tax total with subtotals is allowed."
+    },
+    {
+      "id": "aligned-ibrp-022",
+      "path": "./invalid/aligned-ibrp-022.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-022"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "A second TaxTotal without tax subtotals is provided, but no tax currency code is present to justify it."
+    },
+    {
+      "id": "aligned-ibrp-032-aunz",
+      "path": "./invalid/aligned-ibrp-032-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-032-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance has no GST tax category code."
+    },
+    {
+      "id": "aligned-ibrp-037-aunz",
+      "path": "./invalid/aligned-ibrp-037-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-037-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge has no GST tax category code."
+    },
+    {
+      "id": "aligned-ibrp-050-aunz",
+      "path": "./invalid/aligned-ibrp-050-aunz.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-050-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line item has a classified tax category whose tax scheme is not GST, so no GST classification code exists for the line."
+    },
+    {
+      "id": "aligned-ibrp-053",
+      "path": "./invalid/aligned-ibrp-053.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-053"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line net amount does not equal quantity times unit price, beyond the 0.02 slack tolerance, while the stated line extension amount still matches document totals."
+    },
+    {
+      "id": "aligned-ibrp-054",
+      "path": "./invalid/aligned-ibrp-054.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-054"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance amount does not equal base amount times percentage, beyond the 0.02 slack tolerance."
+    },
+    {
+      "id": "aligned-ibrp-055",
+      "path": "./invalid/aligned-ibrp-055.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-055"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge amount does not equal base amount times percentage, beyond the 0.02 slack tolerance."
+    },
+    {
+      "id": "aligned-ibrp-057",
+      "path": "./invalid/aligned-ibrp-057.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-057"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance has a percentage but no base amount; both or neither must be provided."
+    },
+    {
+      "id": "aligned-ibrp-058",
+      "path": "./invalid/aligned-ibrp-058.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-058"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge has a percentage but no base amount; both or neither must be provided."
+    },
+    {
+      "id": "aligned-ibrp-059",
+      "path": "./invalid/aligned-ibrp-059.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-059"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line item has two classified tax categories; exactly one is required."
+    },
+    {
+      "id": "aligned-ibrp-060",
+      "path": "./invalid/aligned-ibrp-060.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-060"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Line document reference has a document type code other than 130, which is the only value allowed for a line document reference."
+    },
+    {
+      "id": "aligned-ibrp-061",
+      "path": "./invalid/aligned-ibrp-061.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-061"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Amount due for payment is positive but neither a payment due date nor payment terms note is present."
+    },
+    {
+      "id": "aligned-ibrp-065",
+      "path": "./invalid/aligned-ibrp-065.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-065"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "PaymentMeans carries two payment references; the payment reference MUST occur at most once."
+    },
+    {
+      "id": "aligned-ibrp-cl-01-aunz-invalid-category-code",
+      "path": "./invalid/aligned-ibrp-cl-01-aunz.invalid-category-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-cl-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The document level allowance tax category code is \"X\", which is not one of the permitted UNCL5305 codes (E S Z G O)."
+    },
+    {
+      "id": "aligned-ibrp-cl-02-invalid-tax-point-code",
+      "path": "./invalid/aligned-ibrp-cl-02.invalid-tax-point-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-cl-02"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The invoice period description code (tax point date code) is \"99\", which is not one of the permitted UNTDID 2005 subset codes (3, 35, 432)."
+    },
+    {
+      "id": "aligned-ibrp-cl-04-disallowed-mime-code",
+      "path": "./invalid/aligned-ibrp-cl-04.disallowed-mime-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-cl-04"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The embedded document binary object uses mimeCode \"application/xml\", which is outside the aligned-ibrp-cl-04 subset (pdf, png, jpeg, csv, xlsx, ods) though it is allowed by the wider pint ibr-cl-24 list, isolating only the aligned rule."
+    },
+    {
+      "id": "aligned-ibrp-e-01-aunz-missing-e-subtotal",
+      "path": "./invalid/aligned-ibrp-e-01-aunz.missing-e-subtotal.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-e-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has one Standard rated (S) line and one Exempt from tax (E) line, but the tax breakdown only contains the S subtotal, so the required E subtotal is missing."
+    },
+    {
+      "id": "aligned-ibrp-e-05-aunz-nonzero-rate-on-line",
+      "path": "./invalid/aligned-ibrp-e-05-aunz.nonzero-rate-on-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-e-05-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line item is classified Exempt from tax (E) but its tax rate is 10, which must be 0 for E."
+    },
+    {
+      "id": "aligned-ibrp-e-06-aunz-nonzero-rate-on-allowance",
+      "path": "./invalid/aligned-ibrp-e-06-aunz.nonzero-rate-on-allowance.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-e-06-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance is classified Exempt from tax (E) but its tax rate is 10, which must be 0 for E."
+    },
+    {
+      "id": "aligned-ibrp-e-07-aunz-nonzero-rate-on-charge",
+      "path": "./invalid/aligned-ibrp-e-07-aunz.nonzero-rate-on-charge.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-e-07-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge is classified Exempt from tax (E) but its tax rate is 10, which must be 0 for E."
+    },
+    {
+      "id": "aligned-ibrp-e-08-aunz-wrong-taxable-amount",
+      "path": "./invalid/aligned-ibrp-e-08-aunz.wrong-taxable-amount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-e-08-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The E tax breakdown taxable amount (120) does not equal the sum of Exempt line net amounts (100)."
+    },
+    {
+      "id": "aligned-ibrp-g-01-aunz-duplicate-breakdown",
+      "path": "./invalid/aligned-ibrp-g-01-aunz.duplicate-breakdown.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line uses Export (G) category but the tax breakdown carries the G subtotal split into two separate subtotal groups instead of exactly one."
+    },
+    {
+      "id": "aligned-ibrp-g-05-aunz-nonzero-rate",
+      "path": "./invalid/aligned-ibrp-g-05-aunz.nonzero-rate.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-05-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line uses Export (G) category but declares a nonzero invoiced item tax rate (10) instead of 0."
+    },
+    {
+      "id": "aligned-ibrp-g-06-aunz-nonzero-rate",
+      "path": "./invalid/aligned-ibrp-g-06-aunz.nonzero-rate.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-06-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance uses Export (G) category but declares a nonzero allowance tax rate (10) instead of 0."
+    },
+    {
+      "id": "aligned-ibrp-g-07-aunz-nonzero-rate",
+      "path": "./invalid/aligned-ibrp-g-07-aunz.nonzero-rate.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-07-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge uses Export (G) category but declares a nonzero charge tax rate (10) instead of 0."
+    },
+    {
+      "id": "aligned-ibrp-g-08-aunz-taxable-amount-mismatch",
+      "path": "./invalid/aligned-ibrp-g-08-aunz.taxable-amount-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-08-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "G tax breakdown taxable amount (80.00) does not equal the sum of Export-category invoice line net amounts (100.00)."
+    },
+    {
+      "id": "aligned-ibrp-g-09-aunz-nonzero-tax-amount",
+      "path": "./invalid/aligned-ibrp-g-09-aunz.nonzero-tax-amount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-g-09-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "G tax breakdown declares a nonzero tax category tax amount (10.00) instead of the required 0, using a nonzero breakdown rate so the general tax-amount-consistency rule (051) is not violated."
+    },
+    {
+      "id": "aligned-ibrp-o-01-aunz-duplicate-breakdown",
+      "path": "./invalid/aligned-ibrp-o-01-aunz.duplicate-breakdown.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line uses Not subject to tax (O) category but the tax breakdown carries the O subtotal split into two separate subtotal groups instead of exactly one."
+    },
+    {
+      "id": "aligned-ibrp-o-05-aunz-percent-present",
+      "path": "./invalid/aligned-ibrp-o-05-aunz.percent-present.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-05-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line uses Not subject to tax (O) category but declares an invoiced item tax rate (0), which must be absent entirely for O."
+    },
+    {
+      "id": "aligned-ibrp-o-06-aunz-percent-present",
+      "path": "./invalid/aligned-ibrp-o-06-aunz.percent-present.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-06-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance uses Not subject to tax (O) category but declares an allowance tax rate (0), which must be absent entirely for O."
+    },
+    {
+      "id": "aligned-ibrp-o-07-aunz-percent-present",
+      "path": "./invalid/aligned-ibrp-o-07-aunz.percent-present.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-07-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge uses Not subject to tax (O) category but declares a charge tax rate (0), which must be absent entirely for O."
+    },
+    {
+      "id": "aligned-ibrp-o-08-aunz-taxable-amount-mismatch",
+      "path": "./invalid/aligned-ibrp-o-08-aunz.taxable-amount-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-08-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "O tax breakdown taxable amount (80.00) does not equal the sum of Not-subject-to-tax invoice line net amounts (100.00)."
+    },
+    {
+      "id": "aligned-ibrp-o-09-aunz-nonzero-tax-amount",
+      "path": "./invalid/aligned-ibrp-o-09-aunz.nonzero-tax-amount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-09-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "O tax breakdown declares a nonzero tax category tax amount (10.00) instead of the required 0, using a nonzero breakdown rate so the general tax-amount-consistency rule (051) is not violated."
+    },
+    {
+      "id": "aligned-ibrp-o-11-aunz-other-breakdown",
+      "path": "./invalid/aligned-ibrp-o-11-aunz.other-breakdown.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-o-11-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document has an O tax breakdown plus an extra Export (G) breakdown group with no supporting line, allowance, or charge, violating the O-exclusivity rule on breakdown groups."
+    },
+    {
+      "id": "aligned-ibrp-s-01-aunz-missing-s-subtotal",
+      "path": "./invalid/aligned-ibrp-s-01-aunz.missing-s-subtotal.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has one Standard rated (S) line and one Zero rated (Z) line, but the tax breakdown only contains the Z subtotal, so the required S subtotal is missing."
+    },
+    {
+      "id": "aligned-ibrp-s-05-aunz-zero-rate-on-line",
+      "path": "./invalid/aligned-ibrp-s-05-aunz.zero-rate-on-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-05-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line item is classified Standard rated (S) but its tax rate is 0, which must be greater than zero for S."
+    },
+    {
+      "id": "aligned-ibrp-s-06-aunz-zero-rate-on-allowance",
+      "path": "./invalid/aligned-ibrp-s-06-aunz.zero-rate-on-allowance.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-06-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance is classified Standard rated (S) but its tax rate is 0, which must be greater than zero for S."
+    },
+    {
+      "id": "aligned-ibrp-s-07-aunz-zero-rate-on-charge",
+      "path": "./invalid/aligned-ibrp-s-07-aunz.zero-rate-on-charge.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-07-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge is classified Standard rated (S) but its tax rate is 0, which must be greater than zero for S."
+    },
+    {
+      "id": "aligned-ibrp-s-08-aunz-wrong-taxable-amount",
+      "path": "./invalid/aligned-ibrp-s-08-aunz.wrong-taxable-amount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-08-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The S tax breakdown taxable amount (120) does not equal the sum of Standard rated line net amounts (100)."
+    },
+    {
+      "id": "aligned-ibrp-s-10-aunz-exemption-reason-present",
+      "path": "./invalid/aligned-ibrp-s-10-aunz.exemption-reason-present.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-s-10-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The S (Standard rated) tax breakdown carries a tax exemption reason text, which is forbidden for the S category."
+    },
+    {
+      "id": "aligned-ibrp-sr-12-aunz-duplicate-gst-id",
+      "path": "./invalid/aligned-ibrp-sr-12-aunz.duplicate-gst-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-sr-12-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller declares two PartyTaxScheme/CompanyID entries under the GST tax scheme; only one Seller GST identifier is allowed."
+    },
+    {
+      "id": "aligned-ibrp-sr-13-aunz-duplicate-other-tax-id",
+      "path": "./invalid/aligned-ibrp-sr-13-aunz.duplicate-other-tax-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-sr-13-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller declares two PartyTaxScheme/CompanyID entries under a non-GST tax scheme (income tax); only one other Seller tax registration is allowed."
+    },
+    {
+      "id": "aligned-ibrp-sr-43-scheme-on-plain-reference",
+      "path": "./invalid/aligned-ibrp-sr-43.scheme-on-plain-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-sr-43"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference has no DocumentTypeCode (a plain supporting document reference) but its ID carries a schemeID attribute, only permitted when DocumentTypeCode is 130."
+    },
+    {
+      "id": "aligned-ibrp-z-01-aunz-missing-z-subtotal",
+      "path": "./invalid/aligned-ibrp-z-01-aunz.missing-z-subtotal.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-01-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has one Standard rated (S) line and one Zero rated (Z) line, but the tax breakdown only contains the S subtotal, so the required Z subtotal is missing."
+    },
+    {
+      "id": "aligned-ibrp-z-05-aunz-nonzero-rate-on-line",
+      "path": "./invalid/aligned-ibrp-z-05-aunz.nonzero-rate-on-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-05-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line item is classified Zero rated (Z) but its tax rate is 10, which must be 0 for Z."
+    },
+    {
+      "id": "aligned-ibrp-z-06-aunz-nonzero-rate-on-allowance",
+      "path": "./invalid/aligned-ibrp-z-06-aunz.nonzero-rate-on-allowance.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-06-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level allowance is classified Zero rated (Z) but its tax rate is 10, which must be 0 for Z."
+    },
+    {
+      "id": "aligned-ibrp-z-07-aunz-nonzero-rate-on-charge",
+      "path": "./invalid/aligned-ibrp-z-07-aunz.nonzero-rate-on-charge.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-07-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document level charge is classified Zero rated (Z) but its tax rate is 10, which must be 0 for Z."
+    },
+    {
+      "id": "aligned-ibrp-z-08-aunz-wrong-taxable-amount",
+      "path": "./invalid/aligned-ibrp-z-08-aunz.wrong-taxable-amount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-08-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The Z tax breakdown taxable amount (120) does not equal the sum of Zero rated line net amounts (100)."
+    },
+    {
+      "id": "aligned-ibrp-z-10-aunz-exemption-reason-present",
+      "path": "./invalid/aligned-ibrp-z-10-aunz.exemption-reason-present.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "aligned-ibrp-z-10-aunz"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The Z (Zero rated) tax breakdown carries a tax exemption reason text, which is forbidden for the Z category."
+    },
+    {
+      "id": "ibr-004-missing-type-code",
+      "path": "./invalid/ibr-004.missing-type-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-004"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice omits both cbc:InvoiceTypeCode and cbc:CreditNoteTypeCode, so the invoice type code is missing."
+    },
+    {
+      "id": "ibr-006-missing-seller-name",
+      "path": "./invalid/ibr-006.missing-seller-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-006"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller PartyLegalEntity omits cbc:RegistrationName, so the Seller name is missing."
+    },
+    {
+      "id": "ibr-007-missing-buyer-name",
+      "path": "./invalid/ibr-007.missing-buyer-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-007"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyLegalEntity omits cbc:RegistrationName, so the Buyer name is missing."
+    },
+    {
+      "id": "ibr-008-missing-seller-address",
+      "path": "./invalid/ibr-008.missing-seller-address.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-008"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller Party omits cac:PostalAddress entirely, so the Seller postal address is missing."
+    },
+    {
+      "id": "ibr-009-missing-seller-country",
+      "path": "./invalid/ibr-009.missing-seller-country.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-009"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller PostalAddress omits cac:Country/cbc:IdentificationCode, so the Seller country code is missing."
+    },
+    {
+      "id": "ibr-010-missing-buyer-address",
+      "path": "./invalid/ibr-010.missing-buyer-address.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-010"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer Party omits cac:PostalAddress entirely, so the Buyer postal address is missing."
+    },
+    {
+      "id": "ibr-011-missing-buyer-country",
+      "path": "./invalid/ibr-011.missing-buyer-country.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-011"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PostalAddress omits cac:Country/cbc:IdentificationCode, so the Buyer country code is missing."
+    },
+    {
+      "id": "ibr-017-missing-payee-name",
+      "path": "./invalid/ibr-017.missing-payee-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-017"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has a PayeeParty distinct from the Seller (PartyIdentification present) but no PartyName/Name, so the Payee name is missing."
+    },
+    {
+      "id": "ibr-018-missing-tax-rep-name",
+      "path": "./invalid/ibr-018.missing-tax-rep-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-018"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has a TaxRepresentativeParty (with address and PartyTaxScheme/CompanyID) but no PartyName/Name, so the Seller tax representative name is missing."
+    },
+    {
+      "id": "ibr-019-missing-tax-rep-address",
+      "path": "./invalid/ibr-019.missing-tax-rep-address.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-019"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has a TaxRepresentativeParty (with name and PartyTaxScheme/CompanyID) but omits PostalAddress entirely, so the Seller tax representative postal address is missing."
+    },
+    {
+      "id": "ibr-020-missing-tax-rep-country",
+      "path": "./invalid/ibr-020.missing-tax-rep-country.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-020"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has a TaxRepresentativeParty (with name, address and PartyTaxScheme/CompanyID) but the PostalAddress omits Country/IdentificationCode, so the tax representative country code is missing."
+    },
+    {
+      "id": "ibr-023-missing-quantity-unit-code",
+      "path": "./invalid/ibr-023.missing-quantity-unit-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-023"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine InvoicedQuantity omits the unitCode attribute, so the invoiced quantity unit of measure code is missing."
+    },
+    {
+      "id": "ibr-025-missing-item-name",
+      "path": "./invalid/ibr-025.missing-item-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-025"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine Item omits cbc:Name, so the Item name is missing."
+    },
+    {
+      "id": "ibr-027-negative-item-price",
+      "path": "./invalid/ibr-027.negative-item-price.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-027"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine Price PriceAmount is negative, with matching negative line and document totals so only the negative-price sign check fires."
+    },
+    {
+      "id": "ibr-028-negative-gross-price",
+      "path": "./invalid/ibr-028.negative-gross-price.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-028"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line Price/AllowanceCharge has a negative BaseAmount (Item gross price), with net price arithmetic against Amount kept internally consistent so aligned-ibrp-004 stays satisfied."
+    },
+    {
+      "id": "ibr-029-end-before-start",
+      "path": "./invalid/ibr-029.end-before-start.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-029"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level InvoicePeriod has an EndDate earlier than its StartDate."
+    },
+    {
+      "id": "ibr-030-line-end-before-start",
+      "path": "./invalid/ibr-030.line-end-before-start.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-030"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line InvoicePeriod has an EndDate earlier than its StartDate."
+    },
+    {
+      "id": "ibr-033-doc-allowance-no-reason",
+      "path": "./invalid/ibr-033.doc-allowance-no-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-033"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level allowance (ChargeIndicator=false) has an Amount but neither AllowanceChargeReason nor AllowanceChargeReasonCode."
+    },
+    {
+      "id": "ibr-042-line-allowance-no-reason",
+      "path": "./invalid/ibr-042.line-allowance-no-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-042"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line allowance (ChargeIndicator=false) has an Amount but neither AllowanceChargeReason nor AllowanceChargeReasonCode."
+    },
+    {
+      "id": "ibr-044-line-charge-no-reason",
+      "path": "./invalid/ibr-044.line-charge-no-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-044"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line charge (ChargeIndicator=true) has an Amount but neither AllowanceChargeReason nor AllowanceChargeReasonCode."
+    },
+    {
+      "id": "ibr-054-item-attribute-no-value",
+      "path": "./invalid/ibr-054.item-attribute-no-value.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-054"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line Item AdditionalItemProperty has a Name but no Value."
+    },
+    {
+      "id": "ibr-056-tax-rep-no-tax-id",
+      "path": "./invalid/ibr-056.tax-rep-no-tax-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-056"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller tax representative party is present (name and address) but has no PartyTaxScheme/CompanyID tax identifier."
+    },
+    {
+      "id": "ibr-057-delivery-no-country",
+      "path": "./invalid/ibr-057.delivery-no-country.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-057"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Delivery/DeliveryLocation/Address is present without a Country/IdentificationCode."
+    },
+    {
+      "id": "ibr-062-seller-endpoint-no-scheme",
+      "path": "./invalid/ibr-062.seller-endpoint-no-scheme.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-062"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller EndpointID (electronic address) is present without a schemeID attribute."
+    },
+    {
+      "id": "ibr-063-buyer-endpoint-no-scheme",
+      "path": "./invalid/ibr-063.buyer-endpoint-no-scheme.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-063"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer EndpointID (electronic address) is present without a schemeID attribute."
+    },
+    {
+      "id": "ibr-064-item-standard-id-no-scheme",
+      "path": "./invalid/ibr-064.item-standard-id-no-scheme.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-064"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line Item StandardItemIdentification/ID is present without a schemeID attribute."
+    },
+    {
+      "id": "ibr-065-commodity-classification-no-listid",
+      "path": "./invalid/ibr-065.commodity-classification-no-listid.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-065"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line Item CommodityClassification/ItemClassificationCode is present without a listID attribute."
+    },
+    {
+      "id": "ibr-066-two-card-accounts",
+      "path": "./invalid/ibr-066.two-card-accounts.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-066"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two separate PaymentMeans blocks each carry a CardAccount, exceeding the document-wide maximum of one Payment Card account."
+    },
+    {
+      "id": "ibr-067-two-payment-mandates",
+      "path": "./invalid/ibr-067.two-payment-mandates.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-067"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two separate PaymentMeans blocks each carry a PaymentMandate, exceeding the document-wide maximum of one Payment Mandate."
+    },
+    {
+      "id": "ibr-068-invalid-gln-checksum",
+      "path": "./invalid/ibr-068.invalid-gln-checksum.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-068"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Supplier PartyIdentification carries a scheme 0088 (GLN) identifier whose final digit fails the GS1 check-digit algorithm."
+    },
+    {
+      "id": "ibr-069-invalid-mod11-org-number",
+      "path": "./invalid/ibr-069.invalid-mod11-org-number.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-069"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Supplier PartyIdentification carries a scheme 0192 (Norwegian organization number) identifier that fails the mod11 checksum."
+    },
+    {
+      "id": "ibr-070-invalid-cvr-format",
+      "path": "./invalid/ibr-070.invalid-cvr-format.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-070"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Supplier PartyIdentification carries a scheme 0184 (Danish CVR) identifier that does not start with the required 'DK' prefix."
+    },
+    {
+      "id": "ibr-071-attachment-with-object-id",
+      "path": "./invalid/ibr-071.attachment-with-object-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-071"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference with DocumentTypeCode 130 (invoiced object) also carries an Attachment, which ibr-071 forbids."
+    },
+    {
+      "id": "ibr-072-description-with-object-id",
+      "path": "./invalid/ibr-072.description-with-object-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-072"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference with DocumentTypeCode 130 (invoiced object) also carries a DocumentDescription, which ibr-072 forbids."
+    },
+    {
+      "id": "ibr-073-timezone-offset-date",
+      "path": "./invalid/ibr-073.timezone-offset-date.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-073"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "IssueDate carries a timezone offset suffix, a lexically valid xs:date that is not the required 10-character YYYY-MM-DD format."
+    },
+    {
+      "id": "ibr-075-missing-filename",
+      "path": "./invalid/ibr-075.missing-filename.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-075"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference attachment's EmbeddedDocumentBinaryObject has a mimeCode but no filename attribute."
+    },
+    {
+      "id": "ibr-077-tax-currency-equals-doc-currency",
+      "path": "./invalid/ibr-077.tax-currency-equals-doc-currency.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-077"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "TaxCurrencyCode is set to the same value as DocumentCurrencyCode, which ibr-077 forbids when TaxCurrencyCode is provided."
+    },
+    {
+      "id": "ibr-078-duplicate-invoiced-object",
+      "path": "./invalid/ibr-078.duplicate-invoiced-object.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-078"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two AdditionalDocumentReference elements with DocumentTypeCode 130 (invoiced object) appear at document level; only one is allowed."
+    },
+    {
+      "id": "ibr-079-empty-note",
+      "path": "./invalid/ibr-079.empty-note.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-079"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level Note element is present but empty; ibr-079 forbids empty elements anywhere in the document."
+    },
+    {
+      "id": "ibr-080-missing-buyer-endpoint",
+      "path": "./invalid/ibr-080.missing-buyer-endpoint.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-080"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AccountingCustomerParty/Party has no EndpointID (Buyer electronic address), which ibr-080 requires."
+    },
+    {
+      "id": "ibr-081-missing-seller-endpoint",
+      "path": "./invalid/ibr-081.missing-seller-endpoint.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-081"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AccountingSupplierParty/Party has no EndpointID (Seller electronic address), which ibr-081 requires."
+    },
+    {
+      "id": "ibr-083-price-level-charge",
+      "path": "./invalid/ibr-083.price-level-charge.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-083"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "cac:Price/cac:AllowanceCharge has ChargeIndicator true (a charge), which ibr-083 forbids; only allowances are permitted at price level."
+    },
+    {
+      "id": "ibr-084-opposite-sign-tax-currency",
+      "path": "./invalid/ibr-084.opposite-sign-tax-currency.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-084"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "TaxCurrencyCode tax total is negative while the DocumentCurrencyCode tax total is positive; ibr-084 requires both to share the same operational sign."
+    },
+    {
+      "id": "ibr-085-line-period-start-before-invoice-period",
+      "path": "./invalid/ibr-085.line-period-start-before-invoice-period.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-085"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Line-level InvoicePeriod StartDate falls before the document-level InvoicePeriod StartDate, which ibr-085 forbids."
+    },
+    {
+      "id": "ibr-086-line-period-end-after-invoice-period",
+      "path": "./invalid/ibr-086.line-period-end-after-invoice-period.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-086"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Line-level InvoicePeriod EndDate falls after the document-level InvoicePeriod EndDate, which ibr-086 forbids."
+    },
+    {
+      "id": "ibr-087-negative-base-quantity",
+      "path": "./invalid/ibr-087.negative-base-quantity.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-087"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Price/BaseQuantity is -1 (not positive), which ibr-087 forbids; totals kept arithmetically consistent so no calculation rule co-fires."
+    },
+    {
+      "id": "ibr-088-base-quantity-unit-mismatch",
+      "path": "./invalid/ibr-088.base-quantity-unit-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-088"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Price/BaseQuantity unitCode (KGM) differs from the line's InvoicedQuantity unitCode (EA), which ibr-088 forbids."
+    },
+    {
+      "id": "ibr-089-duplicate-line-invoiced-object",
+      "path": "./invalid/ibr-089.duplicate-line-invoiced-object.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-089"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "The invoice line carries two cac:DocumentReference elements with DocumentTypeCode 130 (invoiced object); only one is allowed per line."
+    },
+    {
+      "id": "ibr-090-duplicate-project-reference",
+      "path": "./invalid/ibr-090.duplicate-project-reference.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-090"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Credit note (no cac:ProjectReference element in the CreditNote XSD) with two AdditionalDocumentReference elements carrying DocumentTypeCode 50 (project reference); only one project reference is allowed."
+    },
+    {
+      "id": "ibr-092-line-and-doc-despatch-reference",
+      "path": "./invalid/ibr-092.line-and-doc-despatch-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-092"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "A line carries a DespatchLineReference/DocumentReference while a document-level DespatchDocumentReference is also present; ibr-092 forbids having both."
+    },
+    {
+      "id": "ibr-093-prepaid-payment-no-total",
+      "path": "./invalid/ibr-093.prepaid-payment-no-total.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-093"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "A cac:PrepaidPayment with a paid amount is present but LegalMonetaryTotal/PrepaidAmount is missing, which ibr-093 forbids."
+    },
+    {
+      "id": "ibr-094-duplicate-contract-reference",
+      "path": "./invalid/ibr-094.duplicate-contract-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-094"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two cac:ContractDocumentReference elements appear at document level; ibr-094 allows the contract reference to occur at most once."
+    },
+    {
+      "id": "ibr-095-duplicate-receipt-reference",
+      "path": "./invalid/ibr-095.duplicate-receipt-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-095"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two cac:ReceiptDocumentReference elements appear at document level; ibr-095 allows the receiving advice reference to occur at most once."
+    },
+    {
+      "id": "ibr-096-duplicate-despatch-reference",
+      "path": "./invalid/ibr-096.duplicate-despatch-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-096"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two cac:DespatchDocumentReference elements appear at document level; ibr-096 allows the despatch advice reference to occur at most once."
+    },
+    {
+      "id": "ibr-097-duplicate-invoice-period",
+      "path": "./invalid/ibr-097.duplicate-invoice-period.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-097"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Two cac:InvoicePeriod elements appear at document level; ibr-097 allows the invoicing period to occur at most once."
+    },
+    {
+      "id": "ibr-099-duplicate-seller-trader-name",
+      "path": "./invalid/ibr-099.duplicate-seller-trader-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-099"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller Party has two PartyName/Name elements, violating the maximum-once cardinality for the seller trader name."
+    },
+    {
+      "id": "ibr-101-duplicate-seller-legal-form",
+      "path": "./invalid/ibr-101.duplicate-seller-legal-form.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-101"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller has two PartyLegalEntity blocks each carrying a CompanyLegalForm, violating the maximum-once cardinality for seller additional legal information."
+    },
+    {
+      "id": "ibr-104-duplicate-buyer-tax-id",
+      "path": "./invalid/ibr-104.duplicate-buyer-tax-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-104"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer Party has two PartyTaxScheme blocks each carrying a CompanyID, violating the maximum-once cardinality for the buyer tax identifier."
+    },
+    {
+      "id": "ibr-105-duplicate-payee-identifier",
+      "path": "./invalid/ibr-105.duplicate-payee-identifier.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-105"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Payee (different from Seller) has two non-SEPA PartyIdentification/ID elements, violating the maximum-once cardinality for the payee identifier."
+    },
+    {
+      "id": "ibr-106-duplicate-payee-legal-id",
+      "path": "./invalid/ibr-106.duplicate-payee-legal-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-106"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Payee (different from Seller) has two PartyLegalEntity blocks each carrying a CompanyID, violating the maximum-once cardinality for the payee legal identifier."
+    },
+    {
+      "id": "ibr-107-duplicate-delivery",
+      "path": "./invalid/ibr-107.duplicate-delivery.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-107"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice has two cac:Delivery blocks, violating the maximum-once cardinality for Deliver to information."
+    },
+    {
+      "id": "ibr-108-duplicate-delivery-party-name",
+      "path": "./invalid/ibr-108.duplicate-delivery-party-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-108"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Delivery party has two PartyName/Name elements, violating the maximum-once cardinality for the deliver-to party name."
+    },
+    {
+      "id": "ibr-109-duplicate-order-line-id",
+      "path": "./invalid/ibr-109.duplicate-order-line-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-109"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line has two OrderLineReference/LineID elements, violating the maximum-once cardinality for the referenced purchase order line identifier."
+    },
+    {
+      "id": "ibr-110-duplicate-line-invoice-period",
+      "path": "./invalid/ibr-110.duplicate-line-invoice-period.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-110"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line has two InvoicePeriod blocks, violating the maximum-once cardinality for the invoice line period."
+    },
+    {
+      "id": "ibr-111-duplicate-price-discount",
+      "path": "./invalid/ibr-111.duplicate-price-discount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-111"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice line Price has two AllowanceCharge/Amount elements, violating the maximum-once cardinality for the item price discount."
+    },
+    {
+      "id": "ibr-112-duplicate-buyer-trader-name",
+      "path": "./invalid/ibr-112.duplicate-buyer-trader-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-112"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer Party has two PartyName/Name elements, violating the maximum-once cardinality for the buyer trader name."
+    },
+    {
+      "id": "ibr-113-invalid-belgian-enterprise-number",
+      "path": "./invalid/ibr-113.invalid-belgian-enterprise-number.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-113"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification carries a scheme 0208 (Belgian enterprise number) identifier that fails the modulus-97 checksum, on an otherwise ordinary AU invoice."
+    },
+    {
+      "id": "ibr-114-invalid-italian-ipa-code",
+      "path": "./invalid/ibr-114.invalid-italian-ipa-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-114"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification carries a scheme 0201 (Italian IPA code) identifier that fails the required checksum format, on an otherwise ordinary AU invoice."
+    },
+    {
+      "id": "ibr-115-invalid-italian-tax-code",
+      "path": "./invalid/ibr-115.invalid-italian-tax-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-115"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification carries a scheme 0210 (Italian Codice Fiscale) identifier that fails the required checksum format, on an otherwise ordinary AU invoice."
+    },
+    {
+      "id": "ibr-116-invalid-italian-vat-code",
+      "path": "./invalid/ibr-116.invalid-italian-vat-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-116"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification carries a scheme 0211 (Italian Partita IVA) identifier with an IT prefix that fails the check-digit algorithm, on an otherwise ordinary AU invoice."
+    },
+    {
+      "id": "ibr-120-invalid-abn-checksum",
+      "path": "./invalid/ibr-120.invalid-abn-checksum.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-120"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyLegalEntity CompanyID uses scheme 0151 (ABN) with an 11-digit value that fails the modulus-89 ABN checksum."
+    },
+    {
+      "id": "ibr-126-wrong-currency-tax-exclusive",
+      "path": "./invalid/ibr-126.wrong-currency-tax-exclusive.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-126"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal TaxExclusiveAmount uses currencyID NZD while the document currency is AUD, violating the currency consistency rule."
+    },
+    {
+      "id": "ibr-127-invalid-swedish-org-number",
+      "path": "./invalid/ibr-127.invalid-swedish-org-number.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-127"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification carries a scheme 0007 (Swedish organization number) identifier that is not a 10-digit number, on an otherwise ordinary AU invoice."
+    },
+    {
+      "id": "ibr-cl-01",
+      "path": "./invalid/ibr-cl-01.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-01"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceTypeCode 999, not in the UNTDID 1001 invoice/credit-note subset."
+    },
+    {
+      "id": "ibr-cl-07",
+      "path": "./invalid/ibr-cl-07.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-07"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference with DocumentTypeCode 130 has an ID schemeID of ZZZZ, not a UNTDID 1153 code."
+    },
+    {
+      "id": "ibr-cl-10",
+      "path": "./invalid/ibr-cl-10.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-10"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PartyIdentification ID schemeID 9999, an unknown ISO 6523 ICD code (boundary: unknown scheme)."
+    },
+    {
+      "id": "ibr-cl-11",
+      "path": "./invalid/ibr-cl-11.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-11"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "PayeeParty PartyLegalEntity CompanyID schemeID 9999, an unknown ISO 6523 ICD code; PayeeParty used instead of buyer/supplier so the AU/NZ ABN/NZBN alignment rules (which pin CompanyID scheme to 0151/0088) do not also fire."
+    },
+    {
+      "id": "ibr-cl-13",
+      "path": "./invalid/ibr-cl-13.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-13"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Line item CommodityClassification ItemClassificationCode listID ZZ, not in the UNTDID 7143 list."
+    },
+    {
+      "id": "ibr-cl-14",
+      "path": "./invalid/ibr-cl-14.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-14"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PostalAddress Country IdentificationCode ZZ, a plausible-but-absent ISO 3166-1 alpha-2 code (boundary case)."
+    },
+    {
+      "id": "ibr-cl-15",
+      "path": "./invalid/ibr-cl-15.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-15"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Export invoice line Item OriginCountry IdentificationCode ZZ, a plausible-but-absent ISO 3166-1 alpha-2 code (boundary case)."
+    },
+    {
+      "id": "ibr-cl-16",
+      "path": "./invalid/ibr-cl-16.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-16"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "PaymentMeans PaymentMeansCode 999, not in the UNCL4461 code list."
+    },
+    {
+      "id": "ibr-cl-19",
+      "path": "./invalid/ibr-cl-19.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-19"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level allowance (ChargeIndicator false) AllowanceChargeReasonCode 999, not in the UNCL5189 code list."
+    },
+    {
+      "id": "ibr-cl-20",
+      "path": "./invalid/ibr-cl-20.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-20"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level charge (ChargeIndicator true) AllowanceChargeReasonCode 999, not in the UNCL7161 code list."
+    },
+    {
+      "id": "ibr-cl-21",
+      "path": "./invalid/ibr-cl-21.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-21"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Line item StandardItemIdentification ID schemeID 9999, an unknown ISO 6523 ICD code."
+    },
+    {
+      "id": "ibr-cl-23",
+      "path": "./invalid/ibr-cl-23.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-23"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoicedQuantity unitCode ZZZ, a bogus code not in UN/ECE Recommendation 20 with Rec 21 extension (boundary/bogus unit case)."
+    },
+    {
+      "id": "ibr-cl-25",
+      "path": "./invalid/ibr-cl-25.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-25"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer EndpointID schemeID 9999, an unknown CEF EAS scheme (boundary: unknown scheme). No retired/removed EAS code variant added: eas.gc carries no deprecation markers, so a second 'retired code' variant could not be identified."
+    },
+    {
+      "id": "ibr-cl-26",
+      "path": "./invalid/ibr-cl-26.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-cl-26"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Delivery DeliveryLocation ID schemeID 9999, an unknown ISO 6523 ICD code."
+    },
+    {
+      "id": "ibr-co-10-line-sum-mismatch",
+      "path": "./invalid/ibr-co-10.line-sum-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-10"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/LineExtensionAmount (105.00) does not equal the sum of InvoiceLine net amounts (100.00); downstream totals compensated so only co-10 fails."
+    },
+    {
+      "id": "ibr-co-11-allowance-total-mismatch",
+      "path": "./invalid/ibr-co-11.allowance-total-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-11"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/AllowanceTotalAmount (8.00) does not equal the sum of document-level AllowanceCharge amounts with ChargeIndicator=false (5.00); downstream totals compensated so only co-11 fails."
+    },
+    {
+      "id": "ibr-co-12-charge-total-mismatch",
+      "path": "./invalid/ibr-co-12.charge-total-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-12"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/ChargeTotalAmount (12.00) does not equal the sum of document-level AllowanceCharge amounts with ChargeIndicator=true (5.00); downstream totals compensated so only co-12 fails."
+    },
+    {
+      "id": "ibr-co-13-tax-exclusive-mismatch",
+      "path": "./invalid/ibr-co-13.tax-exclusive-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-13"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/TaxExclusiveAmount (105.00) does not equal LineExtensionAmount (100.00) with no allowances/charges present; TaxInclusiveAmount/PayableAmount compensated so only co-13 fails."
+    },
+    {
+      "id": "ibr-co-14-tax-total-mismatch",
+      "path": "./invalid/ibr-co-14.tax-total-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-14"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "TaxTotal/TaxAmount (12.00) does not equal the sum of the two TaxSubtotal/TaxAmount values (10.00 + 0.00); LegalMonetaryTotal totals compensated so only co-14 fails."
+    },
+    {
+      "id": "ibr-co-15-tax-inclusive-mismatch",
+      "path": "./invalid/ibr-co-15.tax-inclusive-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-15"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/TaxInclusiveAmount (120.00) does not equal TaxExclusiveAmount + TaxTotal/TaxAmount (110.00); PayableAmount compensated so only co-15 fails."
+    },
+    {
+      "id": "ibr-co-16-payable-amount-mismatch",
+      "path": "./invalid/ibr-co-16.payable-amount-mismatch.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-16"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "LegalMonetaryTotal/PayableAmount (95.00) does not equal TaxInclusiveAmount (110.00) - PrepaidAmount (20.00); all upstream totals internally consistent so only co-16 fails."
+    },
+    {
+      "id": "ibr-co-19-invoice-period-no-dates",
+      "path": "./invalid/ibr-co-19.invoice-period-no-dates.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-19"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice-level InvoicePeriod (ibg-14) present with only a Description child, no StartDate/EndDate/DescriptionCode."
+    },
+    {
+      "id": "ibr-co-20-line-period-no-dates",
+      "path": "./invalid/ibr-co-20.line-period-no-dates.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-co-20"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine-level InvoicePeriod (ibg-26) present with only a Description child, no StartDate/EndDate."
+    },
+    {
+      "id": "ibr-sr-05-duplicate-payment-terms-note",
+      "path": "./invalid/ibr-sr-05.duplicate-payment-terms-note.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-05"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice PaymentTerms carries two cbc:Note elements, exceeding the maximum of one payment terms note."
+    },
+    {
+      "id": "ibr-sr-16-duplicate-buyer-identifier",
+      "path": "./invalid/ibr-sr-16.duplicate-buyer-identifier.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-16"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice buyer party carries two cac:PartyIdentification/cbc:ID elements, exceeding the maximum of one buyer identifier."
+    },
+    {
+      "id": "ibr-sr-19-duplicate-payee-name",
+      "path": "./invalid/ibr-sr-19.duplicate-payee-name.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-19"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice PayeeParty (different from the Seller) carries two cac:PartyName/cbc:Name elements, exceeding the maximum of one payee name."
+    },
+    {
+      "id": "ibr-sr-30-duplicate-allowance-reason",
+      "path": "./invalid/ibr-sr-30.duplicate-allowance-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-30"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level allowance (ChargeIndicator false) carries two cbc:AllowanceChargeReason elements, exceeding the maximum of one allowance reason."
+    },
+    {
+      "id": "ibr-sr-31-duplicate-charge-reason",
+      "path": "./invalid/ibr-sr-31.duplicate-charge-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-31"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level charge (ChargeIndicator true) carries two cbc:AllowanceChargeReason elements, exceeding the maximum of one charge reason."
+    },
+    {
+      "id": "ibr-sr-32-duplicate-exemption-reason",
+      "path": "./invalid/ibr-sr-32.duplicate-exemption-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-32"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Exempt TaxSubtotal's TaxCategory carries two cbc:TaxExemptionReason elements, exceeding the maximum of one VAT exemption reason text."
+    },
+    {
+      "id": "ibr-sr-33-duplicate-document-description",
+      "path": "./invalid/ibr-sr-33.duplicate-document-description.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-33"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "AdditionalDocumentReference carries two cbc:DocumentDescription elements, exceeding the maximum of one supporting document description."
+    },
+    {
+      "id": "ibr-sr-34-duplicate-line-note",
+      "path": "./invalid/ibr-sr-34.duplicate-line-note.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-34"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine carries two cbc:Note elements, exceeding the maximum of one invoice line note."
+    },
+    {
+      "id": "ibr-sr-38-duplicate-line-exemption-reason",
+      "path": "./invalid/ibr-sr-38.duplicate-line-exemption-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-38"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine Item's ClassifiedTaxCategory carries two cbc:TaxExemptionReason elements, exceeding the maximum of one invoiced item tax exemption reason text."
+    },
+    {
+      "id": "ibr-sr-49-duplicate-tax-point-date-code",
+      "path": "./invalid/ibr-sr-49.duplicate-tax-point-date-code.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-49"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Invoice InvoicePeriod carries two cbc:DescriptionCode elements (value tax point date), exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-50-duplicate-item-description",
+      "path": "./invalid/ibr-sr-50.duplicate-item-description.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-50"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "InvoiceLine Item carries two cbc:Description elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-51-duplicate-note",
+      "path": "./invalid/ibr-sr-51.duplicate-note.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-51"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document carries two cbc:Note elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-52-duplicate-originator-document-reference",
+      "path": "./invalid/ibr-sr-52.duplicate-originator-document-reference.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-52"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document carries two cac:OriginatorDocumentReference/cbc:ID elements (tender or lot reference), exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-53-duplicate-seller-address-line",
+      "path": "./invalid/ibr-sr-53.duplicate-seller-address-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-53"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller PostalAddress carries two cac:AddressLine/cbc:Line elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-54-duplicate-buyer-address-line",
+      "path": "./invalid/ibr-sr-54.duplicate-buyer-address-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-54"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Buyer PostalAddress carries two cac:AddressLine/cbc:Line elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-55-duplicate-tax-representative-address-line",
+      "path": "./invalid/ibr-sr-55.duplicate-tax-representative-address-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-55"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "TaxRepresentativeParty PostalAddress carries two cac:AddressLine/cbc:Line elements, exceeding the maximum of one occurrence; a valid PartyTaxScheme/CompanyID is included so only ibr-sr-55 fires."
+    },
+    {
+      "id": "ibr-sr-56-duplicate-delivery-address-line",
+      "path": "./invalid/ibr-sr-56.duplicate-delivery-address-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-56"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Delivery/DeliveryLocation/Address carries two cac:AddressLine/cbc:Line elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-57-missing-party-tax-scheme-company-id",
+      "path": "./invalid/ibr-sr-57.missing-party-tax-scheme-company-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-57"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Seller cac:PartyTaxScheme is present but omits cbc:CompanyID, violating the requirement that a company identifier exist in the party tax scheme class."
+    },
+    {
+      "id": "ibr-sr-59-duplicate-payee-branch-address-line",
+      "path": "./invalid/ibr-sr-59.duplicate-payee-branch-address-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-59"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "PaymentMeans/PayeeFinancialAccount/FinancialInstitutionBranch/Address carries two cac:AddressLine/cbc:Line elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-60-duplicate-payment-terms-means-id",
+      "path": "./invalid/ibr-sr-60.duplicate-payment-terms-means-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-60"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "PaymentTerms carries two cbc:PaymentMeansID elements, exceeding the maximum of one occurrence."
+    },
+    {
+      "id": "ibr-sr-61-duplicate-allowance-tax-exemption-reason",
+      "path": "./invalid/ibr-sr-61.duplicate-allowance-tax-exemption-reason.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-61"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "Document-level AllowanceCharge/TaxCategory carries two cbc:TaxExemptionReason elements, exceeding the maximum of one occurrence; the allowance uses the same Standard-rated (S) category as the tax breakdown so no aligned tax-category rule also fires."
+    },
+    {
+      "id": "ibr-sr-63-wildcard-customization-id",
+      "path": "./invalid/ibr-sr-63.wildcard-customization-id.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": [
+        "ibr-sr-63"
+      ],
+      "rulesetVersion": "1.1.2",
+      "description": "CustomizationID retains the required 'urn:peppol:pint:billing-1@aunz-1' prefix but appends a trailing '*' wildcard character, which ibr-sr-63 forbids."
+    },
+    {
+      "id": "invoice-doctype-entity",
+      "path": "./malformed/invoice-doctype-entity.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Well-formed invoice with a DOCTYPE declaring an external entity referenced in cbc:Note; preflight bans DOCTYPE outright, proving external entities are never resolved."
+    },
+    {
+      "id": "invoice-empty",
+      "path": "./malformed/invoice-empty.xml",
+      "documentType": "unknown",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Zero-byte file; preflight rejects it as empty before any parsing."
+    },
+    {
+      "id": "invoice-oversized",
+      "path": "./malformed/invoice-oversized.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Valid-shaped invoice padded with repeated Note elements to ~110 KiB, exceeding the 100 KiB preflight harness cap."
+    },
+    {
+      "id": "invoice-truncated",
+      "path": "./malformed/invoice-truncated.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "malformed",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Valid-shaped invoice cut off mid-element inside AccountingSupplierParty; fails XML well-formedness before schema validation."
+    },
+    {
+      "id": "invoice-unclosed-element",
+      "path": "./malformed/invoice-unclosed-element.xml",
+      "documentType": "unknown",
+      "jurisdiction": "A-NZ",
+      "expectation": "malformed",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "An XML invoice with an unclosed ID element."
+    },
+    {
+      "id": "invoice-wrong-encoding",
+      "path": "./malformed/invoice-wrong-encoding.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "XML prolog declares encoding UTF-16 but the file bytes are UTF-8 text; preflight rejects any declared encoding that is not UTF-8."
+    },
+    {
+      "id": "invoice-wrong-namespace",
+      "path": "./malformed/invoice-wrong-namespace.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Root element named Invoice but declaring the Order-2 namespace; preflight rejects the root/namespace mismatch."
+    },
+    {
+      "id": "order-unsupported-document",
+      "path": "./malformed/order-unsupported-document.xml",
+      "documentType": "unknown",
+      "jurisdiction": "A-NZ",
+      "expectation": "rejected",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Minimal well-formed UBL Order document; preflight only accepts Invoice or CreditNote roots, so this is rejected as unsupported."
+    },
+    {
+      "id": "credit-note-missing-id",
+      "path": "./schema-invalid/credit-note-missing-id.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "A-NZ",
+      "expectation": "schema-invalid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Well-formed credit note with the document-level cbc:ID removed; the UBL 2.1 CreditNote XSD requires it."
+    },
+    {
+      "id": "invoice-bad-element-order",
+      "path": "./schema-invalid/invoice-bad-element-order.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "schema-invalid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Well-formed invoice with cbc:IssueDate placed before cbc:ID, violating the UBL 2.1 Invoice XSD required sequence order."
+    },
+    {
+      "id": "invoice-invalid-date",
+      "path": "./schema-invalid/invoice-invalid-date.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "schema-invalid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "cbc:IssueDate set to 2026-13-45, an out-of-range month and day that fails xsd:date lexical rules."
+    },
+    {
+      "id": "invoice-missing-issuedate",
+      "path": "./schema-invalid/invoice-missing-issuedate.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "schema-invalid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Well-formed invoice with cbc:IssueDate removed; the UBL 2.1 Invoice XSD requires it."
+    },
+    {
+      "id": "invoice-unknown-element",
+      "path": "./schema-invalid/invoice-unknown-element.xml",
+      "documentType": "invoice",
+      "jurisdiction": "A-NZ",
+      "expectation": "schema-invalid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "A made-up cbc:FrobnicationCode element inserted at document level, which the UBL 2.1 Invoice XSD does not allow."
+    },
+    {
+      "id": "credit-note-au-allowance",
+      "path": "./valid/credit-note-au-allowance.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU credit note with a document-level allowance and a billing reference to the original invoice."
+    },
+    {
+      "id": "credit-note-au-standard",
+      "path": "./valid/credit-note-au-standard.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian credit note reversing one standard-rated line."
+    },
+    {
+      "id": "credit-note-nz-standard",
+      "path": "./valid/credit-note-nz-standard.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "NZ",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "NZ credit note with one standard-rated 15% GST line and a billing reference to the original invoice."
+    },
+    {
+      "id": "invoice-au-allowances-charges",
+      "path": "./valid/invoice-au-allowances-charges.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with a document-level allowance and charge (percentage + base amount) plus a line-level allowance and a line-level charge."
+    },
+    {
+      "id": "invoice-au-buyer-contact",
+      "path": "./valid/invoice-au-buyer-contact.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with full contact details for both parties, buyer/seller trading names, additional party identifiers, and a seller tax representative party."
+    },
+    {
+      "id": "invoice-au-codelist-additions",
+      "path": "./valid/invoice-au-codelist-additions.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Accepts the 1.1.2 code-list additions: EAS 0244 endpoint scheme, ICD 0241 party identifier scheme, currency CNH, and updated ISO 3166 BS as origin country."
+    },
+    {
+      "id": "invoice-au-exempt",
+      "path": "./valid/invoice-au-exempt.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with a tax category E (Exempt from tax) line and matching single tax breakdown."
+    },
+    {
+      "id": "invoice-au-export",
+      "path": "./valid/invoice-au-export.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice for exported goods using tax category G (Export) at 0%, document currency remains AUD."
+    },
+    {
+      "id": "invoice-au-item-details",
+      "path": "./valid/invoice-au-item-details.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with seller/buyer/standard item identifiers, commodity classification, origin country, an additional item property, a price base quantity other than 1, and varied unit codes (HUR, KGM, DAY)."
+    },
+    {
+      "id": "invoice-au-multi-line",
+      "path": "./valid/invoice-au-multi-line.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with four lines, mixed S (10%) and Z (0%) GST categories, and two tax subtotals."
+    },
+    {
+      "id": "invoice-au-negative",
+      "path": "./valid/invoice-au-negative.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU negative invoice: negative InvoicedQuantity with non-negative PriceAmount, negative line and document totals."
+    },
+    {
+      "id": "invoice-au-out-of-scope",
+      "path": "./valid/invoice-au-out-of-scope.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice entirely out of scope of GST (tax category O): no Percent element, single O tax breakdown, tax exemption reason present, no other category."
+    },
+    {
+      "id": "invoice-au-payment-means",
+      "path": "./valid/invoice-au-payment-means.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with credit transfer payment means (account name/id/branch), a payment id, and a payment terms note."
+    },
+    {
+      "id": "invoice-au-prepaid",
+      "path": "./valid/invoice-au-prepaid.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with a prepaid amount, a negative payable rounding amount, and a due date."
+    },
+    {
+      "id": "invoice-au-price-discount",
+      "path": "./valid/invoice-au-price-discount.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with a line Price/AllowanceCharge showing gross price and per-unit discount, where PriceAmount equals BaseAmount minus Amount."
+    },
+    {
+      "id": "invoice-au-references",
+      "path": "./valid/invoice-au-references.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "AU invoice with order/sales order, contract, project, despatch, and receipt references, buyer accounting cost, an embedded base64 PDF supporting document, and an invoiced-object AdditionalDocumentReference (DocumentTypeCode 130, schemeID HWB)."
+    },
+    {
       "id": "invoice-au-standard",
       "path": "./valid/invoice-au-standard.xml",
       "documentType": "invoice",
@@ -29,6 +2479,16 @@
       "description": "Australian invoice with one zero-rated GST line."
     },
     {
+      "id": "invoice-nz-delivery",
+      "path": "./valid/invoice-nz-delivery.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "NZ invoice with delivery party/location/date, a document invoice period, and a line-level invoice period."
+    },
+    {
       "id": "invoice-nz-standard",
       "path": "./valid/invoice-nz-standard.xml",
       "documentType": "invoice",
@@ -39,34 +2499,14 @@
       "description": "New Zealand invoice with one standard-rated 15% GST line."
     },
     {
-      "id": "credit-note-au-standard",
-      "path": "./valid/credit-note-au-standard.xml",
-      "documentType": "credit-note",
-      "jurisdiction": "AU",
+      "id": "invoice-nz-tax-currency",
+      "path": "./valid/invoice-nz-tax-currency.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
       "expectation": "valid",
       "expectedRules": [],
       "rulesetVersion": "1.1.2",
-      "description": "Australian credit note reversing one standard-rated line."
-    },
-    {
-      "id": "aligned-ibr-001-aunz-wrong-scheme",
-      "path": "./invalid/aligned-ibr-001-aunz.wrong-scheme.xml",
-      "documentType": "invoice",
-      "jurisdiction": "AU",
-      "expectation": "invalid",
-      "expectedRules": ["aligned-ibr-001-aunz"],
-      "rulesetVersion": "1.1.2",
-      "description": "Australian seller legal identifier incorrectly uses the NZBN/GLN scheme."
-    },
-    {
-      "id": "invoice-unclosed-element",
-      "path": "./malformed/invoice-unclosed-element.xml",
-      "documentType": "unknown",
-      "jurisdiction": "A-NZ",
-      "expectation": "malformed",
-      "expectedRules": [],
-      "rulesetVersion": "1.1.2",
-      "description": "An XML invoice with an unclosed ID element."
+      "description": "NZ seller invoice priced in USD (DocumentCurrencyCode) with TaxCurrencyCode NZD and a second TaxTotal without subtotals carrying the tax amount in NZD."
     }
   ]
 }
