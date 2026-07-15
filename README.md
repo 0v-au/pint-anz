@@ -10,50 +10,41 @@ Everything here is built around **PINT A-NZ** — the invoice specification used
 
 | Package | What it does | Status |
 |---|---|---|
-| [`lint`](./packages/lint) | Validate a UBL invoice against PINT A-NZ rules from the CLI or CI. Zero config. | In progress |
-| [`fixtures`](./packages/fixtures) | A corpus of golden PINT A-NZ documents — valid invoices, credit notes, GST edge cases — plus deliberately broken files, each named for the rule it violates. | In progress |
+| [`lint`](./packages/lint) | Validate UBL invoices and credit notes against pinned PINT A-NZ rules from the CLI or CI. | Design scaffold |
+| [`fixtures`](./packages/fixtures) | Synthetic valid, invalid, and malformed PINT A-NZ documents with a machine-readable manifest. | Initial slice |
 | [`lookup`](./packages/lookup) | Check whether an ABN/NZBN is registered on the Peppol network and which document types it can receive. | Planned |
 | [`rules`](./packages/rules) | Human-readable explanations of every PINT A-NZ business rule: what it means, a failing example, how to fix it. | Planned |
 | [`mapper`](./packages/mapper) | A typed, minimal JSON schema that compiles to compliant PINT A-NZ UBL XML. | Planned |
 | [`playground`](./packages/playground) | A local fake Peppol counterparty in a Docker container: send it documents, get scripted accepts, rejects, and misbehaviour back. |  Planned |
 
-## Quick start
+## Planned lint workflow
 
-Validate an invoice:
-
-```bash
-npx pint-anz-lint invoice.xml
-```
-
-```
-✖ invoice.xml — 2 errors, 1 warning
-
-  ERROR  ibr-cl-25   Endpoint identifier scheme must be from the approved list
-                     └─ cbc:EndpointID/@schemeID is "0088", expected e.g. "0151" (ABN)
-
-  ERROR  aligned-ibrp-052-aunz
-                     GST category code E is invalid for an AU supplier
-                     └─ line 2: use "GST" category with 0% rate for GST-free supplies
-
-  WARN   ibr-057     Payment due date is before issue date
-
-Docs: https://…/rules/ibr-cl-25
-```
-
-Fail your CI when an invoice regresses:
-
-```yaml
-# .github/workflows/einvoicing.yml
-- uses: <org>/pint-anz-toolkit/lint-action@v1
-  with:
-    files: "test/invoices/**/*.xml"
-```
-
-Grab known-good and known-bad test documents:
+The lint package is not implemented yet. Its documented command contract will
+install an exact ruleset from the official source or a reviewed local archive:
 
 ```bash
-cp node_modules/@pint-anz/fixtures/valid/invoice-standard.xml   test/
-cp node_modules/@pint-anz/fixtures/invalid/ibr-cl-25.xml        test/
+pint-anz-lint ruleset install 1.1.2
+
+# Air-gapped or controlled CI
+pint-anz-lint ruleset install 1.1.2 --file /tmp/resources.zip
+```
+
+Then validate deterministically without network access:
+
+```bash
+pint-anz-lint invoice.xml --ruleset-version 1.1.2 --offline
+pint-anz-lint 'test/invoices/**/*.xml' --format json --offline
+```
+
+See the [`@pint-anz/lint` design](./packages/lint) for cache, integrity,
+licensing, security, and exit-code behaviour.
+
+Use the current fixture corpus in tests:
+
+```js
+import { fixtureUrl } from "@pint-anz/fixtures";
+
+const validInvoice = fixtureUrl("invoice-au-standard");
 ```
 
 ## What is PINT A-NZ, in one paragraph?
@@ -62,11 +53,11 @@ Peppol documents are UBL 2.1 XML. The structure (XSD) is global, but each jurisd
 
 ## Design principles
 
-1. **Zero config.** Every tool works with no setup: sensible defaults, current ruleset bundled, offline where possible.
+1. **Deterministic setup.** Rulesets are explicitly versioned, integrity-checked, cached, and usable offline after installation.
 2. **Errors a human can act on.** Raw Schematron output tells you *that* rule `aligned-ibrp-052-aunz` failed. We tell you *what that means* and *how to fix it*.
 3. **CI-first.** Exit codes, machine-readable output (`--format json`), and GitHub Actions ship with every tool.
 4. **The fixtures are the spec.** Each rule gets a passing and a failing document. If behaviour is ambiguous, we add a fixture, not a paragraph.
-5. **Track the ruleset.** PINT A-NZ is versioned and moves. Tools pin a ruleset version and make upgrades explicit, so a spec release never silently breaks your build.
+5. **Track the ruleset.** PINT A-NZ is versioned and moves. Tools pin a ruleset version and digest and make upgrades explicit, so a spec release never silently breaks your build.
 
 ## Repo layout
 
@@ -87,7 +78,9 @@ Issues and PRs welcome. The most valuable contribution right now is **fixtures**
 
 ## Status & roadmap
 
-This toolkit is young and moving fast. Current focus: shipping `lint` and `fixtures` against the latest PINT A-NZ release. Follow the [issues](../../issues) for the roadmap discussion.
+This toolkit is young and moving fast. The fixtures package contains an initial
+PINT A-NZ 1.1.2 vertical slice; the lint package is currently a design scaffold.
+See [TODO.md](./TODO.md) for the fixture coverage roadmap.
 
 ## Trademark & affiliation
 
