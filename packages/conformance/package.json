@@ -1,0 +1,34 @@
+{
+  "name": "@pint-anz/conformance",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Internal coverage harness: validates the fixtures corpus against the official PINT A-NZ 1.1.2 XSD and Schematron artefacts. Never published; official artefacts are fetched at build time and stay out of every published package.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "artefacts": "node scripts/fetch-artefacts.mjs",
+    "inventory": "node scripts/build-inventory.mjs",
+    "validate": "node scripts/validate-cli.mjs",
+    "report": "node scripts/report-coverage.mjs",
+    "gate": "node scripts/release-gate.mjs",
+    "build": "node scripts/fetch-artefacts.mjs",
+    "pretest": "node scripts/fetch-artefacts.mjs",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@pint-anz/fixtures": "workspace:*",
+    "fast-xml-parser": "^5.10.0",
+    "saxon-js": "^2.7.0",
+    "vitest": "^4.1.10",
+    "xslt3": "^2.7.0"
+  },
+  "pintAnz": {
+    "rulesetVersion": "1.1.2",
+    "rulesetStatus": "active",
+    "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+  }
+}

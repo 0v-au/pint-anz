@@ -3,3 +3,7 @@ node_modules/
 dist/
 coverage/
 *.tgz
+
+# Official PINT A-NZ + OASIS UBL artefacts: fetched and checksum-verified by
+# packages/conformance; not redistributable, never committed or published.
+artefacts/

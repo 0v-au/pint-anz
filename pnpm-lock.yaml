@@ -8,6 +8,24 @@ importers:
 
   .: {}
 
+  packages/conformance:
+    devDependencies:
+      '@pint-anz/fixtures':
+        specifier: workspace:*
+        version: link:../fixtures
+      fast-xml-parser:
+        specifier: ^5.10.0
+        version: 5.10.0
+      saxon-js:
+        specifier: ^2.7.0
+        version: 2.7.0
+      vitest:
+        specifier: ^4.1.10
+        version: 4.1.10(@types/node@26.1.1)(vite@8.1.4(@types/node@26.1.1))
+      xslt3:
+        specifier: ^2.7.0
+        version: 2.7.0
+
   packages/fixtures:
     devDependencies:
       '@types/node':
@@ -1624,6 +1642,10 @@ packages:
     resolution: {integrity: sha512-ghig2TBE/H11aOVgmahA3MhimvkBr6JIYknH/Dhdk10nXwdbIqBJsbfMxpvFPG8bAw77gN29aQWvKpmVoPlvPQ==}
     engines: {node: '>=16.0.0'}
 
+  xslt3@2.7.0:
+    resolution: {integrity: sha512-Vt32LhCt4CQULtGPWlGW++PhS+o3LA6z3PDvig9lDfbo2cIHcaEnyrRYDTilw4N0EbAyxCaw5E0B+DICZEYktQ==}
+    hasBin: true
+
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
@@ -2971,5 +2993,13 @@ snapshots:
   word-wrap@1.2.5: {}
 
   xml-naming@0.3.0: {}
+
+  xslt3@2.7.0:
+    dependencies:
+      axios: 1.18.1
+      saxon-js: 2.7.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
 
   yocto-queue@0.1.0: {}

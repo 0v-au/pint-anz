@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install xmllint (libxml2)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends libxml2-utils
+
+      # Official PINT A-NZ + OASIS UBL artefacts are fetched, checksum-verified,
+      # and cached. They are never committed or published (no confirmed
+      # redistribution permission); the cache key is the pin lock file itself.
+      - name: Cache official artefacts
+        uses: actions/cache@v4
+        with:
+          path: artefacts
+          key: artefacts-${{ hashFiles('packages/conformance/artefacts.lock.json') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Fetch and verify pinned artefacts
+        run: pnpm --filter @pint-anz/conformance run artefacts
+
+      - name: Build
+        run: pnpm -r build
+
+      - name: Test (fixtures corpus + conformance harness)
+        run: pnpm -r test
+
+      - name: Release gate (coverage completeness)
+        run: pnpm --filter @pint-anz/conformance gate
+
+      - name: Packed-package test (published tarball only)
+        run: node packages/conformance/scripts/packed-test.mjs

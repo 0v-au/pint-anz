@@ -1,0 +1,29 @@
+{
+  "comment": "Pinned official artefacts for PINT A-NZ Billing 1.1.2. CI fails when any checksum drifts. Artefacts are downloaded into <repo>/artefacts/ (gitignored) and are never included in a published package: redistribution permission for the official resources has not been confirmed.",
+  "rulesetVersion": "1.1.2",
+  "downloads": [
+    {
+      "name": "resources.zip",
+      "url": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip",
+      "sha256": "5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a",
+      "extractTo": "resources"
+    },
+    {
+      "name": "UBL-2.1.zip",
+      "url": "https://docs.oasis-open.org/ubl/os-UBL-2.1/UBL-2.1.zip",
+      "sha256": "60b80d76394a8a2add90723ecb8e0e2e9d826775de9749df37a72d60703f86ed",
+      "extractTo": "ubl-2.1",
+      "extractGlob": "xsd/*"
+    }
+  ],
+  "files": {
+    "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch": "9248a6e29dafb857993e6915b5fa47bae38091c74fdfe1014faa1744700936ac",
+    "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.sch": "5016cb5aec7945185955e0950d2825ea83caa91c328d683a5c351bbe5733cd75",
+    "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.xslt": "14da33f835748e8c23bf14ae15a4e80bf3134033fe7e35c5dec43c560831c9d1",
+    "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.xslt": "109989ddd7ffcf5ee230496633aa3f0918de5fa0283fb2476c5e0afb282818e7",
+    "resources/trn-creditnote/schematron/PINT-UBL-validation-preprocessed.sch": "9248a6e29dafb857993e6915b5fa47bae38091c74fdfe1014faa1744700936ac",
+    "resources/trn-creditnote/schematron/PINT-jurisdiction-aligned-rules.sch": "5016cb5aec7945185955e0950d2825ea83caa91c328d683a5c351bbe5733cd75",
+    "resources/trn-creditnote/schematron/PINT-UBL-validation-preprocessed.xslt": "14da33f835748e8c23bf14ae15a4e80bf3134033fe7e35c5dec43c560831c9d1",
+    "resources/trn-creditnote/schematron/PINT-jurisdiction-aligned-rules.xslt": "109989ddd7ffcf5ee230496633aa3f0918de5fa0283fb2476c5e0afb282818e7"
+  }
+}
