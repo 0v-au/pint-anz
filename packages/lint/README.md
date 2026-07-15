@@ -3,8 +3,70 @@
 Validate UBL 2.1 invoices and credit notes against a pinned PINT A-NZ ruleset
 from the command line, CI, or a Node.js application.
 
-> Status: design scaffold. The commands and API below define the intended
-> interface; validation is not implemented yet.
+> Status: developer vertical slice. Single-file library and CLI validation now
+> run the complete XSD and Schematron pipeline against an explicitly prepared
+> local ruleset directory. Ruleset installation, globbing, and publishable
+> zero-configuration operation remain planned.
+
+## Current developer slice
+
+### Install xmllint
+
+The current validation pipeline uses `xmllint` from libxml2 for safe, offline
+UBL schema validation. Check whether it is already installed:
+
+```bash
+xmllint --version
+```
+
+macOS usually includes it at `/usr/bin/xmllint`. If it is unavailable, install
+libxml2 with Homebrew and add its tools to your path:
+
+```bash
+brew install libxml2
+export PATH="$(brew --prefix libxml2)/bin:$PATH"
+```
+
+On Ubuntu or Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install libxml2-utils
+```
+
+On Fedora:
+
+```bash
+sudo dnf install libxml2
+```
+
+### Run the developer slice
+
+Fetch and compile the pinned artefacts through the internal conformance harness,
+then build and run the linter:
+
+```bash
+pnpm --filter @pint-anz/conformance artefacts
+pnpm --filter @pint-anz/lint build
+node packages/lint/bin/cli.js invoice.xml --ruleset-dir ./artefacts
+node packages/lint/bin/cli.js invoice.xml --ruleset-dir ./artefacts --format json
+```
+
+The CLI exits `0` for a valid document, `1` for a document that completed
+validation with errors, and `2` when input, ruleset, or tooling prevented a
+complete result. It currently requires `xmllint` on `PATH`.
+
+```js
+import { validateFile } from "@pint-anz/lint";
+
+const result = await validateFile("invoice.xml", {
+  rulesetDirectory: "/controlled/pint-anz-1.1.2",
+});
+```
+
+`result.valid` can only be true after UBL XSD validation and both official
+Schematron transforms complete. A missing or unusable ruleset produces
+`complete: false`; partial validation is never presented as compliance.
 
 ## Validation pipeline
 

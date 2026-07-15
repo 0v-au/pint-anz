@@ -35,8 +35,30 @@ Real-world validation failures are gold. If your integration produced a document
 
 ## Development setup
 
+You need:
+
+- Node.js 20 or later
+- pnpm 9 or later
+- `xmllint` from libxml2
+
+macOS usually includes `xmllint` at `/usr/bin/xmllint`. On Ubuntu or Debian,
+install it with:
+
 ```bash
-# prerequisites: Node >= 20, pnpm >= 9
+sudo apt-get update
+sudo apt-get install libxml2-utils
+```
+
+Check that it is available before you install the project:
+
+```bash
+xmllint --version
+```
+
+See the [`@pint-anz/lint` development prerequisites](./packages/lint/README.md#install-xmllint)
+for other platforms.
+
+```bash
 git clone <repo-url>
 cd <repo>
 pnpm install

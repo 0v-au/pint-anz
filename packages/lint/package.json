@@ -38,9 +38,9 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev": "tsc -p tsconfig.build.json --watch",
-    "test": "vitest run",
+    "test": "pnpm build && vitest run",
     "test:watch": "vitest",
-    "test:fixtures": "node ./scripts/verify-fixtures.js",
+    "test:fixtures": "pnpm --filter @pint-anz/conformance test",
     "lint": "eslint src bin",
     "prepublishOnly": "pnpm build && pnpm test"
   },
@@ -51,23 +51,20 @@
     "saxon-js": "^2.7.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.5",
     "@pint-anz/fixtures": "workspace:*",
     "@types/node": "^22.0.0",
     "eslint": "^9.0.0",
     "typescript": "^5.6.0",
+    "typescript-eslint": "^8.64.0",
     "vitest": "^2.1.0"
   },
   "pintAnz": {
-    "rulesetVersion": "TODO-pin-current-PINT-ANZ-release",
-    "rulesetSource": "https://github.com/A-NZ-PEPPOL/A-NZ-PEPPOL-BIS-3.0"
+    "rulesetVersion": "1.1.2",
+    "rulesetStatus": "active",
+    "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/TODO-org/TODO-repo.git",
-    "directory": "packages/lint"
-  },
-  "homepage": "https://github.com/TODO-org/TODO-repo/tree/main/packages/lint#readme",
-  "bugs": "https://github.com/TODO-org/TODO-repo/issues",
   "publishConfig": {
     "access": "public"
   }
