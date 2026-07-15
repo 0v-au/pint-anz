@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: credit-note-au-allowance
+  expects: VALID
+  ruleset: 1.1.2
+  notes: Synthetic Australian credit note with a document-level allowance and a billing reference to the original invoice.
+-->
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>credit-note-au-allowance</cbc:ID>
+  <cbc:IssueDate>2026-07-14</cbc:IssueDate>
+  <cbc:CreditNoteTypeCode>381</cbc:CreditNoteTypeCode>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-CNA-001</cbc:BuyerReference>
+  <cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>INV-AU-ORIGINAL-002</cbc:ID><cbc:IssueDate>2026-06-15</cbc:IssueDate></cac:InvoiceDocumentReference></cac:BillingReference>
+  <cac:AccountingSupplierParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>1 Example Street</cbc:StreetName><cbc:CityName>Canberra</cbc:CityName><cbc:PostalZone>2600</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">47555222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">91888222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>2 Sample Avenue</cbc:StreetName><cbc:CityName>Sydney</cbc:CityName><cbc:PostalZone>2000</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Buyer Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">91888222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingCustomerParty>
+  <cac:AllowanceCharge>
+    <cbc:ChargeIndicator>false</cbc:ChargeIndicator>
+    <cbc:AllowanceChargeReasonCode>95</cbc:AllowanceChargeReasonCode>
+    <cbc:AllowanceChargeReason>Goodwill credit adjustment</cbc:AllowanceChargeReason>
+    <cbc:Amount currencyID="AUD">20.00</cbc:Amount>
+    <cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:AllowanceCharge>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="AUD">18.00</cbc:TaxAmount><cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="AUD">180.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="AUD">18.00</cbc:TaxAmount>
+    <cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:TaxSubtotal></cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="AUD">200.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="AUD">180.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="AUD">198.00</cbc:TaxInclusiveAmount>
+    <cbc:AllowanceTotalAmount currencyID="AUD">20.00</cbc:AllowanceTotalAmount>
+    <cbc:PayableAmount currencyID="AUD">198.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine><cbc:ID>1</cbc:ID><cbc:CreditedQuantity unitCode="EA">2</cbc:CreditedQuantity><cbc:LineExtensionAmount currencyID="AUD">200.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>Synthetic returned monitor</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="AUD">100.00</cbc:PriceAmount></cac:Price>
+  </cac:CreditNoteLine>
+</CreditNote>

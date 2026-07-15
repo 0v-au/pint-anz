@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: credit-note-nz-standard
+  expects: VALID
+  ruleset: 1.1.2
+  notes: Synthetic New Zealand credit note with one standard-rated 15% GST line.
+-->
+<CreditNote xmlns="urn:oasis:names:specification:ubl:schema:xsd:CreditNote-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>credit-note-nz-standard</cbc:ID>
+  <cbc:IssueDate>2026-07-05</cbc:IssueDate>
+  <cbc:CreditNoteTypeCode>381</cbc:CreditNoteTypeCode>
+  <cbc:DocumentCurrencyCode>NZD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-NZ-CN-001</cbc:BuyerReference>
+  <cac:BillingReference><cac:InvoiceDocumentReference><cbc:ID>INV-NZ-ORIGINAL-001</cbc:ID></cac:InvoiceDocumentReference></cac:BillingReference>
+  <cac:AccountingSupplierParty><cac:Party>
+    <cbc:EndpointID schemeID="0088">9429033821733</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>1 Example Street</cbc:StreetName><cbc:CityName>Wellington</cbc:CityName><cbc:PostalZone>6011</cbc:PostalZone><cac:Country><cbc:IdentificationCode>NZ</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example NZ Supplier Limited</cbc:RegistrationName><cbc:CompanyID schemeID="0088">9429033821733</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party>
+    <cbc:EndpointID schemeID="0088">9429033591476</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>2 Sample Avenue</cbc:StreetName><cbc:CityName>Auckland</cbc:CityName><cbc:PostalZone>1010</cbc:PostalZone><cac:Country><cbc:IdentificationCode>NZ</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example NZ Buyer Limited</cbc:RegistrationName><cbc:CompanyID schemeID="0088">9429033591476</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="NZD">7.50</cbc:TaxAmount><cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="NZD">50.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="NZD">7.50</cbc:TaxAmount>
+    <cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>15</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:TaxSubtotal></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="NZD">50.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="NZD">50.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="NZD">57.50</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="NZD">57.50</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:CreditNoteLine><cbc:ID>1</cbc:ID><cbc:CreditedQuantity unitCode="EA">1</cbc:CreditedQuantity><cbc:LineExtensionAmount currencyID="NZD">50.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>Synthetic returned widget</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>15</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="NZD">50.00</cbc:PriceAmount></cac:Price>
+  </cac:CreditNoteLine>
+</CreditNote>

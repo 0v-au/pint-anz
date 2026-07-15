@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: invoice-au-references
+  expects: VALID
+  ruleset: 1.1.2
+  notes: Synthetic Australian invoice exercising order/sales order, contract, project, despatch, and receipt references, buyer accounting cost, an embedded PDF supporting document, and an invoiced-object document reference (type code 130).
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>invoice-au-references</cbc:ID>
+  <cbc:IssueDate>2026-07-11</cbc:IssueDate>
+  <cbc:DueDate>2026-08-10</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:AccountingCost>DEPT-4400-PROJ-77</cbc:AccountingCost>
+  <cbc:BuyerReference>BUYER-REF-DR-001</cbc:BuyerReference>
+  <cac:OrderReference>
+    <cbc:ID>PO-SYN-0001</cbc:ID>
+    <cbc:SalesOrderID>SO-SYN-0002</cbc:SalesOrderID>
+  </cac:OrderReference>
+  <cac:DespatchDocumentReference><cbc:ID>DESP-SYN-0003</cbc:ID></cac:DespatchDocumentReference>
+  <cac:ReceiptDocumentReference><cbc:ID>RECPT-SYN-0004</cbc:ID></cac:ReceiptDocumentReference>
+  <cac:ContractDocumentReference><cbc:ID>CONTRACT-SYN-0005</cbc:ID></cac:ContractDocumentReference>
+  <cac:AdditionalDocumentReference>
+    <cbc:ID>SUPPORT-SYN-0006</cbc:ID>
+    <cbc:DocumentDescription>Synthetic supporting worksheet for line calculations</cbc:DocumentDescription>
+    <cac:Attachment>
+      <cbc:EmbeddedDocumentBinaryObject mimeCode="application/pdf" filename="synthetic-support.pdf">JVBERi0xLjQKJXN5bnRoZXRpYy10ZXN0LWZpeHR1cmUKMSAwIG9iajw8L1R5cGUvQ2F0YWxvZz4+ZW5kb2JqCnRyYWlsZXI8PC9Sb290IDEgMCBSPj4KJSVFT0Y=</cbc:EmbeddedDocumentBinaryObject>
+    </cac:Attachment>
+  </cac:AdditionalDocumentReference>
+  <cac:AdditionalDocumentReference>
+    <cbc:ID schemeID="HWB">INVOICED-OBJ-SYN-0007</cbc:ID>
+    <cbc:DocumentTypeCode>130</cbc:DocumentTypeCode>
+  </cac:AdditionalDocumentReference>
+  <cac:ProjectReference><cbc:ID>PROJECT-SYN-0008</cbc:ID></cac:ProjectReference>
+  <cac:AccountingSupplierParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>1 Example Street</cbc:StreetName><cbc:CityName>Canberra</cbc:CityName><cbc:PostalZone>2600</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">47555222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">91888222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>2 Sample Avenue</cbc:StreetName><cbc:CityName>Sydney</cbc:CityName><cbc:PostalZone>2000</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Buyer Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">91888222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="AUD">25.00</cbc:TaxAmount><cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="AUD">250.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="AUD">25.00</cbc:TaxAmount>
+    <cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:TaxSubtotal></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="AUD">250.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="AUD">250.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="AUD">275.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="AUD">275.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="EA">5</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="AUD">250.00</cbc:LineExtensionAmount>
+    <cbc:AccountingCost>DEPT-4400-PROJ-77</cbc:AccountingCost>
+    <cac:OrderLineReference><cbc:LineID>1</cbc:LineID></cac:OrderLineReference>
+    <cac:Item><cbc:Name>Synthetic project milestone deliverable</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="AUD">50.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
