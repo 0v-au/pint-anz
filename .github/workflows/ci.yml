@@ -39,6 +39,11 @@ jobs:
       - name: Build
         run: pnpm -r build
 
+      # The Action runs its committed dist/ directly from the repository, so a
+      # stale bundle would silently ship old validation behaviour.
+      - name: Lint Action dist freshness
+        run: pnpm --filter @pint-anz/lint-action check-dist
+
       - name: Test (fixtures corpus + conformance harness)
         run: pnpm -r test
 

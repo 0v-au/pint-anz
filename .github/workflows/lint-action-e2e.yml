@@ -1,0 +1,149 @@
+name: Lint Action E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  # Exercises the committed action against the fixtures corpus with a locally
+  # prepared ruleset: pass, multiple files, fail with report, malformed input,
+  # and no-matches semantics.
+  scenarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Cache official artefacts
+        uses: actions/cache@v4
+        with:
+          path: artefacts
+          key: artefacts-${{ hashFiles('packages/conformance/artefacts.lock.json') }}
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Fetch and verify pinned artefacts
+        run: pnpm --filter @pint-anz/conformance run artefacts
+
+      - name: Pass (single valid invoice)
+        id: pass
+        uses: ./packages/lint-action
+        with:
+          files: packages/fixtures/valid/invoice-au-standard.xml
+          ruleset-dir: artefacts
+
+      - name: Multiple files (glob)
+        id: multiple
+        uses: ./packages/lint-action
+        with:
+          files: |
+            packages/fixtures/valid/*-standard.xml
+          ruleset-dir: artefacts
+
+      - name: Fail (invalid invoice, report artefact)
+        id: fail
+        continue-on-error: true
+        uses: ./packages/lint-action
+        with:
+          files: packages/fixtures/invalid/aligned-ibr-001-aunz.wrong-scheme.xml
+          ruleset-dir: artefacts
+          report-file: reports/lint-action-e2e.json
+
+      - name: Malformed input
+        id: malformed
+        continue-on-error: true
+        uses: ./packages/lint-action
+        with:
+          files: packages/fixtures/malformed/invoice-truncated.xml
+          ruleset-dir: artefacts
+
+      - name: No matches (default error)
+        id: nomatch
+        continue-on-error: true
+        uses: ./packages/lint-action
+        with:
+          files: does/not/exist/**/*.xml
+          ruleset-dir: artefacts
+
+      - name: No matches (ignore)
+        id: nomatch-ignore
+        uses: ./packages/lint-action
+        with:
+          files: does/not/exist/**/*.xml
+          ruleset-dir: artefacts
+          if-no-files-found: ignore
+
+      - name: Upload machine-readable report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-action-e2e-report
+          path: reports/lint-action-e2e.json
+
+      - name: Assert outcomes and outputs
+        env:
+          PASS_OUTCOME: ${{ steps.pass.outcome }}
+          PASS_CHECKED: ${{ steps.pass.outputs.checked-files }}
+          PASS_ERRORS: ${{ steps.pass.outputs.error-count }}
+          PASS_RULESET: ${{ steps.pass.outputs.ruleset-version }}
+          MULTIPLE_OUTCOME: ${{ steps.multiple.outcome }}
+          MULTIPLE_CHECKED: ${{ steps.multiple.outputs.checked-files }}
+          FAIL_OUTCOME: ${{ steps.fail.outcome }}
+          FAIL_ERRORS: ${{ steps.fail.outputs.error-count }}
+          MALFORMED_OUTCOME: ${{ steps.malformed.outcome }}
+          NOMATCH_OUTCOME: ${{ steps.nomatch.outcome }}
+          NOMATCH_IGNORE_OUTCOME: ${{ steps.nomatch-ignore.outcome }}
+          NOMATCH_IGNORE_CHECKED: ${{ steps.nomatch-ignore.outputs.checked-files }}
+        run: |
+          set -eux
+          [ "$PASS_OUTCOME" = "success" ]
+          [ "$PASS_CHECKED" = "1" ]
+          [ "$PASS_ERRORS" = "0" ]
+          [ "$PASS_RULESET" = "1.1.2" ]
+          [ "$MULTIPLE_OUTCOME" = "success" ]
+          [ "$MULTIPLE_CHECKED" = "4" ]
+          [ "$FAIL_OUTCOME" = "failure" ]
+          [ "$FAIL_ERRORS" -ge 1 ]
+          [ "$MALFORMED_OUTCOME" = "failure" ]
+          [ "$NOMATCH_OUTCOME" = "failure" ]
+          [ "$NOMATCH_IGNORE_OUTCOME" = "success" ]
+          [ "$NOMATCH_IGNORE_CHECKED" = "0" ]
+          jq -e '.rulesetVersion == "1.1.2" and .valid == false and (.results | length) == 1' \
+            reports/lint-action-e2e.json
+
+  # Proves the consumer flow: nothing but a checkout. The action installs the
+  # pinned, checksum-verified ruleset itself (cached across runs).
+  default-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache installed ruleset
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pint-anz
+          key: pint-anz-ruleset-1.1.2
+
+      - name: Validate with the self-installed pinned ruleset
+        id: lint
+        uses: ./packages/lint-action
+        with:
+          files: packages/fixtures/valid/invoice-au-standard.xml
+
+      - name: Assert outputs
+        env:
+          CHECKED: ${{ steps.lint.outputs.checked-files }}
+          ERRORS: ${{ steps.lint.outputs.error-count }}
+          RULESET: ${{ steps.lint.outputs.ruleset-version }}
+        run: |
+          set -eux
+          [ "$CHECKED" = "1" ]
+          [ "$ERRORS" = "0" ]
+          [ "$RULESET" = "1.1.2" ]

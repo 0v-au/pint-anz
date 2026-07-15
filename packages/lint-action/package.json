@@ -1,0 +1,37 @@
+{
+  "name": "@pint-anz/lint-action",
+  "version": "0.1.0",
+  "private": true,
+  "description": "GitHub Action: validate repository UBL documents against PINT A-NZ with @pint-anz/lint and annotate failures on pull requests.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "check-dist": "node scripts/build.mjs --check",
+    "test": "pnpm build && vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src test scripts"
+  },
+  "dependencies": {
+    "@pint-anz/lint": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@pint-anz/fixtures": "workspace:*",
+    "@types/node": "^22.0.0",
+    "esbuild": "0.21.5",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^2.1.0"
+  },
+  "pintAnz": {
+    "rulesetVersion": "1.1.2",
+    "rulesetStatus": "active",
+    "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+  }
+}

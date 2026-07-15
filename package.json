@@ -6,6 +6,6 @@
     "build": "pnpm -r build",
     "test": "pnpm -r test",
     "test:fixtures": "pnpm --filter @pint-anz/conformance test",
-    "lint": "pnpm --filter @pint-anz/lint lint"
+    "lint": "pnpm -r lint"
   }
 }

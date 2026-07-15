@@ -7,3 +7,8 @@ coverage/
 # Official PINT A-NZ + OASIS UBL artefacts: fetched and checksum-verified by
 # packages/conformance; not redistributable, never committed or published.
 artefacts/
+
+# GitHub Actions run the committed distributable; re-include it under the
+# global dist/ and node_modules/ ignores above.
+!packages/lint-action/dist/
+!packages/lint-action/dist/**

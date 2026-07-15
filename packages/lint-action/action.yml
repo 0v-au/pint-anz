@@ -1,0 +1,59 @@
+name: "PINT A-NZ Lint"
+description: >-
+  Validate UBL invoices and credit notes against the pinned PINT A-NZ ruleset
+  and annotate failures on pull requests.
+inputs:
+  files:
+    description: >-
+      Newline-separated, workspace-relative file paths or glob patterns
+      (*, **, ?, [...]) selecting the UBL XML documents to validate.
+      Absolute paths and ".." segments are rejected.
+    required: true
+  format:
+    description: "Log output format: human or json."
+    required: false
+    default: "human"
+  report-file:
+    description: >-
+      Workspace-relative path that receives the full machine-readable JSON
+      report (the same envelope as `pint-anz-lint --format json`).
+    required: false
+    default: ""
+  ruleset-dir:
+    description: >-
+      Directory holding a prepared PINT A-NZ ruleset (see `pint-anz-lint
+      ruleset install`). When empty, the action installs the pinned ruleset
+      version from the official archives after verifying their SHA-256
+      digests; it never fetches a newer ruleset.
+    required: false
+    default: ""
+  max-document-bytes:
+    description: >-
+      Per-document size limit in bytes. Empty uses the validator's default
+      receiver policy; raise it explicitly for documents with large embedded
+      attachments.
+    required: false
+    default: ""
+  max-annotations:
+    description: >-
+      Upper bound on error/warning annotations emitted for diagnostics.
+      GitHub displays at most 10 annotations of each kind per step; the job
+      summary and the report file always hold the complete list.
+    required: false
+    default: "10"
+  if-no-files-found:
+    description: "Behaviour when no files match: error, warn, or ignore."
+    required: false
+    default: "error"
+outputs:
+  checked-files:
+    description: "Number of documents validated."
+  error-count:
+    description: "Total error diagnostics across all validated documents."
+  warning-count:
+    description: "Total warning diagnostics across all validated documents."
+  ruleset-version:
+    description: "Pinned PINT A-NZ ruleset version used for validation."
+runs:
+  using: "node24"
+  main: "dist/index.cjs"
