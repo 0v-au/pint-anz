@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: invoice-unclosed-element
+  expects: MALFORMED XML
+  ruleset: 1.1.2
+  notes: The cbc:ID element is deliberately left unclosed.
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:ID>INV-MALFORMED-001
+</Invoice>

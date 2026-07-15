@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "ruleset": {
+    "name": "PINT A-NZ Billing",
+    "version": "1.1.2",
+    "status": "active",
+    "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "resources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+  },
+  "fixtures": [
+    {
+      "id": "invoice-au-standard",
+      "path": "./valid/invoice-au-standard.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian invoice with one standard-rated 10% GST line."
+    },
+    {
+      "id": "invoice-au-zero-rated",
+      "path": "./valid/invoice-au-zero-rated.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian invoice with one zero-rated GST line."
+    },
+    {
+      "id": "invoice-nz-standard",
+      "path": "./valid/invoice-nz-standard.xml",
+      "documentType": "invoice",
+      "jurisdiction": "NZ",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "New Zealand invoice with one standard-rated 15% GST line."
+    },
+    {
+      "id": "credit-note-au-standard",
+      "path": "./valid/credit-note-au-standard.xml",
+      "documentType": "credit-note",
+      "jurisdiction": "AU",
+      "expectation": "valid",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian credit note reversing one standard-rated line."
+    },
+    {
+      "id": "aligned-ibr-001-aunz-wrong-scheme",
+      "path": "./invalid/aligned-ibr-001-aunz.wrong-scheme.xml",
+      "documentType": "invoice",
+      "jurisdiction": "AU",
+      "expectation": "invalid",
+      "expectedRules": ["aligned-ibr-001-aunz"],
+      "rulesetVersion": "1.1.2",
+      "description": "Australian seller legal identifier incorrectly uses the NZBN/GLN scheme."
+    },
+    {
+      "id": "invoice-unclosed-element",
+      "path": "./malformed/invoice-unclosed-element.xml",
+      "documentType": "unknown",
+      "jurisdiction": "A-NZ",
+      "expectation": "malformed",
+      "expectedRules": [],
+      "rulesetVersion": "1.1.2",
+      "description": "An XML invoice with an unclosed ID element."
+    }
+  ]
+}

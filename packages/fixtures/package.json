@@ -1,0 +1,50 @@
+{
+  "name": "@pint-anz/fixtures",
+  "version": "0.1.0",
+  "description": "Synthetic valid, invalid, and malformed PINT A-NZ UBL documents for tests.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./manifest.json": "./manifest.json",
+    "./valid/*": "./valid/*",
+    "./invalid/*": "./invalid/*",
+    "./malformed/*": "./malformed/*"
+  },
+  "files": [
+    "index.d.ts",
+    "index.js",
+    "manifest.json",
+    "parties.md",
+    "valid",
+    "invalid",
+    "malformed"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "pnpm build && pnpm test"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "fast-xml-parser": "^5.10.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "pintAnz": {
+    "rulesetVersion": "1.1.2",
+    "rulesetStatus": "active",
+    "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
