@@ -49,10 +49,13 @@ importers:
       fast-xml-parser:
         specifier: ^4.5.0
         version: 4.5.7
-      picocolors:
-        specifier: ^1.1.0
-        version: 1.1.1
       saxon-js:
+        specifier: ^2.7.0
+        version: 2.7.0
+      xmllint-wasm:
+        specifier: ^5.2.0
+        version: 5.2.0(@types/node@22.20.1)
+      xslt3:
         specifier: ^2.7.0
         version: 2.7.0
     devDependencies:
@@ -1642,6 +1645,12 @@ packages:
     resolution: {integrity: sha512-ghig2TBE/H11aOVgmahA3MhimvkBr6JIYknH/Dhdk10nXwdbIqBJsbfMxpvFPG8bAw77gN29aQWvKpmVoPlvPQ==}
     engines: {node: '>=16.0.0'}
 
+  xmllint-wasm@5.2.0:
+    resolution: {integrity: sha512-GVMuR3ViU8R7sakcVm/4GClMtCV8p7xgjXZlc6GmvPpInIz4V41lmRnjSd4uKhVkf5MZj97wEZkPM4RMAhojuQ==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      '@types/node': '>=16'
+
   xslt3@2.7.0:
     resolution: {integrity: sha512-Vt32LhCt4CQULtGPWlGW++PhS+o3LA6z3PDvig9lDfbo2cIHcaEnyrRYDTilw4N0EbAyxCaw5E0B+DICZEYktQ==}
     hasBin: true
@@ -2993,6 +3002,10 @@ snapshots:
   word-wrap@1.2.5: {}
 
   xml-naming@0.3.0: {}
+
+  xmllint-wasm@5.2.0(@types/node@22.20.1):
+    dependencies:
+      '@types/node': 22.20.1
 
   xslt3@2.7.0:
     dependencies:

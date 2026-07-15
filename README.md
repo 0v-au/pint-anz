@@ -10,23 +10,25 @@ Everything here is built around **PINT A-NZ** — the invoice specification used
 
 | Package | What it does | Status |
 |---|---|---|
-| [`lint`](./packages/lint) | Validate UBL invoices and credit notes against pinned PINT A-NZ rules from the CLI or CI. | Design scaffold |
-| [`fixtures`](./packages/fixtures) | Synthetic valid, invalid, and malformed PINT A-NZ documents with a machine-readable manifest. | Initial slice |
+| [`lint`](./packages/lint) | Validate UBL invoices and credit notes against pinned PINT A-NZ rules from the CLI or CI. | Implemented |
+| [`fixtures`](./packages/fixtures) | Synthetic valid, invalid, and malformed PINT A-NZ documents with a machine-readable manifest. | Complete for 1.1.2 |
 | [`lookup`](./packages/lookup) | Check whether an ABN/NZBN is registered on the Peppol network and which document types it can receive. | Planned |
 | [`rules`](./packages/rules) | Human-readable explanations of every PINT A-NZ business rule: what it means, a failing example, how to fix it. | Planned |
 | [`mapper`](./packages/mapper) | A typed, minimal JSON schema that compiles to compliant PINT A-NZ UBL XML. | Planned |
 | [`playground`](./packages/playground) | A local fake Peppol counterparty in a Docker container: send it documents, get scripted accepts, rejects, and misbehaviour back. |  Planned |
 
-## Planned lint workflow
+## Lint workflow
 
-The lint package is not implemented yet. Its documented command contract will
-install an exact ruleset from the official source or a reviewed local archive:
+Install the exact ruleset from the official source or reviewed local archives:
 
 ```bash
 pint-anz-lint ruleset install 1.1.2
 
 # Air-gapped or controlled CI
-pint-anz-lint ruleset install 1.1.2 --file /tmp/resources.zip
+pint-anz-lint ruleset install 1.1.2 \
+  --file /tmp/resources.zip \
+  --ubl-file /tmp/UBL-2.1.zip \
+  --offline
 ```
 
 Then validate deterministically without network access:
@@ -36,7 +38,7 @@ pint-anz-lint invoice.xml --ruleset-version 1.1.2 --offline
 pint-anz-lint 'test/invoices/**/*.xml' --format json --offline
 ```
 
-See the [`@pint-anz/lint` design](./packages/lint) for cache, integrity,
+See the [`@pint-anz/lint` documentation](./packages/lint) for cache, integrity,
 licensing, security, and exit-code behaviour.
 
 Use the current fixture corpus in tests:
@@ -78,9 +80,9 @@ Issues and PRs welcome. The most valuable contribution right now is **fixtures**
 
 ## Status & roadmap
 
-This toolkit is young and moving fast. The fixtures package contains an initial
-PINT A-NZ 1.1.2 vertical slice; the lint package is currently a design scaffold.
-See [TODO.md](./TODO.md) for the fixture coverage roadmap.
+The PINT A-NZ 1.1.2 fixture corpus and lint package are implemented. See
+[TODO.md](./TODO.md) and the generated conformance reports for coverage details
+and known upstream validation limits.
 
 ## Trademark & affiliation
 

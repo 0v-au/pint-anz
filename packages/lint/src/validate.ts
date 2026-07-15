@@ -1,17 +1,21 @@
-import { execFile } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
-import { join } from "node:path";
-import { promisify } from "node:util";
+import { tmpdir } from "node:os";
+import { basename, join } from "node:path";
 import { XMLParser } from "fast-xml-parser";
+import { memoryPages, validateXML, type XMLFileInfo } from "xmllint-wasm";
 import {
   RULESET_VERSION,
+  RULESET_DIGEST,
   type Diagnostic,
   type DiagnosticSeverity,
+  type DocumentContent,
   type DocumentType,
+  type ValidateDocumentOptions,
   type ValidateFileOptions,
   type ValidationResult,
 } from "./types.js";
+import { resolveRulesetDirectory } from "./rulesets.js";
 
 const require = createRequire(import.meta.url);
 const SaxonJS = require("saxon-js") as {
@@ -20,9 +24,8 @@ const SaxonJS = require("saxon-js") as {
     mode: "async",
   ): Promise<{ principalResult: string }>;
 };
-const execFileAsync = promisify(execFile);
-
-const DEFAULT_MAX_DOCUMENT_BYTES = 10 * 1024 * 1024;
+/** Receiver policy used by the public fixture contract; callers may raise it explicitly. */
+const DEFAULT_MAX_DOCUMENT_BYTES = 100 * 1024;
 const ROOTS = {
   Invoice: {
     namespace: "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
@@ -41,6 +44,64 @@ const svrlParser = new XMLParser({
   attributeNamePrefix: "@_",
   isArray: (name) => name === "svrl:failed-assert" || name === "svrl:successful-report",
 });
+const stylesheetCache = new Map<string, Promise<unknown>>();
+const schemaCache = new Map<string, Promise<ReadonlyMap<string, XMLFileInfo>>>();
+
+function loadStylesheet(path: string): Promise<unknown> {
+  let loaded = stylesheetCache.get(path);
+  if (!loaded) {
+    loaded = readFile(path, "utf8").then((source) => JSON.parse(source) as unknown);
+    stylesheetCache.set(path, loaded);
+  }
+  return loaded;
+}
+
+async function schemaFiles(rulesetDirectory: string): Promise<ReadonlyMap<string, XMLFileInfo>> {
+  let loaded = schemaCache.get(rulesetDirectory);
+  if (!loaded) {
+    loaded = (async () => {
+      const root = join(rulesetDirectory, "ubl-2.1");
+      const files = new Map<string, XMLFileInfo>();
+      async function visit(directory: string, relativeDirectory: string): Promise<void> {
+        for (const entry of await readdir(directory, { withFileTypes: true })) {
+          const relativePath = join(relativeDirectory, entry.name).split("\\").join("/");
+          const path = join(directory, entry.name);
+          if (entry.isDirectory()) await visit(path, relativePath);
+          else if (entry.isFile() && entry.name.endsWith(".xsd")) {
+            // xmllint-wasm preloads a flat in-memory filesystem. UBL schema
+            // basenames are unique, so imports can safely resolve there.
+            const contents = (await readFile(path, "utf8")).replace(
+              /(schemaLocation\s*=\s*["'])[^"']*\/([^/"']+)(["'])/g,
+              "$1$2$3",
+            );
+            files.set(relativePath, { fileName: basename(relativePath), contents });
+          }
+        }
+      }
+      await visit(join(root, "xsd"), "xsd");
+      return files;
+    })();
+    schemaCache.set(rulesetDirectory, loaded);
+  }
+  return loaded;
+}
+
+async function xsdValidate(
+  bytes: Buffer,
+  schemaRelativePath: string,
+  rulesetDirectory: string,
+): Promise<Awaited<ReturnType<typeof validateXML>>> {
+  const files = await schemaFiles(rulesetDirectory);
+  const schema = files.get(schemaRelativePath);
+  if (!schema) throw new Error(`Missing UBL schema ${schemaRelativePath}.`);
+  return validateXML({
+    xml: { fileName: "document.xml", contents: bytes },
+    schema,
+    preload: [...files.values()].filter((file) => file.fileName !== schema.fileName),
+    initialMemoryPages: 512,
+    maxMemoryPages: 2 * memoryPages.GiB,
+  });
+}
 
 function diagnostic(
   document: string,
@@ -55,6 +116,7 @@ function diagnostic(
     location: overrides.location ?? null,
     document,
     rulesetVersion: RULESET_VERSION,
+    rulesetDigest: RULESET_DIGEST,
     stage,
   };
 }
@@ -69,6 +131,7 @@ function result(
     document,
     documentType,
     rulesetVersion: RULESET_VERSION,
+    rulesetDigest: RULESET_DIGEST,
     complete,
     valid: complete && diagnostics.every((item) => item.severity !== "error"),
     diagnostics,
@@ -76,15 +139,29 @@ function result(
 }
 
 function detectRoot(bytes: Buffer): { localName: string; namespace: string } | null {
-  const match = /<(?!\?|!)(?:([A-Za-z_][\w.-]*):)?([A-Za-z_][\w.-]*)([^>]*)/.exec(
-    bytes.toString("utf8"),
-  );
-  if (!match) return null;
-  const [, prefix, localName, attributes] = match;
-  const namespaceAttribute = prefix ? `xmlns:${prefix}` : "xmlns";
-  const escaped = namespaceAttribute.replace(":", "\\:");
-  const namespaceMatch = new RegExp(`${escaped}\\s*=\\s*["']([^"']*)["']`).exec(attributes);
-  return { localName, namespace: namespaceMatch?.[1] ?? "" };
+  const text = bytes.toString("utf8");
+  let offset = text.charCodeAt(0) === 0xfeff ? 1 : 0;
+  while (offset < text.length) {
+    if (/\s/.test(text[offset])) offset += 1;
+    else if (text.startsWith("<?", offset)) {
+      const end = text.indexOf("?>", offset);
+      if (end < 0) return null;
+      offset = end + 2;
+    } else if (text.startsWith("<!--", offset)) {
+      const end = text.indexOf("-->", offset);
+      if (end < 0) return null;
+      offset = end + 3;
+    } else if (text[offset] === "<" && !text.startsWith("<!", offset)) {
+      const match = /^<(?:([A-Za-z_][\w.-]*):)?([A-Za-z_][\w.-]*)([^>]*)/.exec(text.slice(offset));
+      if (!match) return null;
+      const [, prefix, localName, attributes] = match;
+      const namespaceAttribute = prefix ? `xmlns:${prefix}` : "xmlns";
+      const escaped = namespaceAttribute.replace(":", "\\:");
+      const namespaceMatch = new RegExp(`${escaped}\\s*=\\s*["']([^"']*)["']`).exec(attributes);
+      return { localName, namespace: namespaceMatch?.[1] ?? "" };
+    } else return null;
+  }
+  return null;
 }
 
 function severity(flag: unknown): DiagnosticSeverity {
@@ -96,7 +173,7 @@ async function runSchematron(
   sourcePath: string,
   document: string,
 ): Promise<Diagnostic[]> {
-  const stylesheet = JSON.parse(await readFile(stylesheetPath, "utf8")) as unknown;
+  const stylesheet = await loadStylesheet(stylesheetPath);
   const transformed = await SaxonJS.transform(
     { stylesheetInternal: stylesheet, sourceFileName: sourcePath, destination: "serialized" },
     "async",
@@ -121,10 +198,126 @@ async function runSchematron(
   return diagnostics;
 }
 
+async function validateBytes(
+  bytes: Buffer,
+  sourcePath: string,
+  document: string,
+  options: ValidateFileOptions,
+): Promise<ValidationResult> {
+  const maximum = options.maxDocumentBytes ?? DEFAULT_MAX_DOCUMENT_BYTES;
+  if (bytes.length === 0) {
+    return result(document, "unknown", false, [
+      diagnostic(document, "preflight", "Document contains no bytes."),
+    ]);
+  }
+  if (bytes.length > maximum) {
+    return result(document, "unknown", false, [
+      diagnostic(
+        document,
+        "preflight",
+        `Document is ${bytes.length} bytes; the configured limit is ${maximum} bytes.`,
+      ),
+    ]);
+  }
+  if (/<!DOCTYPE/i.test(bytes.toString("latin1"))) {
+    return result(document, "unknown", false, [
+      diagnostic(document, "preflight", "DOCTYPE declarations are forbidden."),
+    ]);
+  }
+  const encoding = /^<\?xml[^>]*encoding\s*=\s*["']([^"']+)["']/i.exec(bytes.toString("latin1"));
+  if (encoding && !/^utf-8$/i.test(encoding[1])) {
+    return result(document, "unknown", false, [
+      diagnostic(document, "preflight", `Declared encoding ${encoding[1]} is not UTF-8.`),
+    ]);
+  }
+
+  const root = detectRoot(bytes);
+  const rootDefinition = root ? ROOTS[root.localName as keyof typeof ROOTS] : undefined;
+  if (!root || !rootDefinition || root.namespace !== rootDefinition.namespace) {
+    return result(document, "unknown", false, [
+      diagnostic(document, "preflight", "Expected a UBL 2.1 Invoice or CreditNote root element."),
+    ]);
+  }
+
+  let rulesetDirectory: string;
+  try {
+    rulesetDirectory = await resolveRulesetDirectory(options.rulesetDirectory);
+  } catch (error) {
+    return result(document, rootDefinition.type, false, [
+      diagnostic(
+        document,
+        "tool",
+        `PINT A-NZ ${RULESET_VERSION} is not installed or failed verification: ${(error as Error).message}`,
+      ),
+    ]);
+  }
+
+  const schemaPath = join(
+    rulesetDirectory,
+    "ubl-2.1",
+    "xsd",
+    "maindoc",
+    rootDefinition.schema,
+  );
+  const sefDirectory = join(rulesetDirectory, "sef");
+  const requiredArtefacts = [
+    schemaPath,
+    join(sefDirectory, "pint.sef.json"),
+    join(sefDirectory, "aligned.sef.json"),
+  ];
+  try {
+    await Promise.all(requiredArtefacts.map((path) => access(path)));
+  } catch {
+    return result(document, rootDefinition.type, false, [
+      diagnostic(
+        document,
+        "tool",
+        `The prepared PINT A-NZ ${RULESET_VERSION} ruleset is incomplete at ${rulesetDirectory}.`,
+      ),
+    ]);
+  }
+
+  try {
+    const schemaValidation = await xsdValidate(
+      bytes,
+      `xsd/maindoc/${rootDefinition.schema}`,
+      rulesetDirectory,
+    );
+    if (!schemaValidation.valid) {
+      return result(
+        document,
+        rootDefinition.type,
+        true,
+        schemaValidation.errors.map((error) =>
+          diagnostic(document, "schema", error.message, {
+            location: error.loc ? `line ${error.loc.lineNumber}` : null,
+          }),
+        ),
+      );
+    }
+  } catch (error) {
+    return result(document, rootDefinition.type, false, [
+      diagnostic(document, "tool", `UBL schema validation could not run: ${(error as Error).message}`),
+    ]);
+  }
+
+  try {
+    const diagnostics = [
+      ...(await runSchematron(join(sefDirectory, "pint.sef.json"), sourcePath, document)),
+      ...(await runSchematron(join(sefDirectory, "aligned.sef.json"), sourcePath, document)),
+    ];
+    return result(document, rootDefinition.type, true, diagnostics);
+  } catch (error) {
+    return result(document, rootDefinition.type, false, [
+      diagnostic(document, "tool", `Cannot run the prepared ruleset: ${(error as Error).message}`),
+    ]);
+  }
+}
+
 /** Validate one UBL file through preflight, UBL 2.1 XSD, and both PINT A-NZ Schematrons. */
 export async function validateFile(
   documentPath: string,
-  options: ValidateFileOptions,
+  options: ValidateFileOptions = {},
 ): Promise<ValidationResult> {
   let bytes: Buffer;
   try {
@@ -134,102 +327,22 @@ export async function validateFile(
       diagnostic(documentPath, "input", `Cannot read document: ${(error as Error).message}`),
     ]);
   }
+  return validateBytes(bytes, documentPath, documentPath, options);
+}
 
-  const maximum = options.maxDocumentBytes ?? DEFAULT_MAX_DOCUMENT_BYTES;
-  if (bytes.length === 0) {
-    return result(documentPath, "unknown", false, [
-      diagnostic(documentPath, "preflight", "Document contains no bytes."),
-    ]);
-  }
-  if (bytes.length > maximum) {
-    return result(documentPath, "unknown", false, [
-      diagnostic(
-        documentPath,
-        "preflight",
-        `Document is ${bytes.length} bytes; the configured limit is ${maximum} bytes.`,
-      ),
-    ]);
-  }
-  if (/<!DOCTYPE/i.test(bytes.toString("latin1"))) {
-    return result(documentPath, "unknown", false, [
-      diagnostic(documentPath, "preflight", "DOCTYPE declarations are forbidden."),
-    ]);
-  }
-
-  const root = detectRoot(bytes);
-  const rootDefinition = root ? ROOTS[root.localName as keyof typeof ROOTS] : undefined;
-  if (!root || !rootDefinition || root.namespace !== rootDefinition.namespace) {
-    return result(documentPath, "unknown", false, [
-      diagnostic(documentPath, "preflight", "Expected a UBL 2.1 Invoice or CreditNote root element."),
-    ]);
-  }
-
-  const schemaPath = join(
-    options.rulesetDirectory,
-    "ubl-2.1",
-    "xsd",
-    "maindoc",
-    rootDefinition.schema,
-  );
-  const sefDirectory = join(options.rulesetDirectory, "sef");
-  const requiredArtefacts = [
-    schemaPath,
-    join(sefDirectory, "pint.sef.json"),
-    join(sefDirectory, "aligned.sef.json"),
-  ];
+/** Validate XML supplied by an application without printing or mutating process state. */
+export async function validateDocument(
+  content: DocumentContent,
+  options: ValidateDocumentOptions = {},
+): Promise<ValidationResult> {
+  const bytes = typeof content === "string" ? Buffer.from(content, "utf8") : Buffer.from(content);
+  const document = options.documentName ?? "<memory>";
+  const temporaryDirectory = await mkdtemp(join(tmpdir(), "pint-anz-lint-"));
+  const sourcePath = join(temporaryDirectory, "document.xml");
   try {
-    await Promise.all(requiredArtefacts.map((path) => access(path)));
-  } catch {
-    return result(documentPath, rootDefinition.type, false, [
-      diagnostic(
-        documentPath,
-        "tool",
-        `The prepared PINT A-NZ ${RULESET_VERSION} ruleset is incomplete at ${options.rulesetDirectory}.`,
-      ),
-    ]);
-  }
-
-  try {
-    await execFileAsync("xmllint", ["--noout", "--nonet", "--schema", schemaPath, documentPath]);
-  } catch (error) {
-    const failure = error as Error & { code?: string | number; stderr?: string };
-    if (failure.code === "ENOENT") {
-      return result(documentPath, rootDefinition.type, false, [
-        diagnostic(documentPath, "tool", "xmllint is required but was not found on PATH."),
-      ]);
-    }
-    const stderr = String(failure.stderr ?? failure.message);
-    const messages = stderr
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .filter((line) => !line.endsWith(" fails to validate"));
-    if (failure.code !== 3 && failure.code !== 4) {
-      return result(documentPath, rootDefinition.type, false, [
-        diagnostic(
-          documentPath,
-          "tool",
-          `UBL schema validation could not run: ${messages.join(" ") || failure.message}`,
-        ),
-      ]);
-    }
-    return result(
-      documentPath,
-      rootDefinition.type,
-      true,
-      messages.map((message) => diagnostic(documentPath, "schema", message)),
-    );
-  }
-
-  try {
-    const diagnostics = [
-      ...(await runSchematron(join(sefDirectory, "pint.sef.json"), documentPath, documentPath)),
-      ...(await runSchematron(join(sefDirectory, "aligned.sef.json"), documentPath, documentPath)),
-    ];
-    return result(documentPath, rootDefinition.type, true, diagnostics);
-  } catch (error) {
-    return result(documentPath, rootDefinition.type, false, [
-      diagnostic(documentPath, "tool", `Cannot run the prepared ruleset: ${(error as Error).message}`),
-    ]);
+    await writeFile(sourcePath, bytes, { mode: 0o600 });
+    return await validateBytes(bytes, sourcePath, document, options);
+  } finally {
+    await rm(temporaryDirectory, { recursive: true, force: true });
   }
 }

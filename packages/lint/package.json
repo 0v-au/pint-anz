@@ -42,13 +42,15 @@
     "test:watch": "vitest",
     "test:fixtures": "pnpm --filter @pint-anz/conformance test",
     "lint": "eslint src bin",
+    "prepack": "pnpm test",
     "prepublishOnly": "pnpm build && pnpm test"
   },
   "dependencies": {
     "commander": "^12.1.0",
     "fast-xml-parser": "^4.5.0",
-    "picocolors": "^1.1.0",
-    "saxon-js": "^2.7.0"
+    "saxon-js": "^2.7.0",
+    "xmllint-wasm": "^5.2.0",
+    "xslt3": "^2.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
@@ -63,7 +65,9 @@
     "rulesetVersion": "1.1.2",
     "rulesetStatus": "active",
     "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
-    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip",
+    "rulesetResourcesSha256": "5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a",
+    "ubl21Sha256": "60b80d76394a8a2add90723ecb8e0e2e9d826775de9749df37a72d60703f86ed"
   },
   "publishConfig": {
     "access": "public"
