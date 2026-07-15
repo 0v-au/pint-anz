@@ -15,7 +15,8 @@
     "./manifest.json": "./manifest.json",
     "./valid/*": "./valid/*",
     "./invalid/*": "./invalid/*",
-    "./malformed/*": "./malformed/*"
+    "./malformed/*": "./malformed/*",
+    "./schema-invalid/*": "./schema-invalid/*"
   },
   "files": [
     "index.d.ts",
@@ -24,7 +25,8 @@
     "parties.md",
     "valid",
     "invalid",
-    "malformed"
+    "malformed",
+    "schema-invalid"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json --noEmit",

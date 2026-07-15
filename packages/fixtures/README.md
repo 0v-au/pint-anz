@@ -9,15 +9,24 @@ package does not silently follow future releases.
 ## Corpus
 
 - `valid/` contains documents intended to pass schema and business-rule checks.
-- `invalid/` contains well-formed documents intended to fail exactly the rule
-  named by the file and metadata.
-- `malformed/` contains inputs that must fail before business-rule validation.
+- `invalid/` contains well-formed, schema-valid documents intended to fail
+  exactly the rule named by the file and metadata.
+- `malformed/` contains inputs that must fail before schema validation: broken
+  XML (`expectation: "malformed"`) and documents a receiver rejects by policy
+  (`expectation: "rejected"` — empty, oversized, DOCTYPE/external entities,
+  non-UTF-8 encodings, wrong or unsupported root/namespace).
+- `schema-invalid/` contains well-formed documents that fail UBL 2.1 XSD
+  validation.
 - `manifest.json` is the machine-readable index and coverage record.
 
-The first release is a representative vertical slice, not complete ruleset
-coverage. Business-rule expectations will be verified by a root integration
-test once `@pint-anz/lint` is implemented; the package itself deliberately does
-not depend on the validator.
+Every fixture is verified in CI by the internal `@pint-anz/conformance`
+harness, which runs the OASIS UBL 2.1 XSD and both official PINT A-NZ
+Schematron transforms: valid fixtures must produce zero failed asserts, and
+each invalid fixture must fail exactly its declared rule and no others.
+Rule-by-rule coverage is tracked in `packages/conformance/coverage.json`
+against the full 245-rule inventory. The official validation artefacts are
+downloaded and checksum-pinned at build time; they are not part of this
+package.
 
 ## Usage
 

@@ -1,6 +1,11 @@
 export type FixtureDocumentType = "invoice" | "credit-note" | "unknown";
 export type FixtureJurisdiction = "AU" | "NZ" | "A-NZ";
-export type FixtureExpectation = "valid" | "invalid" | "malformed";
+export type FixtureExpectation =
+  | "valid"
+  | "invalid"
+  | "malformed"
+  | "schema-invalid"
+  | "rejected";
 
 export interface Fixture {
   readonly id: string;

@@ -7,10 +7,17 @@ import { fixtureUrl, manifest } from "../index.js";
 
 const metadataPattern = /<!--\s*\n\s*fixture:\s*(\S+)\s*\n\s*expects:\s*(.+?)\s*\n\s*ruleset:\s*(\S+)\s*\n\s*notes:\s*(.+?)\s*\n\s*-->/s;
 
+const corpusDirectories = ["valid", "invalid", "malformed", "schema-invalid"];
+
 async function corpusFiles(directory: string): Promise<string[]> {
-  return (await readdir(new URL(`../${directory}/`, import.meta.url)))
-    .filter((file) => file.endsWith(".xml"))
-    .map((file) => `./${directory}/${file}`);
+  let entries: string[];
+  try {
+    entries = await readdir(new URL(`../${directory}/`, import.meta.url));
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    throw error;
+  }
+  return entries.filter((file) => file.endsWith(".xml")).map((file) => `./${directory}/${file}`);
 }
 
 function isValidAbn(value: string): boolean {
@@ -47,9 +54,7 @@ describe("fixture manifest", () => {
   });
 
   it("indexes every corpus XML file exactly once", async () => {
-    const files = (
-      await Promise.all(["valid", "invalid", "malformed"].map(corpusFiles))
-    ).flat().sort();
+    const files = (await Promise.all(corpusDirectories.map(corpusFiles))).flat().sort();
     expect(manifest.fixtures.map((fixture) => fixture.path).sort()).toEqual(files);
   });
 
@@ -65,6 +70,14 @@ describe("fixture documents", () => {
   for (const fixture of manifest.fixtures) {
     it(`${fixture.id} has matching metadata and XML expectations`, async () => {
       const contents = await readFile(fixtureUrl(fixture.id), "utf8");
+
+      // A zero-byte document cannot carry a metadata comment.
+      if (contents.length === 0) {
+        expect(fixture.expectation).toBe("rejected");
+        expect(fixture.expectedRules).toEqual([]);
+        return;
+      }
+
       const metadata = contents.match(metadataPattern);
       expect(metadata, "metadata comment").not.toBeNull();
       expect(metadata?.[1]).toBe(fixture.id);
@@ -76,13 +89,23 @@ describe("fixture documents", () => {
         expect(fixture.path).toContain(fixture.expectedRules[0]);
       } else {
         expect(fixture.expectedRules).toEqual([]);
-        expect(metadata?.[2]).toBe(fixture.expectation === "valid" ? "VALID" : "MALFORMED XML");
+        const expectedMarker = {
+          valid: "VALID",
+          malformed: "MALFORMED XML",
+          "schema-invalid": "SCHEMA-INVALID",
+          rejected: "REJECTED",
+        }[fixture.expectation];
+        expect(expectedMarker, `unknown expectation ${fixture.expectation}`).toBeDefined();
+        expect(metadata?.[2]).toBe(expectedMarker);
       }
 
       const validation = XMLValidator.validate(contents);
       if (fixture.expectation === "malformed") {
-        expect(validation).not.toBe(true);
-      } else {
+        // Encoding-mismatch documents can decode to parseable text; the
+        // conformance harness verifies the byte-level failure.
+        const declaresNonUtf8 = /<\?xml[^>]*encoding\s*=\s*["'](?!utf-8)[^"']+["']/i.test(contents);
+        if (!declaresNonUtf8) expect(validation).not.toBe(true);
+      } else if (fixture.expectation !== "rejected") {
         expect(validation).toBe(true);
       }
     });
@@ -90,11 +113,18 @@ describe("fixture documents", () => {
 
   it("uses unique document IDs", async () => {
     const ids: string[] = [];
-    for (const fixture of manifest.fixtures.filter((item) => item.expectation !== "malformed")) {
+    const withDocumentIds = new Set(["valid", "invalid"]);
+    for (const fixture of manifest.fixtures.filter((item) => withDocumentIds.has(item.expectation))) {
       const contents = await readFile(fixtureUrl(fixture.id), "utf8");
-      const id = contents.match(/<(?:cbc:)?ID>([^<]+)<\/(?:cbc:)?ID>/)?.[1];
-      expect(id).toBeDefined();
-      ids.push(id!);
+      // Document-level ID: the cbc:ID appearing before the first aggregate
+      // component. Fixtures that deliberately omit it are skipped here.
+      const header = contents.split("<cac:")[0];
+      const id = header.match(/<(?:cbc:)?ID>([^<]+)<\/(?:cbc:)?ID>/)?.[1];
+      if (id === undefined) {
+        expect(fixture.expectation, `${fixture.id}: only invalid fixtures may omit the document ID`).toBe("invalid");
+        continue;
+      }
+      ids.push(id);
     }
     expect(new Set(ids).size).toBe(ids.length);
   });
