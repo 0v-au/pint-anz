@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: aligned-ibrp-o-08-aunz-taxable-amount-mismatch
+  expects: ERROR aligned-ibrp-o-08-aunz
+  ruleset: 1.1.2
+  notes: O tax breakdown taxable amount (80.00) does not equal the sum of Not-subject-to-tax invoice line net amounts (100.00).
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>aligned-ibrp-o-08-aunz-taxable-amount-mismatch</cbc:ID>
+  <cbc:IssueDate>2026-07-05</cbc:IssueDate>
+  <cbc:DueDate>2026-08-04</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-101</cbc:BuyerReference>
+  <cac:AccountingSupplierParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>1 Example Street</cbc:StreetName><cbc:CityName>Canberra</cbc:CityName><cbc:PostalZone>2600</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">47555222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party>
+    <cbc:EndpointID schemeID="0151">91888222000</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>2 Sample Avenue</cbc:StreetName><cbc:CityName>Sydney</cbc:CityName><cbc:PostalZone>2000</cbc:PostalZone><cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example AU Buyer Pty Ltd</cbc:RegistrationName><cbc:CompanyID schemeID="0151">91888222000</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="AUD">0.00</cbc:TaxAmount><cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="AUD">80.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="AUD">0.00</cbc:TaxAmount>
+    <cac:TaxCategory><cbc:ID>O</cbc:ID><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:TaxSubtotal></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="AUD">100.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="AUD">100.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="AUD">100.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="AUD">100.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="EA">1</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="AUD">100.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>Synthetic out of scope supply</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>O</cbc:ID><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="AUD">100.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: ibr-089-duplicate-line-invoiced-object
+  expects: ERROR ibr-089
+  ruleset: 1.1.2
+  notes: The invoice line carries two cac:DocumentReference elements with DocumentTypeCode 130 (invoiced object); only one is allowed per line.
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>ibr-089-duplicate-line-invoiced-object</cbc:ID>
+  <cbc:IssueDate>2026-07-01</cbc:IssueDate>
+  <cbc:DueDate>2026-07-31</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-001</cbc:BuyerReference>
+  <cac:AccountingSupplierParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">47555222000</cbc:EndpointID>
+      <cac:PostalAddress>
+        <cbc:StreetName>1 Example Street</cbc:StreetName>
+        <cbc:CityName>Canberra</cbc:CityName>
+        <cbc:PostalZone>2600</cbc:PostalZone>
+        <cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0151">47555222000</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty>
+    <cac:Party>
+      <cbc:EndpointID schemeID="0151">91888222000</cbc:EndpointID>
+      <cac:PostalAddress>
+        <cbc:StreetName>2 Sample Avenue</cbc:StreetName>
+        <cbc:CityName>Sydney</cbc:CityName>
+        <cbc:PostalZone>2000</cbc:PostalZone>
+        <cac:Country><cbc:IdentificationCode>AU</cbc:IdentificationCode></cac:Country>
+      </cac:PostalAddress>
+      <cac:PartyLegalEntity>
+        <cbc:RegistrationName>Example AU Buyer Pty Ltd</cbc:RegistrationName>
+        <cbc:CompanyID schemeID="0151">91888222000</cbc:CompanyID>
+      </cac:PartyLegalEntity>
+    </cac:Party>
+  </cac:AccountingCustomerParty>
+  <cac:TaxTotal>
+    <cbc:TaxAmount currencyID="AUD">10.00</cbc:TaxAmount>
+    <cac:TaxSubtotal>
+      <cbc:TaxableAmount currencyID="AUD">100.00</cbc:TaxableAmount>
+      <cbc:TaxAmount currencyID="AUD">10.00</cbc:TaxAmount>
+      <cac:TaxCategory>
+        <cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme>
+      </cac:TaxCategory>
+    </cac:TaxSubtotal>
+  </cac:TaxTotal>
+  <cac:LegalMonetaryTotal>
+    <cbc:LineExtensionAmount currencyID="AUD">100.00</cbc:LineExtensionAmount>
+    <cbc:TaxExclusiveAmount currencyID="AUD">100.00</cbc:TaxExclusiveAmount>
+    <cbc:TaxInclusiveAmount currencyID="AUD">110.00</cbc:TaxInclusiveAmount>
+    <cbc:PayableAmount currencyID="AUD">110.00</cbc:PayableAmount>
+  </cac:LegalMonetaryTotal>
+  <cac:InvoiceLine>
+    <cbc:ID>1</cbc:ID>
+    <cbc:InvoicedQuantity unitCode="EA">2</cbc:InvoicedQuantity>
+    <cbc:LineExtensionAmount currencyID="AUD">100.00</cbc:LineExtensionAmount>
+    <cac:DocumentReference><cbc:ID>OBJ-L1</cbc:ID><cbc:DocumentTypeCode>130</cbc:DocumentTypeCode></cac:DocumentReference>
+    <cac:DocumentReference><cbc:ID>OBJ-L2</cbc:ID><cbc:DocumentTypeCode>130</cbc:DocumentTypeCode></cac:DocumentReference>
+    <cac:Item>
+      <cbc:Name>Synthetic consulting service</cbc:Name>
+      <cac:ClassifiedTaxCategory>
+        <cbc:ID>S</cbc:ID><cbc:Percent>10</cbc:Percent>
+        <cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme>
+      </cac:ClassifiedTaxCategory>
+    </cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="AUD">50.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>

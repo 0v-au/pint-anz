@@ -1,0 +1,1597 @@
+{
+  "rulesetVersion": "1.1.2",
+  "statuses": {
+    "invalid-covered": "Has at least one single-rule negative fixture; the harness asserts it fails exactly this rule.",
+    "valid-covered": "Context is exercised by valid fixtures, but no isolated negative fixture is possible; justification required.",
+    "not-applicable": "Cannot fire for corpus documents (e.g. rules for other PINT jurisdictions); justification required.",
+    "blocked": "XSD or another rule necessarily fails first, so the rule cannot be isolated; justification required.",
+    "unreviewed": "Not yet reviewed. The release gate fails while any rule remains unreviewed."
+  },
+  "rules": {
+    "aligned-ibr-001-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibr-001-aunz-wrong-scheme"
+      ],
+      "justification": ""
+    },
+    "aligned-ibr-002-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibr-002-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibr-004-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibr-004-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibr-005-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibr-005-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-001-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-001-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-002": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-002"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-003": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-003"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-004": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-004"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-005": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-005"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-006": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-006"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-008": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-008"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-016": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "The only way to falsify aligned-ibrp-016's test (normalize-space(cbc:ID) != '') is to make cac:PaymentMeans/cac:PayeeFinancialAccount/cbc:ID exist with empty or whitespace-only content. But ibr-079 [pint] (context //*[not(*) and not(normalize-space())], test false()) fires on ANY element in the document with no children and no non-whitespace text, so an empty cbc:ID always co-fires ibr-079. Omitting the cbc:ID element entirely (rather than leaving it empty) avoids ibr-079 but then also satisfies aligned-ibrp-018's exists(cac:PayeeFinancialAccount/cbc:ID) check trivially being false, which makes aligned-ibrp-018 co-fire instead (verified in validator output: both aligned-ibrp-016 and aligned-ibrp-018 fire together on the same PaymentMeans/PayeeFinancialAccount when cbc:ID is entirely missing, since aligned-ibrp-018 only checks existence, not content). There is no document state where cbc:ID content is empty/whitespace (satisfying aligned-ibrp-016's violation condition) without also matching ibr-079's empty-element ban. Verified with node packages/conformance/scripts/validate-cli.mjs."
+    },
+    "aligned-ibrp-018": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-018"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-021": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-021"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-022": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-022"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-032-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-032-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-037-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-037-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-045": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-045 fires when cac:TaxSubtotal/cbc:TaxableAmount (minOccurs=0 in the UBL 2.1 XSD) is omitted. However every AU/NZ GST category code (S, Z, E, G, O) has a matching aligned-ibrp-{code}-08-aunz rule that dereferences the same cbc:TaxableAmount for its own taxable-amount-consistency assertion, on the same TaxSubtotal/TaxCategory context, whenever any invoice line uses that category (which is mandatory per aligned-ibrp-050-aunz/059). For the Standard-rated (S) category this reference is inside a u:slack() call, and Saxon-JS evaluates the argument eagerly regardless of short-circuiting, producing a hard transformation crash (XPTY0004: 'Required cardinality of second argument of u:slack() is exactly one; supplied value is empty') rather than a graceful Schematron failure -- observed directly running validate-cli.mjs. For non-slack categories (Z, E, G, O) the corresponding -08-aunz rule fails cleanly but still co-fires (verified: omitting TaxableAmount with a Z-rated line produces both aligned-ibrp-045 and aligned-ibrp-z-08-aunz FATALs in the same run). Since every valid category triggers either a crash or a co-firing rule, aligned-ibrp-045 cannot be isolated in a well-formed AU/NZ invoice."
+    },
+    "aligned-ibrp-046": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-046 requires exists(cbc:TaxAmount) to be false to fire, but cac:TaxSubtotal/cbc:TaxAmount has minOccurs=1 in the UBL 2.1 XSD (TaxSubtotalType), so omitting it makes the document schema-invalid before Schematron ever runs (verified: node packages/conformance/scripts/validate-cli.mjs reports stage: schema-invalid, 'Element TaxCategory: This element is not expected. Expected is (...TaxAmount)' -- the parser rejects the document at the missing-element point). The only alternative, an empty cbc:TaxAmount element, is independently forbidden document-wide by ibr-079 (no empty elements). There is no well-formed AU/NZ document state that falsifies this rule's test without failing earlier at the schema stage."
+    },
+    "aligned-ibrp-047-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-047-aunz fires when cac:TaxSubtotal/cac:TaxCategory[TaxScheme/ID='GST']/cbc:ID is missing. But every invoice line's cac:ClassifiedTaxCategory must carry a GST category code (required elsewhere), and the corresponding category's aligned-ibrp-{code}-01-aunz rule checks that the count of TaxSubtotal breakdowns with that same code matches the count of lines/allowances/charges using it. Removing the subtotal's TaxCategory/cbc:ID (while keeping cbc:ID on the classified line category, as it must be present per aligned-ibrp-050-aunz/059) creates a count mismatch (line count=1, subtotal count=0 for that code), so the matching -01-aunz rule always co-fires (verified: aligned-ibrp-s-01-aunz fires alongside aligned-ibrp-047-aunz when the subtotal's cbc:ID is omitted for an S-rated line). Changing the TaxScheme value instead of removing cbc:ID (to dodge the GST-scheme filter) does not help, because aligned-ibrp-047-aunz/048-aunz/051-aunz and the -01-aunz family all key off different sub-conditions (some GST-scheme-filtered, some not) and changing the scheme predictably trips a different sibling assertion (verified: aligned-ibrp-048-aunz and aligned-ibrp-051-aunz co-fire in that variant). Every combination tried produces at least one co-firing rule from either ruleset."
+    },
+    "aligned-ibrp-048-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-048-aunz fires when a GST-scheme TaxCategory's cbc:Percent is missing and the category code is not 'O' (the only exemption). But aligned-ibrp-051-aunz (and its category-specific twin aligned-ibrp-{code}-09-aunz) computes TaxableAmount * (Percent div 100) for the same TaxCategory context regardless of whether Percent is present; when Percent is absent this expression reduces to an empty sequence that is then passed as the second argument to the strictly-typed u:slack() function, causing a fatal XSLT transformation error (XPTY0004: 'Required cardinality of second argument of u:slack() is exactly one; supplied value is empty') rather than a Schematron failure -- reproduced directly with node packages/conformance/scripts/validate-cli.mjs on an S-rated TaxSubtotal with cbc:Percent omitted. This crash happens before any pass/fail determination can be recorded, so the validator cannot even report aligned-ibrp-048-aunz alone; the run aborts entirely. This is an unavoidable implementation limitation of the bundled Schematron/XSLT for any GST-scheme category with Percent omitted."
+    },
+    "aligned-ibrp-050-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-050-aunz"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-051-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-051-aunz checks, at the cac:TaxSubtotal level, that TaxAmount = TaxableAmount * Percent / 100 (within slack tolerance 1) for the GST-scheme TaxCategory. Every valid AU/NZ GST category code (S, Z, E, G, O) has a corresponding aligned-ibrp-{code}-09-aunz rule performing the identical arithmetic check (same formula, same u:slack tolerance of 1) from the cac:TaxCategory context nested under the same TaxSubtotal. Verified directly: introducing a TaxAmount/TaxableAmount/Percent mismatch on an S-rated subtotal that violates aligned-ibrp-051-aunz's tolerance also always violates aligned-ibrp-s-09-aunz in the same validator run (both FATALs reported together), and this holds structurally for every category since the -09-aunz family exists for all five codes. There is no arithmetic mismatch that trips aligned-ibrp-051-aunz without also tripping its category-specific twin."
+    },
+    "aligned-ibrp-053": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-053"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-054": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-054"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-055": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-055"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-057": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-057"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-058": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-058"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-059": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-059"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-060": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-060"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-061": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-061"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-065": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-065"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-cl-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-cl-01-aunz-invalid-category-code"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-cl-02": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-cl-02-invalid-tax-point-code"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-cl-04": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-cl-04-disallowed-mime-code"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-e-01-aunz-missing-e-subtotal"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-05-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-e-05-aunz-nonzero-rate-on-line"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-06-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-e-06-aunz-nonzero-rate-on-allowance"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-07-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-e-07-aunz-nonzero-rate-on-charge"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-08-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-e-08-aunz-wrong-taxable-amount"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-e-09-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-e-09-aunz requires the E tax subtotal's tax amount to equal 0, the same structural situation as z-09: aligned-ibrp-051-aunz enforces round(TaxAmount)=0 for every GST TaxSubtotal whose rounded percent is 0, and E always carries rate 0 (enforced by aligned-ibrp-e-05/06/07-aunz). A nonzero E tax amount that falsifies e-09 necessarily falsifies ibrp-051-aunz on the same element too; no isolating combination exists."
+    },
+    "aligned-ibrp-g-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-01-aunz-duplicate-breakdown"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-g-05-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-05-aunz-nonzero-rate"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-g-06-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-06-aunz-nonzero-rate"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-g-07-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-07-aunz-nonzero-rate"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-g-08-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-08-aunz-taxable-amount-mismatch"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-g-09-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-g-09-aunz-nonzero-tax-amount"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-01-aunz-duplicate-breakdown"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-05-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-05-aunz-percent-present"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-06-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-06-aunz-percent-present"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-07-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-07-aunz-percent-present"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-08-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-08-aunz-taxable-amount-mismatch"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-09-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-09-aunz-nonzero-tax-amount"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-11-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-o-11-aunz-other-breakdown"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-o-12-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "o-12 forbids an invoice line with a category other than O when an O breakdown is present. Any non-O ClassifiedTaxCategory used on a line must itself have a matching tax-breakdown group per the category's own -01 rule (e.g. aligned-ibrp-g-01-aunz, aligned-ibrp-s-01-aunz, aligned-ibrp-z-01-aunz). Adding that second breakdown group to satisfy the other category's -01 rule necessarily creates a second (non-O) TaxSubtotal, which fires aligned-ibrp-o-11-aunz (O breakdown must not coexist with other breakdown groups) before or simultaneously with o-12. Observed in validator output: adding a G-category line without its own breakdown fires aligned-ibrp-g-01-aunz alongside o-12; adding the matching G breakdown instead fires aligned-ibrp-o-11-aunz alongside o-12. No document structure was found that falsifies o-12 alone."
+    },
+    "aligned-ibrp-o-13-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same structural conflict as o-12 but for document level allowances: a document level allowance with a non-O tax category (e.g. G) must have a matching breakdown group to satisfy aligned-ibrp-g-06-aunz/aligned-ibrp-g-08-aunz (or the equivalent S/Z rule), and that second breakdown group fires aligned-ibrp-o-11-aunz alongside o-13. Observed directly in validator output when constructing a G-category allowance plus its required G breakdown next to the O breakdown."
+    },
+    "aligned-ibrp-o-14-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same structural conflict as o-12/o-13 but for document level charges: a document level charge with a non-O tax category (e.g. G) must have a matching breakdown group to satisfy the G charge/taxable-amount rules, and that second breakdown group fires aligned-ibrp-o-11-aunz alongside o-14. Observed directly in validator output when constructing a G-category charge plus its required G breakdown next to the O breakdown."
+    },
+    "aligned-ibrp-s-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-01-aunz-missing-s-subtotal"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-s-05-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-05-aunz-zero-rate-on-line"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-s-06-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-06-aunz-zero-rate-on-allowance"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-s-07-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-07-aunz-zero-rate-on-charge"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-s-08-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-08-aunz-wrong-taxable-amount"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-s-09-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-s-09-aunz's assert (tax category tax amount = taxable amount x rate/100, for tax category code S) is a strict subset of aligned-ibrp-051-aunz's assert, which applies the identical taxable-amount x rate/100 equality (with the same u:slack tolerance) to every cac:TaxSubtotal with a GST tax scheme regardless of category code. Since S always carries a nonzero rate (enforced by aligned-ibrp-s-05-aunz), any TaxableAmount/Percent/TaxAmount combination that falsifies s-09 also falsifies ibrp-051-aunz for the same TaxSubtotal element. Observed directly: a fixture with TaxableAmount=100, Percent=10, TaxAmount=25 (expected 10) fired both aligned-ibrp-051-aunz and aligned-ibrp-s-09-aunz simultaneously; no combination of amounts was found that trips only s-09."
+    },
+    "aligned-ibrp-s-10-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-s-10-aunz-exemption-reason-present"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-sr-12-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-sr-12-aunz-duplicate-gst-id"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-sr-13-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-sr-13-aunz-duplicate-other-tax-id"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-sr-43": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-sr-43-scheme-on-plain-reference"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-01-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-01-aunz-missing-z-subtotal"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-05-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-05-aunz-nonzero-rate-on-line"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-06-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-06-aunz-nonzero-rate-on-allowance"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-07-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-07-aunz-nonzero-rate-on-charge"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-08-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-08-aunz-wrong-taxable-amount"
+      ],
+      "justification": ""
+    },
+    "aligned-ibrp-z-09-aunz": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-z-09-aunz requires the Z tax subtotal's tax amount to equal 0. aligned-ibrp-051-aunz, which applies to every GST cac:TaxSubtotal regardless of category, requires round(TaxAmount)=0 whenever the subtotal's rounded GST percent is 0 (which Z always is, enforced by aligned-ibrp-z-05/06/07-aunz). Any TaxAmount that falsifies z-09 (nonzero) therefore also falsifies ibrp-051-aunz for the same TaxSubtotal. Observed directly: a fixture with Percent=0, TaxAmount=5.00 fired both aligned-ibrp-051-aunz and aligned-ibrp-z-09-aunz simultaneously; no combination of amounts was found that trips only z-09."
+    },
+    "aligned-ibrp-z-10-aunz": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "aligned-ibrp-z-10-aunz-exemption-reason-present"
+      ],
+      "justification": ""
+    },
+    "ibr-001": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:CustomizationID to falsify ibr-001 also falsifies aligned-ibrp-001-aunz (starts-with(normalize-space(cbc:CustomizationID), 'urn:peppol:pint:billing-1@aunz-1') is false when the element is absent/empty). Observed both FATAL ibr-001 and FATAL aligned-ibrp-001-aunz firing together; no isolated negative is possible for a document already missing the element."
+    },
+    "ibr-002": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:ID is XSD-required in document order before cbc:IssueDate for both ubl:Invoice and cn:CreditNote; omitting it makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-002 cannot be isolated."
+    },
+    "ibr-003": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:IssueDate is XSD-required in document order before cbc:DueDate; omitting it makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-003 cannot be isolated."
+    },
+    "ibr-004": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-004-missing-type-code"
+      ],
+      "justification": ""
+    },
+    "ibr-005": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:DocumentCurrencyCode to falsify ibr-005 also falsifies ibr-co-15 (Tax inclusive = Tax exclusive + Tax amount, which selects TaxAmount by matching /*/cbc:DocumentCurrencyCode) and ibr-126 (all currencyID attributes must equal //cbc:DocumentCurrencyCode) for every monetary amount in the document. Observed FATAL ibr-005, FATAL ibr-co-15, and six FATAL ibr-126 firing together; no isolated negative is possible."
+    },
+    "ibr-006": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-006-missing-seller-name"
+      ],
+      "justification": ""
+    },
+    "ibr-007": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-007-missing-buyer-name"
+      ],
+      "justification": ""
+    },
+    "ibr-008": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-008-missing-seller-address"
+      ],
+      "justification": ""
+    },
+    "ibr-009": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-009-missing-seller-country"
+      ],
+      "justification": ""
+    },
+    "ibr-010": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-010-missing-buyer-address"
+      ],
+      "justification": ""
+    },
+    "ibr-011": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-011-missing-buyer-country"
+      ],
+      "justification": ""
+    },
+    "ibr-012": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:LineExtensionAmount from LegalMonetaryTotal to falsify ibr-012 also falsifies ibr-co-10 (Sum of invoice line net amount = sum of line net amounts) and ibr-co-13 (Tax exclusive total = sum of line net amounts - allowances + charges), both of which reference the same (now-empty) element as an operand. Observed FATAL ibr-012, FATAL ibr-co-10, and FATAL ibr-co-13 firing together."
+    },
+    "ibr-013": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:TaxExclusiveAmount from LegalMonetaryTotal to falsify ibr-013 also falsifies ibr-co-15 (Tax inclusive = Tax exclusive + Tax amount) and ibr-co-13 (Tax exclusive total = sum of line net amounts - allowances + charges), both of which reference the same (now-empty) element. Observed FATAL ibr-co-15, FATAL ibr-013, and FATAL ibr-co-13 firing together."
+    },
+    "ibr-014": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:TaxInclusiveAmount from LegalMonetaryTotal to falsify ibr-014 also falsifies ibr-co-15 (Tax inclusive = Tax exclusive + Tax amount) and ibr-co-16 (Amount due for payment = Tax inclusive - Paid + Rounding), both of which reference the same (now-empty) element. Observed FATAL ibr-co-15, FATAL ibr-014, and FATAL ibr-co-16 firing together."
+    },
+    "ibr-015": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:PayableAmount is XSD-required as the last child of LegalMonetaryTotal; omitting it makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-015 cannot be isolated."
+    },
+    "ibr-016": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cac:InvoiceLine is XSD-required (minOccurs=1) as a child of ubl:Invoice; omitting all invoice lines makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-016 cannot be isolated."
+    },
+    "ibr-017": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-017-missing-payee-name"
+      ],
+      "justification": ""
+    },
+    "ibr-018": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-018-missing-tax-rep-name"
+      ],
+      "justification": ""
+    },
+    "ibr-019": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-019-missing-tax-rep-address"
+      ],
+      "justification": ""
+    },
+    "ibr-020": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-020-missing-tax-rep-country"
+      ],
+      "justification": ""
+    },
+    "ibr-021": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:ID is XSD-required as the first child of cac:InvoiceLine, immediately before cbc:InvoicedQuantity; omitting it makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-021 cannot be isolated."
+    },
+    "ibr-022": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Removing cbc:InvoicedQuantity to falsify ibr-022 crashes the aligned ruleset transform: aligned-ibrp-053's line-amount calculation multiplies (cbc:InvoicedQuantity|cbc:CreditedQuantity) into u:slack(), and with the operand sequence empty the cast to xs:decimal yields an empty sequence, which u:slack() rejects with XPTY0004 ('Required cardinality of second argument of u:slack() is exactly one; supplied value is empty'), aborting the transform entirely. Observed this exact runtime failure when the element is absent; ibr-022 cannot be isolated from aligned-ibrp-053's crash."
+    },
+    "ibr-023": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-023-missing-quantity-unit-code"
+      ],
+      "justification": ""
+    },
+    "ibr-024": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:LineExtensionAmount is XSD-required as a child of cac:InvoiceLine, immediately after cbc:InvoicedQuantity; omitting it makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-024 cannot be isolated."
+    },
+    "ibr-025": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-025-missing-item-name"
+      ],
+      "justification": ""
+    },
+    "ibr-026": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:PriceAmount is XSD-required as a child of cac:Price; leaving cac:Price present but empty makes the document schema-invalid (stage: schema-invalid) before the Schematron rules run, so ibr-026 cannot be isolated."
+    },
+    "ibr-027": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-027-negative-item-price"
+      ],
+      "justification": ""
+    },
+    "ibr-028": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-028-negative-gross-price"
+      ],
+      "justification": ""
+    },
+    "ibr-029": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-029-end-before-start"
+      ],
+      "justification": ""
+    },
+    "ibr-030": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-030-line-end-before-start"
+      ],
+      "justification": ""
+    },
+    "ibr-031": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:Amount inside cac:AllowanceCharge is minOccurs=1 in the UBL 2.1 XSD (AllowanceChargeType sequence), so any document without Amount fails schema validation (stage: schema-invalid) before Schematron runs, regardless of ChargeIndicator or ancestor line context. Observed directly: removing Amount from a document-level allowance yields an XSD error expecting cbc:Amount before cac:TaxCategory."
+    },
+    "ibr-033": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-033-doc-allowance-no-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-036": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same XSD blocker as ibr-031: cbc:Amount is minOccurs=1 in AllowanceChargeType, so a document-level charge (ChargeIndicator=true) without Amount is schema-invalid before Schematron rules run."
+    },
+    "ibr-038": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Any document-level charge (ChargeIndicator=true) missing both AllowanceChargeReason and AllowanceChargeReasonCode necessarily also fires ibr-044, which shares the identical context (cac:AllowanceCharge[cbc:ChargeIndicator = true()]) and test (exists(cbc:AllowanceChargeReason) or exists(cbc:AllowanceChargeReasonCode)) but, unlike ibr-042 for allowances, has no '... or not(exists(ancestor::cac:InvoiceLine|ancestor::cac:CreditNoteLine))' exemption for document-level charges. Confirmed by inspecting artefacts/resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch directly (ibr-044's assert text has no ancestor exemption) and by observing both ibr-038 and ibr-044 fire together on a scratch fixture."
+    },
+    "ibr-041": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same XSD blocker as ibr-031/036: cbc:Amount is minOccurs=1 in AllowanceChargeType, so an invoice line allowance (ChargeIndicator=false) without Amount is schema-invalid before Schematron rules run."
+    },
+    "ibr-042": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-042-line-allowance-no-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-043": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same XSD blocker as ibr-031/036/041: cbc:Amount is minOccurs=1 in AllowanceChargeType, so an invoice line charge (ChargeIndicator=true) without Amount is schema-invalid before Schematron rules run."
+    },
+    "ibr-044": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-044-line-charge-no-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-049": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cbc:PaymentMeansCode is minOccurs=1 in PaymentMeansType (UBL 2.1 XSD), so any cac:PaymentMeans element without a PaymentMeansCode is schema-invalid before Schematron runs. Observed directly: a PaymentMeans with only PaymentChannelCode produces an XSD error expecting cbc:PaymentMeansCode."
+    },
+    "ibr-052": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-052's test (normalize-space(cbc:ID) != '') can only be falsified by making cbc:ID empty or whitespace-only, but any such element also matches the global empty-element context of ibr-079 (//*[not(*) and not(normalize-space())]), which always co-fires. Observed directly on a scratch fixture: a whitespace-only AdditionalDocumentReference/ID fired both ibr-052 and ibr-079."
+    },
+    "ibr-053": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Falsifying ibr-053 requires cbc:TaxCurrencyCode present with no cac:TaxTotal/cbc:TaxAmount carrying a matching currencyID. ibr-084's test (not(cbc:TaxCurrencyCode) or (sign-comparisons over TaxTotal/TaxAmount filtered by TaxCurrencyCode and DocumentCurrencyCode)) evaluates both its <= 0 and >= 0 branches false against the resulting empty node-set, so ibr-084 necessarily co-fires whenever the TaxCurrencyCode-matching TaxAmount is absent. Observed directly: adding TaxCurrencyCode=NZD with no NZD TaxTotal (plus a second currency-neutral TaxTotal to satisfy aligned-ibrp-022's cardinality) still fires ibr-084 alongside ibr-053."
+    },
+    "ibr-054": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-054-item-attribute-no-value"
+      ],
+      "justification": ""
+    },
+    "ibr-055": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-055's context (cac:BillingReference) and test (exists(cac:InvoiceDocumentReference/cbc:ID)) is functionally duplicated by ibr-sr-07, which shares the identical context and an equivalent truthy test on the same path (cac:InvoiceDocumentReference/cbc:ID). Confirmed in artefacts/resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch and by observing both ibr-055 and ibr-sr-07 fire together on a scratch credit-note fixture whose BillingReference used CreditNoteDocumentReference instead of InvoiceDocumentReference."
+    },
+    "ibr-056": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-056-tax-rep-no-tax-id"
+      ],
+      "justification": ""
+    },
+    "ibr-057": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-057-delivery-no-country"
+      ],
+      "justification": ""
+    },
+    "ibr-062": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-062-seller-endpoint-no-scheme"
+      ],
+      "justification": ""
+    },
+    "ibr-063": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-063-buyer-endpoint-no-scheme"
+      ],
+      "justification": ""
+    },
+    "ibr-064": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-064-item-standard-id-no-scheme"
+      ],
+      "justification": ""
+    },
+    "ibr-065": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-065-commodity-classification-no-listid"
+      ],
+      "justification": ""
+    },
+    "ibr-066": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-066-two-card-accounts"
+      ],
+      "justification": ""
+    },
+    "ibr-067": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-067-two-payment-mandates"
+      ],
+      "justification": ""
+    },
+    "ibr-068": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-068-invalid-gln-checksum"
+      ],
+      "justification": ""
+    },
+    "ibr-069": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-069-invalid-mod11-org-number"
+      ],
+      "justification": ""
+    },
+    "ibr-070": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-070-invalid-cvr-format"
+      ],
+      "justification": ""
+    },
+    "ibr-071": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-071-attachment-with-object-id"
+      ],
+      "justification": ""
+    },
+    "ibr-072": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-072-description-with-object-id"
+      ],
+      "justification": ""
+    },
+    "ibr-073": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-073-timezone-offset-date"
+      ],
+      "justification": ""
+    },
+    "ibr-074": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-074 requires the mimeCode attribute on *BinaryObject elements to be absent, but UBL-CommonBasicComponents-2.1.xsd declares EmbeddedDocumentBinaryObjectType with mimeCode use=\"required\". Omitting it fails XSD validation before Schematron runs (observed: stage schema-invalid, 'The attribute mimeCode is required but missing'), so the assert can never be falsified without also being schema-invalid."
+    },
+    "ibr-075": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-075-missing-filename"
+      ],
+      "justification": ""
+    },
+    "ibr-076": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-076 (exists(cbc:ProfileID)) and aligned-ibrp-002 (/*/cbc:ProfileID and matches(...)) both require ProfileID to exist; removing cbc:ProfileID always makes both asserts false simultaneously (observed: both ibr-076 and aligned-ibrp-002 fire together), so ibr-076 cannot be isolated as a single-rule negative."
+    },
+    "ibr-077": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-077-tax-currency-equals-doc-currency"
+      ],
+      "justification": ""
+    },
+    "ibr-078": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-078-duplicate-invoiced-object"
+      ],
+      "justification": ""
+    },
+    "ibr-079": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-079-empty-note"
+      ],
+      "justification": ""
+    },
+    "ibr-080": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-080-missing-buyer-endpoint"
+      ],
+      "justification": ""
+    },
+    "ibr-081": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-081-missing-seller-endpoint"
+      ],
+      "justification": ""
+    },
+    "ibr-082": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-082 requires cbc:ChargeIndicator text to be 'true' or 'false'. Its assert lives in the generic cac:AllowanceCharge rule, which the compiled official XSLT gives priority 1039 - below the cbc:ChargeIndicator = false()/true() rules at priorities 1041/1040. XSD and Schematron each read the original file independently (no canonicalization between stages): a lexical boolean variant such as '0' or '1' still casts to a boolean in the higher-priority predicates, so one of those rules always shadows the generic rule and ibr-082 never evaluates (observed: value '0' produced 0 failed asserts); any non-boolean value (e.g. 'yes') fails UBL 2.1 XSD first (observed: stage schema-invalid). No value can reach ibr-082's template while falsifying its assert."
+    },
+    "ibr-083": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-083-price-level-charge"
+      ],
+      "justification": ""
+    },
+    "ibr-084": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-084-opposite-sign-tax-currency"
+      ],
+      "justification": ""
+    },
+    "ibr-085": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-085-line-period-start-before-invoice-period"
+      ],
+      "justification": ""
+    },
+    "ibr-086": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-086-line-period-end-after-invoice-period"
+      ],
+      "justification": ""
+    },
+    "ibr-087": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-087-negative-base-quantity"
+      ],
+      "justification": ""
+    },
+    "ibr-088": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-088-base-quantity-unit-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-089": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-089-duplicate-line-invoiced-object"
+      ],
+      "justification": ""
+    },
+    "ibr-090": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-090-duplicate-project-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-091": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-091 requires LegalMonetaryTotal/PayableAmount to carry more than 2 decimal digits. aligned-ibrp-005 asserts string-length(substring-after(.,'.'))<=2 for every element whose name ends in 'Amount' (excluding PriceAmount and Price/AllowanceCharge amounts), which includes PayableAmount. Any value that falsifies ibr-091 necessarily falsifies aligned-ibrp-005 on the same element (observed: ibr-091, ibr-co-16, and aligned-ibrp-005 all fire together for PayableAmount=110.001), so ibr-091 cannot be isolated as a single-rule negative."
+    },
+    "ibr-092": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-092-line-and-doc-despatch-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-093": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-093-prepaid-payment-no-total"
+      ],
+      "justification": ""
+    },
+    "ibr-094": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-094-duplicate-contract-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-095": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-095-duplicate-receipt-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-096": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-096-duplicate-despatch-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-097": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-097-duplicate-invoice-period"
+      ],
+      "justification": ""
+    },
+    "ibr-098": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Duplicating cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName (XSD allows PartyLegalEntity 0..unbounded) crashes the aligned transform before schematron can report: aligned-ibr-001-aunz / aligned-ibr-002-aunz call string-length(cac:PartyLegalEntity/cbc:CompanyID) unconditionally in the same rule context and ibr-006 calls normalize-space() on the duplicated RegistrationName node-set, both of which require a singleton per XPath 2.0 and raise XPTY0004 (observed: 'Required cardinality of first argument of normalize-space() is zero or one; supplied value contains 2 items'), so the pipeline never reaches stage: rules."
+    },
+    "ibr-099": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-099-duplicate-seller-trader-name"
+      ],
+      "justification": ""
+    },
+    "ibr-100": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Duplicating cac:AccountingSupplierParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID (XSD allows PartyLegalEntity 0..unbounded) crashes the aligned transform: aligned-ibr-001-aunz's test string-length(cac:PartyLegalEntity/cbc:CompanyID)>=1 requires a singleton per XPath 2.0 and raises XPTY0004 with 2 supplied items (observed directly: 'Required cardinality of first argument of string-length() is zero or one; supplied value contains 2 items'), so the pipeline never reaches stage: rules."
+    },
+    "ibr-101": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-101-duplicate-seller-legal-form"
+      ],
+      "justification": ""
+    },
+    "ibr-102": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same class of blocker as ibr-098: duplicating cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName crashes ibr-007's normalize-space(cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:RegistrationName) with XPTY0004 (singleton required, 2 items supplied) before schematron can report ibr-102, so the pipeline never reaches stage: rules."
+    },
+    "ibr-103": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same class of blocker as ibr-100: duplicating cac:AccountingCustomerParty/cac:Party/cac:PartyLegalEntity/cbc:CompanyID crashes aligned-ibr-004-aunz/aligned-ibr-005-aunz's string-length(cac:PartyLegalEntity/cbc:CompanyID)>=1 with XPTY0004 (observed directly: 'Required cardinality of first argument of string-length() is zero or one; supplied value contains 2 items'), so the pipeline never reaches stage: rules."
+    },
+    "ibr-104": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-104-duplicate-buyer-tax-id"
+      ],
+      "justification": ""
+    },
+    "ibr-105": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-105-duplicate-payee-identifier"
+      ],
+      "justification": ""
+    },
+    "ibr-106": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-106-duplicate-payee-legal-id"
+      ],
+      "justification": ""
+    },
+    "ibr-107": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-107-duplicate-delivery"
+      ],
+      "justification": ""
+    },
+    "ibr-108": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-108-duplicate-delivery-party-name"
+      ],
+      "justification": ""
+    },
+    "ibr-109": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-109-duplicate-order-line-id"
+      ],
+      "justification": ""
+    },
+    "ibr-110": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-110-duplicate-line-invoice-period"
+      ],
+      "justification": ""
+    },
+    "ibr-111": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-111-duplicate-price-discount"
+      ],
+      "justification": ""
+    },
+    "ibr-112": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-112-duplicate-buyer-trader-name"
+      ],
+      "justification": ""
+    },
+    "ibr-113": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-113-invalid-belgian-enterprise-number"
+      ],
+      "justification": ""
+    },
+    "ibr-114": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-114-invalid-italian-ipa-code"
+      ],
+      "justification": ""
+    },
+    "ibr-115": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-115-invalid-italian-tax-code"
+      ],
+      "justification": ""
+    },
+    "ibr-116": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-116-invalid-italian-vat-code"
+      ],
+      "justification": ""
+    },
+    "ibr-119": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Every UBL element whose local name ends in 'Time' (e.g. cbc:ActualDeliveryTime) is typed as udt:TimeType, which the XSD (UBL-UnqualifiedDataTypes-2.1.xsd) restricts to xsd:time. The XSD lexical space for xsd:time is already exactly hh:mm:ss[.sss][zone], identical to what ibr-119's schematron test (string(.) castable as xs:time) requires, so any malformed time value is rejected at schema validation before the schematron rules run. Observed directly: a fixture with cbc:ActualDeliveryTime = '930am' produced stage: schema-invalid with xsd error \"'930am' is not a valid value of the atomic type 'xs:time'\", never reaching stage: rules."
+    },
+    "ibr-120": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-120-invalid-abn-checksum"
+      ],
+      "justification": ""
+    },
+    "ibr-121": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cac:LegalMonetaryTotal/cbc:AllowanceTotalAmount also matches the generic aligned rule aligned-ibrp-005 (context //*[ends-with(name(),'Amount') and not(ends-with(name(),'PriceAmount')) and not(ancestor::cac:Price/cac:AllowanceCharge)]), whose test string-length(substring-after(.,'.'))<=2 is identical in effect to ibr-121's own 2-decimal-place check. AllowanceTotalAmount is not excluded by either exclusion clause, so any value that fails ibr-121 always also fails aligned-ibrp-005 on the same node, and the accompanying ibr-co-11 sum-consistency assert co-fires too. Observed directly on the sibling rule ibr-124 (identical rule shape) with a 3-decimal TaxAmount: both ibr-124 and aligned-ibrp-005 fired together, plus ibr-co-14/ibr-co-15."
+    },
+    "ibr-122": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same generic-rule collision as ibr-121: cac:LegalMonetaryTotal/cbc:ChargeTotalAmount is not excluded from aligned-ibrp-005's context (//*[ends-with(name(),'Amount') and not(ends-with(name(),'PriceAmount')) and not(ancestor::cac:Price/cac:AllowanceCharge)]) and that rule's 2-decimal test always co-fires alongside ibr-co-12 (charge total sum consistency). Confirmed by direct observation of the identical rule shape on ibr-124/TaxAmount (both ibr-124 and aligned-ibrp-005 fired together, plus arithmetic co-firers)."
+    },
+    "ibr-123": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same generic-rule collision as ibr-121: cac:LegalMonetaryTotal/cbc:TaxExclusiveAmount is not excluded from aligned-ibrp-005's context and that rule's 2-decimal test always co-fires alongside ibr-co-15 (tax-inclusive = tax-exclusive + tax amount). Confirmed by direct observation of the identical rule shape on ibr-124/TaxAmount (both ibr-124 and aligned-ibrp-005 fired together, plus arithmetic co-firers)."
+    },
+    "ibr-124": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cac:TaxTotal/cbc:TaxAmount is not excluded from aligned-ibrp-005's context (//*[ends-with(name(),'Amount') and not(ends-with(name(),'PriceAmount')) and not(ancestor::cac:Price/cac:AllowanceCharge)]). Directly observed: a fixture with cac:TaxTotal/cbc:TaxAmount = '10.005' produced stage: rules with ibr-124, aligned-ibrp-005, ibr-co-14 and ibr-co-15 all firing together -- aligned-ibrp-005's identical 2-decimal-place test on the same node cannot be avoided while ibr-124 fires."
+    },
+    "ibr-125": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same generic-rule collision as ibr-121: cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount is not excluded from aligned-ibrp-005's context and that rule's 2-decimal test always co-fires alongside ibr-co-15 (tax-inclusive = tax-exclusive + tax amount). Confirmed by direct observation of the identical rule shape on ibr-124/TaxAmount (both ibr-124 and aligned-ibrp-005 fired together, plus arithmetic co-firers)."
+    },
+    "ibr-126": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-126-wrong-currency-tax-exclusive"
+      ],
+      "justification": ""
+    },
+    "ibr-127": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-127-invalid-swedish-org-number"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-01": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-01"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-03": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-cl-03 governs currencyID on Amount/BaseAmount/PriceAmount/LineExtensionAmount/TaxExclusiveAmount/TaxInclusiveAmount/AllowanceTotalAmount/ChargeTotalAmount/PrepaidAmount/PayableRoundingAmount/PayableAmount (mandatory, unconditionally-covered elements) plus TaxAmount/TaxableAmount inside a TaxTotal whose own TaxAmount currency matches DocumentCurrencyCode. ibr-126 (pint, fatal) requires every one of those same unconditional elements' currencyID to equal DocumentCurrencyCode; since DocumentCurrencyCode itself must be valid ISO 4217 (LegalMonetaryTotal/InvoiceLine/Price amounts are mandatory on every Invoice/CreditNote), any invalid currencyID on those elements simultaneously trips ibr-126. The one escape (TaxTotal/TaxAmount or TaxSubtotal amounts on a *second*, subtotal-less TaxTotal not matching DocumentCurrencyCode) is blocked in turn: aligned-ibrp-021 (fatal) allows only one TaxTotal-with-subtotal in the whole document (so the AUD-consistent TaxTotal[1] needed for ibr-co-15's arithmetic can carry the only TaxSubtotal, and any second TaxTotal must be subtotal-less), and aligned-ibrp-022 (fatal) requires a subtotal-less TaxTotal to exist only when TaxCurrencyCode is present with count exactly 1; and ibr-053 (fatal) then requires that subtotal-less TaxTotal's TaxAmount currencyID to equal TaxCurrencyCode exactly. Verified empirically: a TaxSubtotal/TaxableAmount set to ZZZ inside the AUD-consistent TaxTotal[1] fires ibr-126 alongside ibr-cl-03; propagating ZZZ consistently across DocumentCurrencyCode and every mandatory amount isolates ibr-cl-03 (many hits) but forces ibr-cl-04 to co-fire on DocumentCurrencyCode -- the two rules are mutually exclusive to isolate from each other via this path. No configuration was found where ibr-cl-03 fires alone."
+    },
+    "ibr-cl-04": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "Same root cause as ibr-cl-03: DocumentCurrencyCode is not itself in ibr-126's context, but making it invalid (e.g. ZZZ) forces every mandatory monetary element (LegalMonetaryTotal's LineExtensionAmount/TaxExclusiveAmount/TaxInclusiveAmount/PayableAmount, InvoiceLine LineExtensionAmount, Price PriceAmount -- all mandatory, all unconditionally in ibr-126's context) to either (a) keep a valid currencyID different from DocumentCurrencyCode, which trips ibr-126 (fatal, same ruleset) on every one of those elements, or (b) be set to the same invalid value as DocumentCurrencyCode to satisfy ibr-126, which then trips ibr-cl-03 (assigned rule, same batch) on every one of those elements instead. Verified empirically with both configurations: option (a) produces 7 ibr-126 hits alongside ibr-cl-04; option (b) produces 7 ibr-cl-03 hits alongside ibr-cl-04. No configuration isolates ibr-cl-04 alone."
+    },
+    "ibr-cl-05": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "TaxCurrencyCode (ibt-006) is optional and, when present, is gated by three fatal rules that force a matching-currency TaxTotal to exist: aligned-ibrp-022 requires exactly one subtotal-less TaxTotal when TaxCurrencyCode is present; ibr-053 requires exists(TaxTotal/TaxAmount[@currencyID = TaxCurrencyCode]); ibr-084 requires sign consistency between the TaxCurrencyCode-matching and DocumentCurrencyCode-matching TaxTotal amounts. Because ibr-053 needs a TaxTotal/TaxAmount whose currencyID textually equals TaxCurrencyCode, and ibr-cl-05 requires TaxCurrencyCode to be an invalid ISO 4217 code, the only TaxTotal that can satisfy ibr-053's existence check must itself carry that same invalid currencyID value -- which then trips ibr-cl-03 (assigned rule, same batch) on that TaxTotal's TaxAmount. Verified empirically: TaxCurrencyCode=ZZZ with a second TaxTotal (TaxAmount currencyID=ZZZ, satisfying aligned-ibrp-022/ibr-053/ibr-084) isolates ibr-cl-05 from those three, but ibr-cl-03 fires simultaneously on the added TaxTotal/TaxAmount. Omitting the second TaxTotal instead trips aligned-ibrp-022 (count mismatch). No configuration isolates ibr-cl-05 alone."
+    },
+    "ibr-cl-07": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-07"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-10": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-10"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-11": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-11"
+      ],
+      "justification": "Targets cac:PayeeParty/cac:PartyLegalEntity/cbc:CompanyID rather than the buyer/supplier Party, because aligned-ibr-001/002/004/005-aunz separately pin the buyer's and supplier's PartyLegalEntity/CompanyID @schemeID to exactly 0151 (AU) or 0088 (NZ); any other schemeID on those parties (valid or invalid) trips one of those alignment rules regardless of ibr-cl-11. PayeeParty carries no such country-pinned scheme requirement, so an unknown ICD (9999) there isolates cleanly to ibr-cl-11."
+    },
+    "ibr-cl-13": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-13"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-14": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-14"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-15": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-15"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-16": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-16"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-19": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-19"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-20": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-20"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-21": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-21"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-23": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-23"
+      ],
+      "justification": ""
+    },
+    "ibr-cl-24": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "aligned-ibrp-cl-04 (aligned ruleset, fatal) has the identical context (cbc:EmbeddedDocumentBinaryObject[@mimeCode]) and an allowed-value list that is a strict subset of ibr-cl-24's PINT list (missing only 'application/xml'). Any mimeCode value that fails ibr-cl-24 therefore necessarily fails aligned-ibrp-cl-04 as well (subset relationship: invalid-for-superset implies invalid-for-subset), so the two rules cannot be isolated from one another. Verified empirically with mimeCode='application/x-unknown': both ibr-cl-24 and aligned-ibrp-cl-04 fire together."
+    },
+    "ibr-cl-25": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-25"
+      ],
+      "justification": "Boundary case added: unknown scheme 9999. A second 'retired/removed EAS code' variant was not added -- eas.gc (bundled genericode, version 2020-11) carries no deprecation/retirement markers on any row, so no code could be identified as retired specifically for 1.1.2 versus simply absent; an absent code is already covered by the primary fixture."
+    },
+    "ibr-cl-26": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-cl-26"
+      ],
+      "justification": ""
+    },
+    "ibr-co-10": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-10-line-sum-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-11": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-11-allowance-total-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-12": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-12-charge-total-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-13": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-13-tax-exclusive-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-14": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-14-tax-total-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-15": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-15-tax-inclusive-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-16": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-16-payable-amount-mismatch"
+      ],
+      "justification": ""
+    },
+    "ibr-co-19": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-19-invoice-period-no-dates"
+      ],
+      "justification": ""
+    },
+    "ibr-co-20": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-co-20-line-period-no-dates"
+      ],
+      "justification": ""
+    },
+    "ibr-co-26": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-co-26 (context cac:AccountingSupplierParty/cac:Party) requires one of PartyTaxScheme/CompanyID, PartyIdentification/ID, or PartyLegalEntity/CompanyID to be present. For every jurisdiction reachable with the four synthetic parties in parties.md (AU or NZ), the aligned ruleset already mandates PartyLegalEntity/CompanyID with a specific scheme: aligned-ibr-001-aunz forces scheme 0151 (ABN) when supplierCountry='AU', and aligned-ibr-002-aunz forces scheme 0088 (NZBN) when supplierCountry='NZ'. Removing PartyLegalEntity/CompanyID (and leaving the other two identifier paths empty) to falsify co-26's OR test was tried directly: the validator confirms aligned-ibr-001-aunz co-fires unavoidably (observed with the AU supplier party) because that rule demands the exact same field co-26 accepts as satisfying evidence. Setting supplierCountry to a non-AU/NZ value (by omitting PostalAddress/Country/IdentificationCode) sidesteps the aligned rule but immediately trips ibr-009 (Seller postal address MUST contain a Seller country code) instead, so no single-rule isolation exists within the corpus's allowed party/jurisdiction space."
+    },
+    "ibr-sr-05": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-05-duplicate-payment-terms-note"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-06": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "UBL 2.1 XSD enforces maxOccurs before the Schematron rule can fire — observed schema-invalid. cac:InvoiceDocumentReference has maxOccurs=1 within BillingReferenceType, so a second occurrence is rejected by the schema before ibr-sr-06's count(cac:InvoiceDocumentReference) <= 1 assertion can be evaluated."
+    },
+    "ibr-sr-07": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "UBL 2.1 XSD enforces minOccurs=1 for cbc:ID before the Schematron rule can fire — observed schema-invalid. DocumentReferenceType requires cbc:ID (minOccurs=1) inside cac:InvoiceDocumentReference, so omitting it to test ibr-sr-07's presence assertion is rejected by the schema first."
+    },
+    "ibr-sr-16": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-16-duplicate-buyer-identifier"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-19": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-19-duplicate-payee-name"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-22": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "The same cac:TaxRepresentativeParty rule template first evaluates ibr-018's assert test=\"normalize-space(cac:PartyName/cbc:Name) != ''\" in document order, before ibr-sr-22's own assert. When cac:PartyName/cbc:Name resolves to a two-item sequence (two cac:PartyName elements), Saxon-JS raises a hard XPTY0004 cardinality error inside normalize-space() and the whole schematron transform aborts (\"Transformation failure\"), so ibr-sr-22 never gets a chance to fire — observed as a transform crash, not stage: rules."
+    },
+    "ibr-sr-23": {
+      "status": "not-applicable",
+      "fixtures": [],
+      "justification": "ibr-sr-23's test path is cac:Party/cac:PartyTaxScheme/cbc:CompanyID evaluated with context cac:TaxRepresentativeParty, but cac:TaxRepresentativeParty is itself of UBL PartyType (no cac:Party child exists under it in the UBL 2.1 schema — PartyTaxScheme is a direct child of PartyType). The XPath therefore always selects an empty node-set and count(...) <= 1 is always true. Verified empirically: a document with two cac:PartyTaxScheme/cbc:CompanyID elements placed directly under cac:TaxRepresentativeParty (the only schema-valid location) validates schematron: clean (0 failed asserts) — the rule cannot fire for any UBL-schema-valid PINT A-NZ document."
+    },
+    "ibr-sr-27": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "UBL 2.1 XSD enforces maxOccurs=1 for cbc:PaymentMeansCode within PaymentMeansType before the Schematron rule can fire — observed schema-invalid."
+    },
+    "ibr-sr-28": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "UBL 2.1 XSD enforces maxOccurs=1 for both cac:PaymentMandate within PaymentMeansType and cbc:ID within PaymentMandateType before the Schematron rule can fire — observed schema-invalid."
+    },
+    "ibr-sr-30": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-30-duplicate-allowance-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-31": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-31-duplicate-charge-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-32": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-32-duplicate-exemption-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-33": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-33-duplicate-document-description"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-34": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-34-duplicate-line-note"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-38": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-38-duplicate-line-exemption-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-39": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-090 shares the same /ubl:Invoice | /cn:CreditNote context and fires under the identical condition: test=\"(count(cac:ProjectReference) <= 1) and (count(cac:AdditionalDocumentReference[cbc:DocumentTypeCode='50']) <= 1)\". Since cac:ProjectReference/cbc:ID has minOccurs=1 in ProjectReferenceType, any document with 2+ cac:ProjectReference/cbc:ID (needed to falsify ibr-sr-39) necessarily also has 2+ cac:ProjectReference, which always falsifies ibr-090 in the same pint ruleset simultaneously. Verified empirically: both ibr-090 and ibr-sr-39 fire together, with no way to trip one without the other."
+    },
+    "ibr-sr-42": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "For AU/NZ documents, the aligned ruleset rules aligned-ibrp-sr-12-aunz (count of GST-scheme cac:PartyTaxScheme/cbc:CompanyID <= 1) and aligned-ibrp-sr-13-aunz (count of non-GST-scheme cac:PartyTaxScheme/cbc:CompanyID <= 1) jointly cap total PartyTaxScheme/CompanyID at 2 (1 GST + 1 non-GST) in cac:AccountingSupplierParty/cac:Party — the same ceiling as ibr-sr-42 itself. Because ibr-sr-57 requires every cac:PartyTaxScheme to carry a cbc:CompanyID, a third PartyTaxScheme (needed to falsify ibr-sr-42's count <= 2) must duplicate either the GST or non-GST category by pigeonhole, always tripping one of the two aligned-ruleset caps simultaneously with ibr-sr-42. Verified empirically across GST/non-GST scheme-id combinations."
+    },
+    "ibr-sr-45": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cac:PaymentMeans/cbc:PaymentDueDate is declared minOccurs=0 maxOccurs=1 in UBL 2.1 PaymentMeansType. Attempting a second cbc:PaymentDueDate element inside cac:PaymentMeans produces stage: schema-invalid ('Element PaymentDueDate: This element is not expected...') before the Schematron rules stage runs, so ibr-sr-45 can never be the sole/first failure observed."
+    },
+    "ibr-sr-46": {
+      "status": "not-applicable",
+      "fixtures": [],
+      "justification": "The rule tests count(cbc:PaymentMeansCode/@name) <= 1, but cbc:PaymentMeansCode itself is minOccurs=1 maxOccurs=1 (a single element) inside cac:PaymentMeans, and XML attributes cannot repeat on one element - an attempt to write name=\"...\" twice on one PaymentMeansCode element produces stage: malformed ('parser error: Attribute name redefined'). No well-formed XML document can make this assert's cardinality condition false, so the rule cannot fire for any PINT A-NZ corpus document."
+    },
+    "ibr-sr-49": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-49-duplicate-tax-point-date-code"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-50": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-50-duplicate-item-description"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-51": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-51-duplicate-note"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-52": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-52-duplicate-originator-document-reference"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-53": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-53-duplicate-seller-address-line"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-54": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-54-duplicate-buyer-address-line"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-55": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-55-duplicate-tax-representative-address-line"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-56": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-56-duplicate-delivery-address-line"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-57": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-57-missing-party-tax-scheme-company-id"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-58": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "ibr-sr-58 (context cac:InvoiceLine/cac:Item/cac:ClassifiedTaxCategory, test exists(cbc:ID)) asserts the same underlying fact as aligned-ibrp-050-aunz (context cac:InvoiceLine | cac:CreditNoteLine, test requiring cac:Item/cac:ClassifiedTaxCategory[.../ID='GST']/cbc:ID to exist). Any InvoiceLine whose ClassifiedTaxCategory omits cbc:ID necessarily makes both asserts false simultaneously: observed output always includes both 'FATAL ibr-sr-58' and 'FATAL aligned-ibrp-050-aunz' (and, depending on the chosen tax category, also aligned-ibrp-s-01-aunz/aligned-ibrp-s-08-aunz or aligned-ibrp-e-08-aunz for the resulting tax-breakdown mismatch). No InvoiceLine/Item/ClassifiedTaxCategory can lack an ID while every TaxTotal/TaxSubtotal category the line implicitly belongs to still balances, so a single-rule negative is not achievable."
+    },
+    "ibr-sr-59": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-59-duplicate-payee-branch-address-line"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-60": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-60-duplicate-payment-terms-means-id"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-61": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-61-duplicate-allowance-tax-exemption-reason"
+      ],
+      "justification": ""
+    },
+    "ibr-sr-62": {
+      "status": "blocked",
+      "fixtures": [],
+      "justification": "cac:InvoiceLine/cac:DespatchLineReference/cac:DocumentReference is declared minOccurs=0 maxOccurs=1 in UBL 2.1 LineReferenceType. Adding a second cac:DocumentReference inside one cac:DespatchLineReference produces stage: schema-invalid ('Element DocumentReference: This element is not expected') before the Schematron rules stage runs, so ibr-sr-62 can never be the sole/first failure observed."
+    },
+    "ibr-sr-63": {
+      "status": "invalid-covered",
+      "fixtures": [
+        "ibr-sr-63-wildcard-customization-id"
+      ],
+      "justification": ""
+    }
+  }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  fixture: aligned-ibr-002-aunz
+  expects: ERROR aligned-ibr-002-aunz
+  ruleset: 1.1.2
+  notes: NZ seller CompanyID uses scheme 0151 instead of the required NZBN scheme 0088.
+-->
+<Invoice xmlns="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+  xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+  xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2">
+  <cbc:CustomizationID>urn:peppol:pint:billing-1@aunz-1</cbc:CustomizationID>
+  <cbc:ProfileID>urn:peppol:bis:billing</cbc:ProfileID>
+  <cbc:ID>aligned-ibr-002-aunz</cbc:ID>
+  <cbc:IssueDate>2026-07-03</cbc:IssueDate>
+  <cbc:DueDate>2026-08-02</cbc:DueDate>
+  <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>
+  <cbc:DocumentCurrencyCode>NZD</cbc:DocumentCurrencyCode>
+  <cbc:BuyerReference>BUYER-REF-003</cbc:BuyerReference>
+  <cac:AccountingSupplierParty><cac:Party>
+    <cbc:EndpointID schemeID="0088">9429033821733</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>1 Example Street</cbc:StreetName><cbc:CityName>Wellington</cbc:CityName><cbc:PostalZone>6011</cbc:PostalZone><cac:Country><cbc:IdentificationCode>NZ</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example NZ Supplier Limited</cbc:RegistrationName><cbc:CompanyID schemeID="0002">9429033821733</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingSupplierParty>
+  <cac:AccountingCustomerParty><cac:Party>
+    <cbc:EndpointID schemeID="0088">9429033591476</cbc:EndpointID>
+    <cac:PostalAddress><cbc:StreetName>2 Sample Avenue</cbc:StreetName><cbc:CityName>Auckland</cbc:CityName><cbc:PostalZone>1010</cbc:PostalZone><cac:Country><cbc:IdentificationCode>NZ</cbc:IdentificationCode></cac:Country></cac:PostalAddress>
+    <cac:PartyLegalEntity><cbc:RegistrationName>Example NZ Buyer Limited</cbc:RegistrationName><cbc:CompanyID schemeID="0088">9429033591476</cbc:CompanyID></cac:PartyLegalEntity>
+  </cac:Party></cac:AccountingCustomerParty>
+  <cac:TaxTotal><cbc:TaxAmount currencyID="NZD">15.00</cbc:TaxAmount><cac:TaxSubtotal>
+    <cbc:TaxableAmount currencyID="NZD">100.00</cbc:TaxableAmount><cbc:TaxAmount currencyID="NZD">15.00</cbc:TaxAmount>
+    <cac:TaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>15</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:TaxCategory>
+  </cac:TaxSubtotal></cac:TaxTotal>
+  <cac:LegalMonetaryTotal><cbc:LineExtensionAmount currencyID="NZD">100.00</cbc:LineExtensionAmount><cbc:TaxExclusiveAmount currencyID="NZD">100.00</cbc:TaxExclusiveAmount><cbc:TaxInclusiveAmount currencyID="NZD">115.00</cbc:TaxInclusiveAmount><cbc:PayableAmount currencyID="NZD">115.00</cbc:PayableAmount></cac:LegalMonetaryTotal>
+  <cac:InvoiceLine><cbc:ID>1</cbc:ID><cbc:InvoicedQuantity unitCode="EA">2</cbc:InvoicedQuantity><cbc:LineExtensionAmount currencyID="NZD">100.00</cbc:LineExtensionAmount>
+    <cac:Item><cbc:Name>Synthetic consulting service</cbc:Name><cac:ClassifiedTaxCategory><cbc:ID>S</cbc:ID><cbc:Percent>15</cbc:Percent><cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme></cac:ClassifiedTaxCategory></cac:Item>
+    <cac:Price><cbc:PriceAmount currencyID="NZD">50.00</cbc:PriceAmount></cac:Price>
+  </cac:InvoiceLine>
+</Invoice>
