@@ -23,8 +23,12 @@ function globRegex(pattern: string): RegExp {
       const end = pattern.indexOf("]", index + 1);
       if (end < 0) expression += "\\[";
       else {
-        const body = pattern.slice(index + 1, end).replace(/^!/, "^");
-        expression += `[${body}]`;
+        // Escape backslashes and stray "[" so a class body like "\" cannot
+        // produce an invalid regex (RegExp would throw "Unterminated character
+        // class"); an empty body becomes a class that matches nothing.
+        const raw = pattern.slice(index + 1, end).replace(/^!/, "^");
+        const body = raw.replace(/[\\[]/g, "\\$&");
+        expression += body === "" || body === "^" ? "[^\\s\\S]" : `[${body}]`;
         index = end;
       }
     } else expression += character.replace(/[\\^$+?.()|{}]/g, "\\$&");
@@ -67,4 +71,26 @@ export async function expandPatterns(patterns: readonly string[], cwd = process.
     }
   }
   return [...expanded].sort((left, right) => left.localeCompare(right, "en"));
+}
+
+/**
+ * Like {@link expandPatterns}, but reports which supplied patterns matched no
+ * files. A conformance run that silently drops a mistyped glob would undercount
+ * validated documents while still exiting 0, so callers can fail closed instead.
+ */
+export async function expandPatternsChecked(
+  patterns: readonly string[],
+  cwd = process.cwd(),
+): Promise<{ files: string[]; unmatched: string[] }> {
+  const unmatched: string[] = [];
+  const all = new Set<string>();
+  for (const pattern of patterns) {
+    const matched = await expandPatterns([pattern], cwd);
+    if (matched.length === 0) unmatched.push(pattern);
+    for (const file of matched) all.add(file);
+  }
+  return {
+    files: [...all].sort((left, right) => left.localeCompare(right, "en")),
+    unmatched,
+  };
 }

@@ -48,7 +48,27 @@ export const RULESET_PROVENANCE = {
 const MANIFEST = "ruleset.json";
 const MAX_ARCHIVE_BYTES = 128 * 1024 * 1024;
 const MAX_EXTRACTED_BYTES = 256 * 1024 * 1024;
+const DOWNLOAD_TIMEOUT_MS = 60_000;
 const resolvedRulesetCache = new Map<string, Promise<string>>();
+
+async function* streamBytes(response: Response): AsyncGenerator<Uint8Array> {
+  const body = response.body;
+  if (!body) {
+    const buffer = await response.arrayBuffer();
+    yield new Uint8Array(buffer);
+    return;
+  }
+  const reader = body.getReader();
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (value) yield value;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
 
 export function defaultCacheDirectory(): string {
   return process.env.PINT_ANZ_CACHE_DIR
@@ -75,11 +95,23 @@ async function archiveBytes(
     bytes = await readFile(localPath);
   } else {
     if (offline) throw new Error(`Offline installation requires a local archive for ${url}.`);
-    const response = await fetch(url, { redirect: "follow" });
+    const response = await fetch(url, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS),
+    });
     if (!response.ok) throw new Error(`Cannot download ${url}: HTTP ${response.status}.`);
     const length = Number(response.headers.get("content-length") ?? 0);
     if (length > MAX_ARCHIVE_BYTES) throw new Error(`${url} exceeds the archive size limit.`);
-    bytes = Buffer.from(await response.arrayBuffer());
+    // Stream the body so a missing/spoofed content-length cannot force us to
+    // buffer an unbounded response before the size check below.
+    const chunks: Buffer[] = [];
+    let total = 0;
+    for await (const chunk of streamBytes(response)) {
+      total += chunk.byteLength;
+      if (total > MAX_ARCHIVE_BYTES) throw new Error(`${url} exceeds the archive size limit.`);
+      chunks.push(Buffer.from(chunk));
+    }
+    bytes = Buffer.concat(chunks);
   }
   if (bytes.length > MAX_ARCHIVE_BYTES) throw new Error(`Archive exceeds ${MAX_ARCHIVE_BYTES} bytes.`);
   const actual = sha256(bytes);
@@ -249,37 +281,45 @@ export async function verifyRuleset(
     const actual = await hashFile(join(resolved, relative));
     if (actual !== expected) throw new Error(`${relative} failed checksum verification.`);
   }
+  // Only a genuinely-absent manifest may fall back to the legacy shape. Read it
+  // in its own try/catch so an ENOENT raised later — e.g. while hashing a
+  // manifest-listed file that was deleted — fails verification instead of being
+  // misread as "no manifest present" and fabricated into a legacy success.
+  let manifestSource: string;
   try {
-    const manifest = JSON.parse(await readFile(join(resolved, MANIFEST), "utf8")) as InstalledRuleset;
-    if (manifest.version !== RULESET_VERSION) throw new Error(`Expected ${RULESET_VERSION}, found ${manifest.version}.`);
-    if (
-      manifest.resourcesSha256 !== RULESET_PROVENANCE.resources.sha256 ||
-      manifest.ublSha256 !== RULESET_PROVENANCE.ubl.sha256
-    ) {
-      throw new Error("Ruleset manifest provenance does not match the pinned archives.");
-    }
-    if (!manifest.files || Object.keys(manifest.files).length === 0) {
-      throw new Error("Ruleset manifest has no extracted-file inventory.");
-    }
-    for (const [relative, expected] of Object.entries(manifest.files)) {
-      const path = resolve(resolved, relative);
-      if (!path.startsWith(`${resolved}${sep}`)) throw new Error(`Unsafe manifest path: ${relative}.`);
-      const actual = await hashFile(path);
-      if (actual !== expected) throw new Error(`${relative} failed installed-file verification.`);
-    }
-    return { ...manifest, directory: resolved };
+    manifestSource = await readFile(join(resolved, MANIFEST), "utf8");
   } catch (error) {
-    if (!options.allowLegacyDirectory || (error as NodeJS.ErrnoException).code !== "ENOENT") throw error;
-    return {
-      name: RULESET_NAME,
-      version: RULESET_VERSION,
-      directory: resolved,
-      resourcesSha256: RULESET_PROVENANCE.resources.sha256,
-      ublSha256: RULESET_PROVENANCE.ubl.sha256,
-      installedAt: "unknown",
-      files: {},
-    };
+    if (options.allowLegacyDirectory && (error as NodeJS.ErrnoException).code === "ENOENT") {
+      return {
+        name: RULESET_NAME,
+        version: RULESET_VERSION,
+        directory: resolved,
+        resourcesSha256: RULESET_PROVENANCE.resources.sha256,
+        ublSha256: RULESET_PROVENANCE.ubl.sha256,
+        installedAt: "unknown",
+        files: {},
+      };
+    }
+    throw error;
   }
+  const manifest = JSON.parse(manifestSource) as InstalledRuleset;
+  if (manifest.version !== RULESET_VERSION) throw new Error(`Expected ${RULESET_VERSION}, found ${manifest.version}.`);
+  if (
+    manifest.resourcesSha256 !== RULESET_PROVENANCE.resources.sha256 ||
+    manifest.ublSha256 !== RULESET_PROVENANCE.ubl.sha256
+  ) {
+    throw new Error("Ruleset manifest provenance does not match the pinned archives.");
+  }
+  if (!manifest.files || Object.keys(manifest.files).length === 0) {
+    throw new Error("Ruleset manifest has no extracted-file inventory.");
+  }
+  for (const [relative, expected] of Object.entries(manifest.files)) {
+    const path = resolve(resolved, relative);
+    if (!path.startsWith(`${resolved}${sep}`)) throw new Error(`Unsafe manifest path: ${relative}.`);
+    const actual = await hashFile(path);
+    if (actual !== expected) throw new Error(`${relative} failed installed-file verification.`);
+  }
+  return { ...manifest, directory: resolved };
 }
 
 export async function installRuleset(

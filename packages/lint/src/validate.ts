@@ -50,7 +50,14 @@ const schemaCache = new Map<string, Promise<ReadonlyMap<string, XMLFileInfo>>>()
 function loadStylesheet(path: string): Promise<unknown> {
   let loaded = stylesheetCache.get(path);
   if (!loaded) {
-    loaded = readFile(path, "utf8").then((source) => JSON.parse(source) as unknown);
+    // Drop a rejected load from the cache so one transient FS error does not
+    // permanently fail every later validation in a long-running process.
+    loaded = readFile(path, "utf8")
+      .then((source) => JSON.parse(source) as unknown)
+      .catch((error: unknown) => {
+        stylesheetCache.delete(path);
+        throw error;
+      });
     stylesheetCache.set(path, loaded);
   }
   return loaded;
@@ -80,7 +87,10 @@ async function schemaFiles(rulesetDirectory: string): Promise<ReadonlyMap<string
       }
       await visit(join(root, "xsd"), "xsd");
       return files;
-    })();
+    })().catch((error: unknown) => {
+      schemaCache.delete(rulesetDirectory);
+      throw error;
+    });
     schemaCache.set(rulesetDirectory, loaded);
   }
   return loaded;
@@ -181,7 +191,11 @@ async function runSchematron(
   const parsed = svrlParser.parse(transformed.principalResult) as {
     "svrl:schematron-output"?: Record<string, Array<Record<string, unknown>>>;
   };
-  const output = parsed["svrl:schematron-output"] ?? {};
+  // A transform that did not emit an SVRL report is not a clean run with zero
+  // failures — treat a missing root as a tool failure so validateBytes reports
+  // complete:false rather than silently passing the document.
+  const output = parsed["svrl:schematron-output"];
+  if (!output) throw new Error("Schematron transform produced no SVRL output.");
   const diagnostics: Diagnostic[] = [];
 
   for (const kind of ["svrl:failed-assert", "svrl:successful-report"]) {

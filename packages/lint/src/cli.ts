@@ -1,6 +1,6 @@
 import { Command, InvalidArgumentError } from "commander";
 import { resolve } from "node:path";
-import { expandPatterns } from "./globs.js";
+import { expandPatternsChecked } from "./globs.js";
 import {
   defaultCacheDirectory,
   installRuleset,
@@ -42,6 +42,21 @@ function parseFailure(program: Command, error: unknown): number {
   throw error;
 }
 
+/** Reject any ruleset version other than the one this build pins. */
+function rejectUnsupportedVersion(version: string | undefined): boolean {
+  if (version === RULESET_VERSION) return false;
+  process.stderr.write(`Unsupported ruleset version: ${version}. Supported: ${RULESET_VERSION}.\n`);
+  return true;
+}
+
+function parsePositiveInteger(value: string): number {
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed <= 0) {
+    throw new InvalidArgumentError("Expected a positive integer.");
+  }
+  return parsed;
+}
+
 async function runRuleset(argv: readonly string[]): Promise<number> {
   const command = argv[0];
   if (command === "install") {
@@ -59,10 +74,7 @@ async function runRuleset(argv: readonly string[]): Promise<number> {
       return parseFailure(program, error);
     }
     const [version] = program.args;
-    if (version !== RULESET_VERSION) {
-      process.stderr.write(`Unsupported ruleset version: ${version}. Supported: ${RULESET_VERSION}.\n`);
-      return 2;
-    }
+    if (rejectUnsupportedVersion(version)) return 2;
     const options = program.opts<{
       file?: string;
       ublFile?: string;
@@ -117,10 +129,7 @@ async function runRuleset(argv: readonly string[]): Promise<number> {
       return parseFailure(program, error);
     }
     const [version] = program.args;
-    if (version !== RULESET_VERSION) {
-      process.stderr.write(`Unsupported ruleset version: ${version}. Supported: ${RULESET_VERSION}.\n`);
-      return 2;
-    }
+    if (rejectUnsupportedVersion(version)) return 2;
     const options = program.opts<{ cacheDir?: string; rulesetDir?: string }>();
     const directory = options.rulesetDir
       ? resolve(options.rulesetDir)
@@ -150,6 +159,11 @@ export async function run(argv: readonly string[]): Promise<number> {
     .option("--ruleset-dir <directory>", "prepared offline ruleset directory")
     .option("--ruleset-version <version>", "pinned ruleset version", RULESET_VERSION)
     .option("--offline", "require an already installed ruleset")
+    .option(
+      "--max-document-bytes <bytes>",
+      "override the default per-document size limit",
+      parsePositiveInteger,
+    )
     .option("--format <format>", "human or json", "human")
     .addHelpText(
       "after",
@@ -167,22 +181,25 @@ export async function run(argv: readonly string[]): Promise<number> {
     rulesetDir?: string;
     rulesetVersion: string;
     offline?: boolean;
+    maxDocumentBytes?: number;
     format: string;
   }>();
   if (!(["human", "json"] as const).includes(options.format as "human" | "json")) {
     process.stderr.write(`Unsupported format: ${options.format}\n`);
     return 2;
   }
-  if (options.rulesetVersion !== RULESET_VERSION) {
-    process.stderr.write(
-      `Unsupported ruleset version: ${options.rulesetVersion}. Supported: ${RULESET_VERSION}.\n`,
-    );
+  if (rejectUnsupportedVersion(options.rulesetVersion)) return 2;
+
+  let files: string[];
+  let unmatched: string[];
+  try {
+    ({ files, unmatched } = await expandPatternsChecked(program.args));
+  } catch (error) {
+    process.stderr.write(`Invalid file pattern: ${(error as Error).message}\n`);
     return 2;
   }
-
-  const files = await expandPatterns(program.args);
-  if (files.length === 0) {
-    process.stderr.write(`No files matched: ${program.args.join(", ")}\n`);
+  if (unmatched.length > 0) {
+    process.stderr.write(`No files matched: ${unmatched.join(", ")}\n`);
     return 2;
   }
   const results: ValidationResult[] = [];
@@ -190,6 +207,7 @@ export async function run(argv: readonly string[]): Promise<number> {
     results.push(
       await validateFile(file, {
         rulesetDirectory: options.rulesetDir && resolve(options.rulesetDir),
+        maxDocumentBytes: options.maxDocumentBytes,
       }),
     );
   }
