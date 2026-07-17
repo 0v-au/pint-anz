@@ -81,24 +81,21 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.20.1)(lightningcss@1.32.0)
 
-  packages/lint-action:
+  packages/lookup:
     dependencies:
-      '@pint-anz/lint':
-        specifier: workspace:*
-        version: link:../lint
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      fast-xml-parser:
+        specifier: ^5.2.5
+        version: 5.10.0
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.5
         version: 9.39.5
-      '@pint-anz/fixtures':
-        specifier: workspace:*
-        version: link:../fixtures
       '@types/node':
         specifier: ^22.0.0
         version: 22.20.1
-      esbuild:
-        specifier: 0.21.5
-        version: 0.21.5
       eslint:
         specifier: ^9.0.0
         version: 9.39.5

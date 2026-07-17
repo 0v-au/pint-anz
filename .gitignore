@@ -12,3 +12,5 @@ artefacts/
 # global dist/ and node_modules/ ignores above.
 !packages/lint-action/dist/
 !packages/lint-action/dist/**
+# Local build-loop telemetry; never published or committed.
+_traces/

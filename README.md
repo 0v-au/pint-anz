@@ -13,7 +13,7 @@ Everything here is built around **PINT A-NZ** — the invoice specification used
 | [`lint`](./packages/lint) | Validate UBL invoices and credit notes against pinned PINT A-NZ rules from the CLI or CI. | Implemented |
 | [`lint-action`](./packages/lint-action) | Run the linter as a GitHub Action with pull request annotations, a job summary, and a JSON report. | Implemented |
 | [`fixtures`](./packages/fixtures) | Synthetic valid, invalid, and malformed PINT A-NZ documents with a machine-readable manifest. | Complete for 1.1.2 |
-| [`lookup`](./packages/lookup) | Check whether an ABN/NZBN is registered on the Peppol network and which document types it can receive. | Planned |
+| [`lookup`](./packages/lookup) | Discover an ABN/NZBN participant and its advertised PINT A-NZ billing capabilities. | Implemented |
 | [`rules`](./packages/rules) | Human-readable explanations of every PINT A-NZ business rule: what it means, a failing example, how to fix it. | Planned |
 | [`mapper`](./packages/mapper) | A typed, minimal JSON schema that compiles to compliant PINT A-NZ UBL XML. | Planned |
 | [`playground`](./packages/playground) | A local fake Peppol counterparty in a Docker container: send it documents, get scripted accepts, rejects, and misbehaviour back. |  Planned |
@@ -49,6 +49,16 @@ import { fixtureUrl } from "@pint-anz/fixtures";
 
 const validInvoice = fixtureUrl("invoice-au-standard");
 ```
+
+Discover an advertised receiving capability using read-only Peppol SML/SMP
+lookup (outbound DNS and HTTPS; no Access Point required):
+
+```bash
+pint-anz-lookup --abn "$ABN" --capability invoice
+```
+
+See the [`@pint-anz/lookup` documentation](./packages/lookup) for result-state,
+trust, privacy, caching, acceptable-use, and versioning limits.
 
 ## What is PINT A-NZ, in one paragraph?
 
