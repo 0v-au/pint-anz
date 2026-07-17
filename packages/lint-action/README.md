@@ -50,7 +50,7 @@ nothing is installed with apt or npm at run time.
 | `ruleset-dir` | *(empty)* | Directory holding a prepared ruleset (see `pint-anz-lint ruleset install`). When empty the action installs the pinned ruleset itself; see below. |
 | `max-document-bytes` | *(empty)* | Per-document size limit in bytes. Empty applies the validator's default receiver policy; raise it explicitly for documents with large embedded attachments. |
 | `max-annotations` | `10` | Upper bound on error/warning annotations. GitHub displays at most 10 annotations of each kind per step; the job summary and report always hold the complete list. |
-| `if-no-files-found` | `error` | `error` fails the step (matching the CLI), `warn` annotates a warning and succeeds, `ignore` succeeds silently. |
+| `if-no-files-found` | `error` | Behaviour for every unmatched glob: `error` fails the step (matching the CLI), `warn` annotates a warning and continues with any matches, `ignore` continues silently. |
 
 ## Outputs
 

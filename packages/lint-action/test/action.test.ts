@@ -128,6 +128,22 @@ describe("lint action entry point", () => {
     expect(relaxed.outputs["checked-files"]).toBe("0");
   });
 
+  it("does not let a matching glob hide another glob that matched nothing", async () => {
+    const workspace = await createWorkspace({ "invoice.xml": "invoice-au-standard" });
+    const strict = await runAction(workspace, { files: "invoices/*.xml\nmissing/*.xml" });
+    expect(strict.code).toBe(2);
+    expect(strict.stdout).toContain("No files matched: missing/*.xml");
+    expect(strict.outputs["checked-files"]).toBe("0");
+
+    const warned = await runAction(workspace, {
+      files: "invoices/*.xml\nmissing/*.xml",
+      "if-no-files-found": "warn",
+    });
+    expect(warned.code).toBe(0);
+    expect(warned.stdout).toContain("::warning");
+    expect(warned.outputs["checked-files"]).toBe("1");
+  });
+
   it("validates multiple files from one glob and bounds annotations", async () => {
     const workspace = await createWorkspace({
       "a-valid.xml": "invoice-au-standard",

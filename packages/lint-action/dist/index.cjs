@@ -2146,8 +2146,9 @@ function globRegex(pattern) {
       if (end < 0)
         expression += "\\[";
       else {
-        const body = pattern.slice(index + 1, end).replace(/^!/, "^");
-        expression += `[${body}]`;
+        const raw = pattern.slice(index + 1, end).replace(/^!/, "^");
+        const body = raw.replace(/[\\[]/g, "\\$&");
+        expression += body === "" || body === "^" ? "[^\\s\\S]" : `[${body}]`;
         index = end;
       }
     } else
@@ -2236,7 +2237,28 @@ var RULESET_PROVENANCE = {
 var MANIFEST = "ruleset.json";
 var MAX_ARCHIVE_BYTES = 128 * 1024 * 1024;
 var MAX_EXTRACTED_BYTES = 256 * 1024 * 1024;
+var DOWNLOAD_TIMEOUT_MS = 6e4;
 var resolvedRulesetCache = /* @__PURE__ */ new Map();
+async function* streamBytes(response) {
+  const body = response.body;
+  if (!body) {
+    const buffer = await response.arrayBuffer();
+    yield new Uint8Array(buffer);
+    return;
+  }
+  const reader = body.getReader();
+  try {
+    for (; ; ) {
+      const { done, value } = await reader.read();
+      if (done)
+        break;
+      if (value)
+        yield value;
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
 function defaultCacheDirectory() {
   return process.env.PINT_ANZ_CACHE_DIR ? (0, import_node_path2.resolve)(process.env.PINT_ANZ_CACHE_DIR) : (0, import_node_path2.join)((0, import_node_os.homedir)(), ".cache", "pint-anz", "rulesets");
 }
@@ -2253,13 +2275,24 @@ async function archiveBytes(localPath, url, expected, offline) {
   } else {
     if (offline)
       throw new Error(`Offline installation requires a local archive for ${url}.`);
-    const response = await fetch(url, { redirect: "follow" });
+    const response = await fetch(url, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(DOWNLOAD_TIMEOUT_MS)
+    });
     if (!response.ok)
       throw new Error(`Cannot download ${url}: HTTP ${response.status}.`);
     const length = Number(response.headers.get("content-length") ?? 0);
     if (length > MAX_ARCHIVE_BYTES)
       throw new Error(`${url} exceeds the archive size limit.`);
-    bytes = Buffer.from(await response.arrayBuffer());
+    const chunks = [];
+    let total = 0;
+    for await (const chunk of streamBytes(response)) {
+      total += chunk.byteLength;
+      if (total > MAX_ARCHIVE_BYTES)
+        throw new Error(`${url} exceeds the archive size limit.`);
+      chunks.push(Buffer.from(chunk));
+    }
+    bytes = Buffer.concat(chunks);
   }
   if (bytes.length > MAX_ARCHIVE_BYTES)
     throw new Error(`Archive exceeds ${MAX_ARCHIVE_BYTES} bytes.`);
@@ -2411,38 +2444,41 @@ async function verifyRuleset(directory = versionDirectory(), options = {}) {
     if (actual !== expected)
       throw new Error(`${relative3} failed checksum verification.`);
   }
+  let manifestSource;
   try {
-    const manifest = JSON.parse(await (0, import_promises2.readFile)((0, import_node_path2.join)(resolved, MANIFEST), "utf8"));
-    if (manifest.version !== RULESET_VERSION)
-      throw new Error(`Expected ${RULESET_VERSION}, found ${manifest.version}.`);
-    if (manifest.resourcesSha256 !== RULESET_PROVENANCE.resources.sha256 || manifest.ublSha256 !== RULESET_PROVENANCE.ubl.sha256) {
-      throw new Error("Ruleset manifest provenance does not match the pinned archives.");
-    }
-    if (!manifest.files || Object.keys(manifest.files).length === 0) {
-      throw new Error("Ruleset manifest has no extracted-file inventory.");
-    }
-    for (const [relative3, expected] of Object.entries(manifest.files)) {
-      const path = (0, import_node_path2.resolve)(resolved, relative3);
-      if (!path.startsWith(`${resolved}${import_node_path2.sep}`))
-        throw new Error(`Unsafe manifest path: ${relative3}.`);
-      const actual = await hashFile(path);
-      if (actual !== expected)
-        throw new Error(`${relative3} failed installed-file verification.`);
-    }
-    return { ...manifest, directory: resolved };
+    manifestSource = await (0, import_promises2.readFile)((0, import_node_path2.join)(resolved, MANIFEST), "utf8");
   } catch (error) {
-    if (!options.allowLegacyDirectory || error.code !== "ENOENT")
-      throw error;
-    return {
-      name: RULESET_NAME,
-      version: RULESET_VERSION,
-      directory: resolved,
-      resourcesSha256: RULESET_PROVENANCE.resources.sha256,
-      ublSha256: RULESET_PROVENANCE.ubl.sha256,
-      installedAt: "unknown",
-      files: {}
-    };
+    if (options.allowLegacyDirectory && error.code === "ENOENT") {
+      return {
+        name: RULESET_NAME,
+        version: RULESET_VERSION,
+        directory: resolved,
+        resourcesSha256: RULESET_PROVENANCE.resources.sha256,
+        ublSha256: RULESET_PROVENANCE.ubl.sha256,
+        installedAt: "unknown",
+        files: {}
+      };
+    }
+    throw error;
   }
+  const manifest = JSON.parse(manifestSource);
+  if (manifest.version !== RULESET_VERSION)
+    throw new Error(`Expected ${RULESET_VERSION}, found ${manifest.version}.`);
+  if (manifest.resourcesSha256 !== RULESET_PROVENANCE.resources.sha256 || manifest.ublSha256 !== RULESET_PROVENANCE.ubl.sha256) {
+    throw new Error("Ruleset manifest provenance does not match the pinned archives.");
+  }
+  if (!manifest.files || Object.keys(manifest.files).length === 0) {
+    throw new Error("Ruleset manifest has no extracted-file inventory.");
+  }
+  for (const [relative3, expected] of Object.entries(manifest.files)) {
+    const path = (0, import_node_path2.resolve)(resolved, relative3);
+    if (!path.startsWith(`${resolved}${import_node_path2.sep}`))
+      throw new Error(`Unsafe manifest path: ${relative3}.`);
+    const actual = await hashFile(path);
+    if (actual !== expected)
+      throw new Error(`${relative3} failed installed-file verification.`);
+  }
+  return { ...manifest, directory: resolved };
 }
 async function installRuleset(options = {}) {
   const cache = (0, import_node_path2.resolve)(options.cacheDirectory ?? defaultCacheDirectory());
@@ -2522,7 +2558,10 @@ var schemaCache = /* @__PURE__ */ new Map();
 function loadStylesheet(path) {
   let loaded = stylesheetCache.get(path);
   if (!loaded) {
-    loaded = (0, import_promises3.readFile)(path, "utf8").then((source) => JSON.parse(source));
+    loaded = (0, import_promises3.readFile)(path, "utf8").then((source) => JSON.parse(source)).catch((error) => {
+      stylesheetCache.delete(path);
+      throw error;
+    });
     stylesheetCache.set(path, loaded);
   }
   return loaded;
@@ -2547,7 +2586,10 @@ async function schemaFiles(rulesetDirectory) {
       }
       await visit((0, import_node_path3.join)(root, "xsd"), "xsd");
       return files;
-    })();
+    })().catch((error) => {
+      schemaCache.delete(rulesetDirectory);
+      throw error;
+    });
     schemaCache.set(rulesetDirectory, loaded);
   }
   return loaded;
@@ -2625,7 +2667,9 @@ async function runSchematron(stylesheetPath, sourcePath, document) {
   const stylesheet = await loadStylesheet(stylesheetPath);
   const transformed = await SaxonJS.transform({ stylesheetInternal: stylesheet, sourceFileName: sourcePath, destination: "serialized" }, "async");
   const parsed = svrlParser.parse(transformed.principalResult);
-  const output = parsed["svrl:schematron-output"] ?? {};
+  const output = parsed["svrl:schematron-output"];
+  if (!output)
+    throw new Error("Schematron transform produced no SVRL output.");
   const diagnostics = [];
   for (const kind of ["svrl:failed-assert", "svrl:successful-report"]) {
     for (const entry of output[kind] ?? []) {
@@ -2945,20 +2989,31 @@ async function runAction() {
     }
   }
   const files = /* @__PURE__ */ new Map();
-  for (const match of await expandPatterns(patterns, workspace)) {
-    const absolute = (0, import_node_path4.resolve)(workspace, match);
-    if (escapesWorkspace(workspace, absolute)) {
-      return failEarly(`Matched file is outside the workspace: ${match}.`);
+  const unmatched = [];
+  try {
+    for (const pattern of patterns) {
+      const matches = await expandPatterns([pattern], workspace);
+      if (matches.length === 0) unmatched.push(pattern);
+      for (const match of matches) {
+        const absolute = (0, import_node_path4.resolve)(workspace, match);
+        if (escapesWorkspace(workspace, absolute)) {
+          return failEarly(`Matched file is outside the workspace: ${match}.`);
+        }
+        files.set(absolute, (0, import_node_path4.relative)(workspace, absolute).split(import_node_path4.sep).join("/"));
+      }
     }
-    files.set(absolute, (0, import_node_path4.relative)(workspace, absolute).split(import_node_path4.sep).join("/"));
+  } catch (error) {
+    return failEarly(`Invalid file pattern: ${error.message}`);
   }
-  if (files.size === 0) {
-    writeOutputs(0, 0, 0);
-    const message = `No files matched: ${patterns.join(", ")}`;
-    if (ifNoFilesFound === "error") return configurationFailure(message);
+  if (unmatched.length > 0) {
+    const message = `No files matched: ${unmatched.join(", ")}`;
+    if (ifNoFilesFound === "error") return failEarly(message);
     if (ifNoFilesFound === "warn") annotate("warning", message, { title: "PINT A-NZ lint" });
     else process.stdout.write(`${message}
 `);
+  }
+  if (files.size === 0) {
+    writeOutputs(0, 0, 0);
     return EXIT_VALID;
   }
   const results = [];

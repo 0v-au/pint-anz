@@ -227,22 +227,34 @@ export async function runAction(): Promise<number> {
     }
   }
 
-  // Workspace-relative annotation paths keyed by resolved path, deduplicated.
+  // Expand separately so a typo in one glob cannot be hidden by another
+  // matching glob. This is the same fail-closed behaviour as the CLI.
   const files = new Map<string, string>();
-  for (const match of await expandPatterns(patterns, workspace)) {
-    const absolute = resolve(workspace, match);
-    if (escapesWorkspace(workspace, absolute)) {
-      return failEarly(`Matched file is outside the workspace: ${match}.`);
+  const unmatched: string[] = [];
+  try {
+    for (const pattern of patterns) {
+      const matches = await expandPatterns([pattern], workspace);
+      if (matches.length === 0) unmatched.push(pattern);
+      for (const match of matches) {
+        const absolute = resolve(workspace, match);
+        if (escapesWorkspace(workspace, absolute)) {
+          return failEarly(`Matched file is outside the workspace: ${match}.`);
+        }
+        files.set(absolute, relative(workspace, absolute).split(sep).join("/"));
+      }
     }
-    files.set(absolute, relative(workspace, absolute).split(sep).join("/"));
+  } catch (error) {
+    return failEarly(`Invalid file pattern: ${(error as Error).message}`);
   }
 
-  if (files.size === 0) {
-    writeOutputs(0, 0, 0);
-    const message = `No files matched: ${patterns.join(", ")}`;
-    if (ifNoFilesFound === "error") return configurationFailure(message);
+  if (unmatched.length > 0) {
+    const message = `No files matched: ${unmatched.join(", ")}`;
+    if (ifNoFilesFound === "error") return failEarly(message);
     if (ifNoFilesFound === "warn") annotate("warning", message, { title: "PINT A-NZ lint" });
     else process.stdout.write(`${message}\n`);
+  }
+  if (files.size === 0) {
+    writeOutputs(0, 0, 0);
     return EXIT_VALID;
   }
 
