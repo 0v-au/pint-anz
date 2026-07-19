@@ -1,0 +1,3 @@
+# Publish independent interpretations, not repackaged specification text
+
+Until OpenPeppol gives written redistribution permission, published packages and websites exclude verbatim official rule messages, XPath assertions, examples, and bulk specification text. They identify rules by ID and version, link directly to the official source, and publish independently written project interpretations grounded in observed validator and fixture behaviour. Every rule page clearly distinguishes this commentary from the copyrighted official specification. This reduces avoidable copyright risk while sacrificing a self-contained copy of the authoritative wording.
