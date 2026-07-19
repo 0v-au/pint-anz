@@ -1,6 +1,6 @@
 # Glossary
-> Project: PINT A-NZ Lookup
-> Last updated: 2026-07-17
+> Project: PINT A-NZ Toolkit
+> Last updated: 2026-07-20
 > Rule: all domain terms in code must match entries here exactly.
 
 ---
@@ -74,3 +74,52 @@
 **Layer**: Application
 **Aliases to avoid**: cache state
 **Notes**: Negative entries have a shorter lifetime than positive entries.
+
+## Implementer
+**Definition**: A developer or integration engineer creating, validating, or troubleshooting PINT A-NZ billing documents.
+**Code identifier**: `Implementer`
+**Layer**: UI
+**Aliases to avoid**: end user, accountant, taxpayer
+**Notes**: The rules site is written primarily for implementers arriving from diagnostics or search.
+
+## Official Rule
+**Definition**: A version-specific assertion published in the pinned PINT A-NZ ruleset.
+**Code identifier**: `OfficialRule`
+**Layer**: Domain
+**Aliases to avoid**: supported rule, implemented rule
+**Notes**: The catalogue includes every Official Rule, regardless of fixture coverage.
+
+## Rule Catalogue Entry
+**Definition**: The versioned record for an Official Rule, including rights-safe identity, authoritative source, applicability, and reviewed coverage status.
+**Code identifier**: `RuleCatalogueEntry`
+**Layer**: Domain
+**Aliases to avoid**: rule explanation, rule page
+**Notes**: Every Official Rule has an entry even when no Project Interpretation exists.
+
+## Fixture-backed Rule
+**Definition**: An Official Rule demonstrated by at least one reviewed fixture in the project corpus.
+**Code identifier**: `FixtureBackedRule`
+**Layer**: Domain
+**Aliases to avoid**: covered rule
+**Notes**: Fixture coverage and editorial coverage are separate facts.
+
+## Rule Coverage
+**Definition**: The reviewed relationship between an Official Rule and the fixture corpus, including rules that cannot be isolated or do not apply to PINT A-NZ documents.
+**Code identifier**: `RuleCoverage`
+**Layer**: Domain
+**Aliases to avoid**: documentation status, implementation status
+**Notes**: Conformance evidence is the source of truth for Rule Coverage.
+
+## Project Interpretation
+**Definition**: An independently authored explanation of an Official Rule grounded in observed validator and fixture behaviour.
+**Code identifier**: `ProjectInterpretation`
+**Layer**: Domain
+**Aliases to avoid**: official guidance, official summary, paraphrase
+**Notes**: It is project commentary, not a substitute for the copyrighted specification.
+
+## Unknown Rule
+**Definition**: A rule identifier absent from the pinned official rule inventory.
+**Code identifier**: `UnknownRule`
+**Layer**: Domain
+**Aliases to avoid**: undocumented rule
+**Notes**: An Unknown Rule is distinct from an Official Rule whose Project Interpretation is pending.

@@ -32,7 +32,8 @@
     "build": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepack": "pnpm build && pnpm test"
+    "prepack": "pnpm build && pnpm test && node ../../scripts/check-published-rights.mjs --package .",
+    "prepublishOnly": "node ../../scripts/check-published-rights.mjs --package ."
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

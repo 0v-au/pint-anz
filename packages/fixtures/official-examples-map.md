@@ -4,8 +4,11 @@ This table maps each of the 19 official PINT A-NZ Billing example files under
 `artefacts/resources/trn-invoice/example/` and `artefacts/resources/trn-creditnote/example/`
 to the synthetic fixture(s) in `packages/fixtures/valid/` that exercise the
 same structural features. The official examples were read for structure only;
-no party names, identifiers, addresses, references, or amounts from them were
-copied into any fixture.
+no party names, addresses, references, or amounts from them were copied into
+any fixture. The four identifier values documented in `parties.md` are the
+exception: they are intentionally reused from the official examples as
+checksum-valid specification fixtures, with their provenance and live-use
+limits recorded there.
 
 | Official example | Structural features | Synthetic fixture(s) covering the same structure |
 |---|---|---|

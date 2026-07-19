@@ -42,8 +42,8 @@
     "test:watch": "vitest",
     "test:fixtures": "pnpm --filter @pint-anz/conformance test",
     "lint": "eslint src bin",
-    "prepack": "pnpm test",
-    "prepublishOnly": "pnpm build && pnpm test"
+    "prepack": "pnpm test && node ../../scripts/check-published-rights.mjs --package .",
+    "prepublishOnly": "pnpm build && pnpm test && node ../../scripts/check-published-rights.mjs --package ."
   },
   "dependencies": {
     "commander": "^12.1.0",

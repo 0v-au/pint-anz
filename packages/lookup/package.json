@@ -37,8 +37,8 @@
     "test": "pnpm build && vitest run",
     "test:watch": "vitest",
     "lint": "eslint src test bin --no-error-on-unmatched-pattern",
-    "prepack": "pnpm test",
-    "prepublishOnly": "pnpm build && pnpm test"
+    "prepack": "pnpm test && node ../../scripts/check-published-rights.mjs --package .",
+    "prepublishOnly": "pnpm build && pnpm test && node ../../scripts/check-published-rights.mjs --package ."
   },
   "dependencies": {
     "commander": "^12.1.0",

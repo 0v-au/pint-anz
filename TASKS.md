@@ -1,6 +1,6 @@
 # Tasks
 > Sources: SPEC.md and prompts/README.md · Loop started: 2026-07-16
-> Progress: 8/17 done · 0 in-progress · 0 blocked · 9 todo
+> Progress: 9/18 done · 0 in-progress · 0 blocked · 9 todo
 
 ---
 
@@ -111,13 +111,26 @@
 ## Batch 5
 
 ## T012 — Audit redistribution of official rule content
-- **Status**: todo
+- **Status**: done
 - **Prompt ref**: Copyright prerequisite for `prompts/rules.md`
-- **Acceptance**: Review all tracked and publishable files for copied or closely derived OpenPeppol rule messages, assertions, examples, and specification text; record the exact official copyright notice, source URLs, lookup date, permission status, and affected fields/files; obtain written redistribution clarification or define and verify a rights-safe replacement that preserves conformance evidence without publishing restricted content; document the outcome and add a release check that prevents unapproved official content entering npm or the static site.
+- **Acceptance**: Review all tracked and publishable files for copied or closely derived OpenPeppol rule messages, assertions, examples, and specification text; record the exact official copyright-notice location and section, a short compliant excerpt of its operative restriction, source URLs, lookup date, permission status, and affected fields/files; obtain written redistribution clarification or define and verify a rights-safe replacement that preserves conformance evidence without publishing restricted content; document the outcome and add a release check that prevents unapproved official content entering npm or the static site.
 - **Depends on**: existing conformance inventory and coverage data
 - **Priority**: critical-path
-- **Output**: documented content/licensing audit, permission record or rights-safe migration plan, published-artifact release check
-- **Notes**: The audit must include `packages/conformance/rule-inventory.json` and examine whether coverage justifications reproduce protected expression. Do not present the audit as legal advice; seek qualified advice or written OpenPeppol permission where the permitted use remains unclear.
+- **Output**: `docs/licensing/pint-a-nz-content-audit.md`, `docs/licensing/official-example-fingerprints.json`, `scripts/check-published-rights.mjs`, focused tests and package lifecycle gates
+- **Notes**: No permission is recorded; current npm packs pass, but the tracked full inventory/COVERAGE report are not cleared for publication and must be replaced by T018 before T009.
+- **Retries**: 0
+- **Review cycles**: 2
+
+---
+
+## T018 — Replace tracked official expressions with rights-safe conformance evidence
+- **Status**: todo
+- **Prompt ref**: T012 migration plan and `prompts/rules.md` copyright boundary
+- **Acceptance**: The tracked repository contains no verbatim official rule messages, XPath assertions/contexts, official examples, or exact assertion quotations except short attributed excerpts allowed by the documented policy; conformance derives the full working inventory only from the locally downloaded checksum-verified artefacts, checks a tracked rights-safe identity/provenance projection for all 245 rules, preserves reviewed coverage states and independently authored observations, and regenerates a rights-safe public report; clean-clone build/test/release checks fail when artefacts are missing or drift, when the projection/coverage diverges, or when protected official expression re-enters tracked or publishable output.
+- **Depends on**: T012
+- **Priority**: critical-path
+- **Output**: rights-safe tracked rule projection, transient full-inventory build path, rewritten coverage evidence/report, migration and regression tests
+- **Notes**: Preserve rule IDs, family, severity, fixture links, statuses, source URLs/digests, and validator observations; never weaken deterministic drift or fixture-isolation checks merely to remove copied expression.
 - **Retries**: 0
 - **Review cycles**: 0
 
@@ -127,7 +140,7 @@
 - **Status**: todo
 - **Prompt ref**: `prompts/rules.md`
 - **Acceptance**: `@pint-anz/rules` builds and packs a version-pinned, rights-safe snapshot containing exactly the 245 official rule identities and reviewed coverage records; its schema keeps `official`, `coverage`, `applicability`, and optional project-authored `guidance` structures distinct; each record has one reviewed primary topic and zero or more related topics from a controlled vocabulary; the typed API exposes a readonly `rules` collection, `getRule(id)` returning `undefined` for unknown identifiers, and `findRules(filters)` for version, jurisdiction, document type, topic, severity, family, coverage, and editorial state; schema, provenance, duplicate-ID, fixture-reference, export, and published-content checks pass without a runtime dependency on private conformance data.
-- **Depends on**: T008, T012; existing `@pint-anz/fixtures` and `@pint-anz/lint`
+- **Depends on**: T008, T012, T018; existing `@pint-anz/fixtures` and `@pint-anz/lint`
 - **Priority**: critical-path
 - **Output**: `packages/rules` package scaffold, validated content schema, generated machine-readable snapshot, typed lookup/export API, package tests
 - **Notes**: Consume conformance identity and coverage only at build time. Published `official` data is limited to rights-safe identity, version, severity, and source links unless T012 records written permission for broader redistribution. Applicability and topic classification are explicit reviewed metadata, never inferred from fixture usage, XPath, rule IDs, or prose. Full-text search remains site-only through Pagefind.

@@ -4,8 +4,11 @@
   "packageManager": "pnpm@11.13.0",
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm test:rights && pnpm rights:check && pnpm -r test",
     "test:fixtures": "pnpm --filter @pint-anz/conformance test",
-    "lint": "pnpm -r lint"
+    "lint": "pnpm -r lint",
+    "rights:check": "node scripts/check-published-rights.mjs",
+    "rights:check:site": "node scripts/check-published-rights.mjs --site packages/rules/site/dist",
+    "test:rights": "node --test scripts/check-published-rights.test.mjs"
   }
 }

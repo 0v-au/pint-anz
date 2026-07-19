@@ -13,7 +13,7 @@
     "inventory": "node scripts/build-inventory.mjs",
     "validate": "node scripts/validate-cli.mjs",
     "report": "node scripts/report-coverage.mjs",
-    "gate": "node scripts/release-gate.mjs",
+    "gate": "node scripts/release-gate.mjs && node ../../scripts/check-published-rights.mjs --verify-fingerprints",
     "build": "node scripts/fetch-artefacts.mjs",
     "pretest": "node scripts/fetch-artefacts.mjs",
     "test": "vitest run"

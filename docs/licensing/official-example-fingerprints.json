@@ -1,0 +1,27 @@
+{
+  "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip",
+  "rulesetVersion": "1.1.2",
+  "lookupDate": "2026-07-20",
+  "canonicalization": "UTF-decode; remove BOM, XML declaration, and comments; collapse whitespace; remove whitespace between tags and before tag endings; preserve element, attribute, and text order",
+  "examples": {
+    "trn-creditnote/example/AU Credit note.xml": { "rawSha256": "488b7b38a6d2617d38277fbfa2d0a4d5a0ae8162b2f7dc6182e185329be35c18", "canonicalSha256": "cde2f8e0a0cdac868cdff4e6f28316479de433d9a15514c8aac522208df4b300" },
+    "trn-creditnote/example/NZ Credit note.xml": { "rawSha256": "d81ee6df7e7a174d9e646c4e291a38c44e8ca8392615599ed5d5ec24ad325d77", "canonicalSha256": "50bf4e68c85801327b254430fcc3b11a11247fd60a1a7de5ca66165b8b87d7ca" },
+    "trn-invoice/example/AU Freight - Document Level.xml": { "rawSha256": "81c6361a5cbc50b7fa75d7889eb7a1cfa13372952895cf11faf61cc6688a0499", "canonicalSha256": "487d1ff716fe3ae53841f9a9b609b0ddb4e23bfd1bb1cf620b7bee90b6460e03" },
+    "trn-invoice/example/AU Freight - Line Item.xml": { "rawSha256": "c4bda06c6328fd58f87b317bdfc954acd436e5ada30b78934d6cd3db760906ba", "canonicalSha256": "6fd863769a756f7c18b9ac0ee47ed2105869c7f1f412d41b243700a38083e563" },
+    "trn-invoice/example/AU Freight Only - Line Item.xml": { "rawSha256": "fcf60ea1335603ba74e85a2d25431231432bbd37164281b80739d1aa306176a7", "canonicalSha256": "1105d3d10cf2d32674aec7e74a4ff2462582655922b4a228f0669aa2f46bad87" },
+    "trn-invoice/example/AU GST Only - Prepaid.xml": { "rawSha256": "26706e67c2179fc83dc58348809c7f50ce270bdcfd50b410fad8404c24e271b5", "canonicalSha256": "a9a06a6725a846c0dec75b89d7613a39b93a0d792bfec9497fb8efc2092d20e1" },
+    "trn-invoice/example/AU GST Only.xml": { "rawSha256": "7a257ac8cb1502115a9a7bd89fdb2bcce3407d4ce7eb7c27873dd591e38ce216", "canonicalSha256": "087ab4dd05f9b49bf40c3557b43a5d3eacb4951dc3ae0746a37bf69821357165" },
+    "trn-invoice/example/AU Invoice Annual Insurance.xml": { "rawSha256": "1834b1d5095110199ed9c519deb96100389442f8b93fcb067c12ceec24730ee7", "canonicalSha256": "e7d95ffb0bb56dfb46129b207d84016241b1c6383aac3487ec284a8902fb619a" },
+    "trn-invoice/example/AU Invoice Energy Bill Example_1.xml": { "rawSha256": "4c318d551aec1ab5ff9136ecf6d8b8be3f31aa6201edfe4b1c047ec328e27841", "canonicalSha256": "b5e46047dfea5eded4a33018071bcc0e6b13998939148db99cab2dadbb953624" },
+    "trn-invoice/example/AU Invoice Energy Bill Example_2.xml": { "rawSha256": "d0010d58bf9bd54918a8e47f077e661143b92bdd12130cfa250135bd59b0bd5e", "canonicalSha256": "e51c6ff3b87f08f2b0106db549bf43c19449f3b5898c5621240f667bc1259eb8" },
+    "trn-invoice/example/AU Invoice Energy Bill Example_3_negative_inv.xml": { "rawSha256": "8da061f309c9d521112faa788152faefbd9f56ae46dfdc1d947161bc18cc865f", "canonicalSha256": "6ffafdea3f63de515486d42fe14b21e4e84feea38f4e9ee039a8660eb0a71de9" },
+    "trn-invoice/example/AU Invoice.xml": { "rawSha256": "21bd14c4fd771e8937ad8ebf804dd2757fabfbfb5d2ecbbeffdbea187a69d208", "canonicalSha256": "48933bc5387172ccb5f53c412e524588ad03f55611c8442471ecfdac42240b6c" },
+    "trn-invoice/example/NZ Allowance On Invoice Line.xml": { "rawSha256": "f07a4e98e544637a30ef3e20bab3459ce18022132c986ba1ee711cf0ca03be25", "canonicalSha256": "658689a450046e78a2ed7a9d9432779018e0e634df5a5b49646c34a79a67c8c1" },
+    "trn-invoice/example/NZ Invoice Level Allowance.xml": { "rawSha256": "af5834de4ceaddff45b24337b04afd084a7fd678d2c50a8abd54d243fda09618", "canonicalSha256": "2e1cbfdfe18cbf87f10c2dda364ff884863d4a2a38853aa6cc575d62bb2d7dee" },
+    "trn-invoice/example/NZ Invoice Level Charge.xml": { "rawSha256": "282fbb4d8c3e35cb958000cbccfb8501c75e1360d26f3be02ad4abc7f31de4f6", "canonicalSha256": "e1ea03cb9c9bb0b0a1051dfdda45bacd622a4ebd21c6a29dab0841a576b95243" },
+    "trn-invoice/example/NZ No Allowances.xml": { "rawSha256": "f3aeb59fb5912bd9495cd48b8397546523fdfe36b5eb29479ed2bd4a0fcdc581", "canonicalSha256": "198e0c21dabdf77b99fc0933b6e8b9e95277c400bf37c827d0be57cbd9de27fc" },
+    "trn-invoice/example/NZ Prepaid Amount.xml": { "rawSha256": "fee102cd5c9d520b1169343439e70ac8246a7e4d822a5d88e8cf6868ad62f264", "canonicalSha256": "1ba9f14f6f22acaf532ad2be99a8e1edce9fadde243b178af5589f63bcdd1427" },
+    "trn-invoice/example/PINT_AUNZ_invoice.xml": { "rawSha256": "bb55e82a5a54d03ae08e96c22521ad5f5a7db6982e07ca445134c88813b4f8bc", "canonicalSha256": "7f516a014f189d8492845e6d4b6131b59da4a95719b7578dd742841b10569701" },
+    "trn-invoice/example/PINT_AUNZ_negative_invoice.xml": { "rawSha256": "543356a392b9ad1058daeeafd387a44c348d5c1f30426d550e7935eb9313fee3", "canonicalSha256": "c3b8b6475a0c690961c1575ee0bbdfc3d475032ba5cf85d6badf59f7e1db79a3" }
+  }
+}
