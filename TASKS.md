@@ -1,6 +1,6 @@
 # Tasks
 > Sources: SPEC.md and prompts/README.md · Loop started: 2026-07-16
-> Progress: 9/18 done · 0 in-progress · 0 blocked · 9 todo
+> Progress: 10/18 done · 0 in-progress · 0 blocked · 8 todo
 
 ---
 
@@ -124,15 +124,15 @@
 ---
 
 ## T018 — Replace tracked official expressions with rights-safe conformance evidence
-- **Status**: todo
+- **Status**: done
 - **Prompt ref**: T012 migration plan and `prompts/rules.md` copyright boundary
 - **Acceptance**: The tracked repository contains no verbatim official rule messages, XPath assertions/contexts, official examples, or exact assertion quotations except short attributed excerpts allowed by the documented policy; conformance derives the full working inventory only from the locally downloaded checksum-verified artefacts, checks a tracked rights-safe identity/provenance projection for all 245 rules, preserves reviewed coverage states and independently authored observations, and regenerates a rights-safe public report; clean-clone build/test/release checks fail when artefacts are missing or drift, when the projection/coverage diverges, or when protected official expression re-enters tracked or publishable output.
 - **Depends on**: T012
 - **Priority**: critical-path
 - **Output**: rights-safe tracked rule projection, transient full-inventory build path, rewritten coverage evidence/report, migration and regression tests
-- **Notes**: Preserve rule IDs, family, severity, fixture links, statuses, source URLs/digests, and validator observations; never weaken deterministic drift or fixture-isolation checks merely to remove copied expression.
+- **Notes**: Preserved all 245 identities, statuses, fixture links, and detailed project observations while replacing protected expressions. Build/test/release now verify pinned ZIPs, extracted XSDs, rule sources, deterministic SEFs, projection/coverage/report drift, tracked content, and actual npm pack output.
 - **Retries**: 0
-- **Review cycles**: 0
+- **Review cycles**: 2
 
 ---
 

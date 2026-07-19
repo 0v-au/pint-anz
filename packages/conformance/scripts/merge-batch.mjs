@@ -51,7 +51,7 @@ for (const reportPath of reports) {
     coverage.rules[ruleId] = {
       status: entry.status,
       fixtures,
-      justification: entry.justification ?? "",
+      observation: entry.observation ?? "",
     };
     coverageUpdates += 1;
   }

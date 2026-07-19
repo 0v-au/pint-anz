@@ -12,6 +12,7 @@ import { createRequire } from "node:module";
 import { artefactsDir, paths, readLock, sha256, sha256File, verifyPinnedFiles } from "../src/artefacts.js";
 
 const require = createRequire(import.meta.url);
+const fixedBuildTime = require.resolve("./fixed-build-time.cjs");
 
 const lock = readLock();
 mkdirSync(artefactsDir, { recursive: true });
@@ -53,8 +54,8 @@ verifyPinnedFiles();
 // lock file), so one compiled transform serves both document types.
 const stampPath = `${artefactsDir}sef/compile-stamp.json`;
 const wanted = {
-  pint: sha256File(paths.pintXslt),
-  aligned: sha256File(paths.alignedXslt),
+  pint: lock.compiled.pint,
+  aligned: lock.compiled.aligned,
 };
 let stamp = {};
 try {
@@ -63,14 +64,22 @@ try {
   // first compile
 }
 
-for (const [name, sourceHash] of Object.entries(wanted)) {
+for (const [name, expected] of Object.entries(wanted)) {
   const sefPath = name === "pint" ? paths.pintSef : paths.alignedSef;
   const xsltPath = name === "pint" ? paths.pintXslt : paths.alignedXslt;
-  if (stamp[name] === sourceHash && existsSync(sefPath)) continue;
+  if (
+    stamp.compiler === lock.compiled.compiler &&
+    stamp[name]?.sourceSha256 === expected.sourceSha256 &&
+    stamp[name]?.sefSha256 === expected.sefSha256 &&
+    existsSync(sefPath) &&
+    sha256File(sefPath) === expected.sefSha256
+  ) continue;
   console.log(`Compiling ${name} Schematron XSLT to SEF`);
   execFileSync(
     "node",
     [
+      "--require",
+      fixedBuildTime,
       require.resolve("xslt3"),
       `-xsl:${xsltPath}`,
       `-export:${sefPath}`,
@@ -79,8 +88,12 @@ for (const [name, sourceHash] of Object.entries(wanted)) {
     ],
     { stdio: "inherit" },
   );
+  const actual = sha256File(sefPath);
+  if (actual !== expected.sefSha256) {
+    throw new Error(`${name} compiled SEF differs from the tracked digest. Expected ${expected.sefSha256}, got ${actual}. Review the compiler and output before repinning.`);
+  }
 }
-writeFileSync(stampPath, `${JSON.stringify(wanted, null, 2)}\n`);
+writeFileSync(stampPath, `${JSON.stringify({ compiler: lock.compiled.compiler, ...wanted }, null, 2)}\n`);
 
 try {
   execFileSync("xmllint", ["--version"], { stdio: "ignore" });

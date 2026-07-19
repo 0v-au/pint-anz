@@ -5,12 +5,14 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "nod
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
+import { buildInventory } from "../packages/conformance/src/inventory.js";
 import {
   canonicalXml,
   checkPublishedRights,
   defaultRepoRoot,
   inspectFiles,
   protectedPhrases,
+  trackedFiles,
   verifyExampleFingerprints,
   workspacePackageDirectories,
 } from "./check-published-rights.mjs";
@@ -19,7 +21,7 @@ const LONG_MESSAGE = "[ibr-example]-An invoice MUST contain an example identifie
 const inventory = {
   rules: [
     { id: "ibr-example", test: "exists(cbc:ExampleIdentifier)", context: "/Invoice", message: LONG_MESSAGE },
-    { id: "ibr-short", test: "false()", context: "/Invoice", message: "[ibr-short]-Never valid." },
+    { id: "ibr-short", test: "short()", context: "/Invoice", message: "[ibr-short]-Never valid." },
   ],
 };
 const emptyFingerprints = { raw: new Set(), canonicalXml: new Set() };
@@ -38,8 +40,11 @@ function temporaryFile(name, contents, encoding) {
 
 function testRepo() {
   const root = mkdtempSync(join(tmpdir(), "pint-anz-rights-repo-"));
+  execFileSync("git", ["init", "-q", root]);
   write(join(root, "pnpm-workspace.yaml"), "packages:\n  - packages/*\n");
-  write(join(root, "packages/conformance/rule-inventory.json"), JSON.stringify(inventory));
+  write(join(root, "packages/conformance/rule-inventory.json"), JSON.stringify({
+    rules: inventory.rules.map(({ id }) => ({ id, ruleset: "pint", family: "test", kind: "assert", severity: "fatal" })),
+  }));
   write(join(root, "packages/conformance/artefacts.lock.json"), JSON.stringify({ downloads: [], files: {} }));
   write(join(root, "docs/licensing/official-example-fingerprints.json"), JSON.stringify({ examples: {} }));
   return root;
@@ -62,35 +67,47 @@ function addPackage(root, name, { privatePackage = false, contents = "export {};
 test("uses pnpm workspace membership and npm's actual pack file list while skipping private packages", () => {
   const root = testRepo();
   const publicDirectory = addPackage(root, "public-package");
-  addPackage(root, "private-package", { privatePackage: true, contents: LONG_MESSAGE });
+  addPackage(root, "private-package", { privatePackage: true });
   assert.equal(workspacePackageDirectories(root).length, 2);
-  const result = checkPublishedRights({ repoRoot: root });
+  const result = checkPublishedRights({ repoRoot: root, inventory });
   assert.deepEqual(result.problems, []);
   assert(result.files.includes(join(publicDirectory, "index.js")));
-  assert(!result.files.some((path) => path.includes("private-package/index.js")));
 });
 
 test("high-level package check detects contamination in the actual npm pack", () => {
   const root = testRepo();
   const directory = addPackage(root, "contaminated", { contents: LONG_MESSAGE });
-  const result = checkPublishedRights({ repoRoot: root, packageDirectory: directory });
+  const result = checkPublishedRights({ repoRoot: root, packageDirectory: directory, inventory });
   assert.equal(result.problems.length, 1);
   assert(result.files.some((path) => path.endsWith("index.js")));
+});
+
+test("default release scan catches ignored generated output included by npm pack", () => {
+  const root = testRepo();
+  const directory = addPackage(root, "generated-contamination");
+  const manifestPath = join(directory, "package.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+  manifest.files = ["dist"];
+  write(manifestPath, JSON.stringify(manifest));
+  write(join(root, ".gitignore"), "dist/\n");
+  write(join(directory, "dist/index.js"), LONG_MESSAGE);
+  assert(!trackedFiles(root).includes(join(directory, "dist/index.js")));
+  const result = checkPublishedRights({ repoRoot: root, inventory });
+  assert(result.files.includes(join(directory, "dist/index.js")));
+  assert(result.problems.some((problem) => problem.includes("generated-contamination/dist/index.js")));
 });
 
 test("root check rejects a public package missing either publication lifecycle gate", () => {
   const root = testRepo();
   addPackage(root, "ungated", { lifecycle: false });
-  const result = checkPublishedRights({ repoRoot: root });
-  assert.equal(result.problems.filter((problem) => problem.includes("must run the rights check")).length, 2);
+  const result = checkPublishedRights({ repoRoot: root, inventory });
+  assert.equal(result.problems.filter((problem) => problem.includes("must finish with the rights check")).length, 2);
 });
 
 test("real npm lifecycle scans after build output changes without recursing", () => {
   const directory = mkdtempSync(join(tmpdir(), "pint-anz-rights-lifecycle-"));
   const scanner = join(defaultRepoRoot, "scripts/check-published-rights.mjs");
-  const protectedMessage = JSON.parse(
-    readFileSync(join(defaultRepoRoot, "packages/conformance/rule-inventory.json"), "utf8"),
-  ).rules[0].message;
+  const protectedMessage = buildInventory().rules[0].message;
   write(join(directory, "build.mjs"), [
     'import { mkdirSync, writeFileSync } from "node:fs";',
     'mkdirSync("dist", { recursive: true });',
@@ -117,25 +134,67 @@ test("real npm lifecycle scans after build output changes without recursing", ()
   assert.equal(readFileSync(join(directory, "dist/index.js"), "utf8"), protectedMessage);
 });
 
-test("public package lifecycle checks remain the final commands", () => {
-  for (const name of ["fixtures", "lint", "lookup"]) {
-    const manifest = JSON.parse(readFileSync(join(defaultRepoRoot, "packages", name, "package.json"), "utf8"));
+test("every discovered public package lifecycle finishes with the rights check", () => {
+  for (const directory of workspacePackageDirectories(defaultRepoRoot)) {
+    const manifest = JSON.parse(readFileSync(join(directory, "package.json"), "utf8"));
+    if (manifest.private) continue;
     for (const lifecycle of ["prepack", "prepublishOnly"]) {
       assert.match(manifest.scripts[lifecycle], /node \.\.\/\.\.\/scripts\/check-published-rights\.mjs --package \.$/);
     }
   }
 });
 
+test("rejects post-scan lifecycle commands in any newly discovered public package", () => {
+  const root = testRepo();
+  const directory = addPackage(root, "future-package");
+  const manifestPath = join(directory, "package.json");
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+  manifest.scripts.prepack += " && node contaminate-after-scan.mjs";
+  write(manifestPath, JSON.stringify(manifest));
+  const result = checkPublishedRights({ repoRoot: root, inventory });
+  assert(result.problems.some((problem) => problem.includes("future-package/package.json") && problem.includes("final && command")));
+});
+
 test("explicit site mode rejects missing and empty outputs, and scans populated output", () => {
   const root = testRepo();
   const site = join(root, "site-dist");
-  assert.throws(() => checkPublishedRights({ repoRoot: root, siteDirectory: site }), /site output is missing/);
+  assert.throws(() => checkPublishedRights({ repoRoot: root, siteDirectory: site, inventory }), /site output is missing/);
   mkdirSync(site);
-  assert.throws(() => checkPublishedRights({ repoRoot: root, siteDirectory: site }), /site output is empty/);
+  assert.throws(() => checkPublishedRights({ repoRoot: root, siteDirectory: site, inventory }), /site output is empty/);
   write(join(site, "index.html"), "<p>Independent interpretation.</p>");
-  assert.deepEqual(checkPublishedRights({ repoRoot: root, siteDirectory: site }).problems, []);
+  assert.deepEqual(checkPublishedRights({ repoRoot: root, siteDirectory: site, inventory }).problems, []);
   write(join(site, "bad.html"), `<p>${LONG_MESSAGE}</p>`);
-  assert.equal(checkPublishedRights({ repoRoot: root, siteDirectory: site }).problems.length, 1);
+  assert.equal(checkPublishedRights({ repoRoot: root, siteDirectory: site, inventory }).problems.length, 1);
+});
+
+test("tracked mode scans indexed and non-ignored candidate files", () => {
+  const root = testRepo();
+  const path = join(root, "docs", "copied.md");
+  write(path, LONG_MESSAGE);
+  execFileSync("git", ["-C", root, "add", "docs/copied.md"]);
+  assert(trackedFiles(root).includes(path));
+  const result = checkPublishedRights({ repoRoot: root, tracked: true, inventory });
+  assert.equal(result.problems.length, 1);
+  assert.match(result.problems[0], /docs\/copied\.md: exact official ibr-example message/);
+});
+
+test("the actual tracked repository contains no protected official expression", () => {
+  const result = checkPublishedRights({ repoRoot: defaultRepoRoot, tracked: true });
+  assert.deepEqual(result.problems, []);
+  assert(result.files.length > 700);
+});
+
+test("fails before scanning when official artefacts are missing or drifted", () => {
+  for (const message of ["Pinned artefact checksum drift: missing", "Pinned artefact checksum drift: expected a, got b"]) {
+    assert.throws(
+      () => checkPublishedRights({
+        repoRoot: testRepo(),
+        tracked: true,
+        loadInventory: () => { throw new Error(message); },
+      }),
+      new RegExp(message.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")),
+    );
+  }
 });
 
 test("decodes numeric HTML entities and JSON/JS Unicode escapes", () => {
@@ -157,12 +216,43 @@ test("inspects UTF-16LE and UTF-16BE text instead of skipping NUL bytes", () => 
 });
 
 test("protects short assertions in rule metadata without flagging ordinary prose", () => {
-  const metadata = temporaryFile("rules.json", JSON.stringify({ test: "false()" }));
-  const codeMetadata = temporaryFile("rules.js", "export const rule = { assertion: 'false()' };\n");
-  const prose = temporaryFile("notes.txt", "The expression false() is discussed here.");
+  const metadata = temporaryFile("rules.json", JSON.stringify({ test: "short()" }));
+  const codeMetadata = temporaryFile("rules.js", "export const rule = { assertion: 'short()' };\n");
+  const prose = temporaryFile("notes.txt", "The expression short() is discussed here.");
   assert.equal(inspectFiles([metadata], protectedPhrases(inventory), emptyFingerprints).length, 1);
   assert.equal(inspectFiles([codeMetadata], protectedPhrases(inventory), emptyFingerprints).length, 1);
   assert.deepEqual(inspectFiles([prose], protectedPhrases(inventory), emptyFingerprints), []);
+});
+
+test("detects protected XPath fragments despite whitespace and redundant-parenthesis formatting", () => {
+  const official = buildInventory();
+  const selected = ["aligned-ibrp-018", "aligned-ibrp-005", "ibr-sr-46"]
+    .map((id) => official.rules.find((rule) => rule.id === id));
+  assert(selected.every(Boolean), "reviewer-selected rules exist in the checksum-verified inventory");
+  const variants = [selected[0].test, selected[1].context, selected[2].test].map((expression) =>
+    `(( ${expression.replace(/([/()\[\]<>]=?)/g, " $1 ").replace(/\s+/g, " ")} ))`,
+  );
+  const xpathInventory = { rules: selected };
+  for (const [name, value] of [["payee.txt", variants[0]], ["amount.txt", variants[1]], ["cardinality.txt", variants[2]]]) {
+    const path = temporaryFile(name, `Independent evidence quotes ${value}.`);
+    assert.equal(inspectFiles([path], protectedPhrases(xpathInventory), emptyFingerprints).length, 1, name);
+  }
+});
+
+test("rejects base64-obscured protected content without storing an encoded official fixture", () => {
+  const encodedMessage = temporaryFile("encoded-message.txt", Buffer.from(LONG_MESSAGE).toString("base64"));
+  const encodedExpression = temporaryFile(
+    "encoded-expression.txt",
+    Buffer.from("exists ( cbc:ExampleIdentifier )").toString("base64"),
+  );
+  for (const path of [encodedMessage, encodedExpression]) {
+    assert.equal(inspectFiles([path], protectedPhrases(inventory), emptyFingerprints).length, 1);
+  }
+});
+
+test("does not treat ordinary synthetic XML paths as XPath expressions", () => {
+  const path = temporaryFile("fixture.xml", "<cac:Party><cbc:ID>synthetic</cbc:ID></cac:Party>");
+  assert.deepEqual(inspectFiles([path], protectedPhrases(inventory), emptyFingerprints), []);
 });
 
 test("canonical XML fingerprint rejects a reformatted official example", () => {

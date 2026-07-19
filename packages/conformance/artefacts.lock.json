@@ -16,6 +16,17 @@
       "extractGlob": "xsd/*"
     }
   ],
+  "compiled": {
+    "compiler": "xslt3@2.7.0",
+    "pint": {
+      "sourceSha256": "14da33f835748e8c23bf14ae15a4e80bf3134033fe7e35c5dec43c560831c9d1",
+      "sefSha256": "5d9ec79573280526ee0a3de5bf7bbc26b008ab7eee4f641640ae14377863e2e7"
+    },
+    "aligned": {
+      "sourceSha256": "109989ddd7ffcf5ee230496633aa3f0918de5fa0283fb2476c5e0afb282818e7",
+      "sefSha256": "e38d4b2dcc4c97d019cbe66ff894e4cc89c5ec041784fca93784ccdc706f4da8"
+    }
+  },
   "files": {
     "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch": "9248a6e29dafb857993e6915b5fa47bae38091c74fdfe1014faa1744700936ac",
     "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.sch": "5016cb5aec7945185955e0950d2825ea83caa91c328d683a5c351bbe5733cd75",

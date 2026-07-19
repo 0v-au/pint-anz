@@ -1,6 +1,6 @@
 /**
- * Consistency checks between rule-inventory.json, coverage.json, and the
- * fixtures manifest. CI fails when any of the three drift apart.
+ * Consistency checks between the rights-safe rule projection, coverage.json,
+ * and the fixtures manifest. CI fails when any of the three drift apart.
  */
 import { describe, expect, it } from "vitest";
 import { manifest } from "@pint-anz/fixtures";
@@ -20,13 +20,14 @@ describe("coverage bookkeeping", () => {
     expect(manifest.ruleset.version).toBe(inventory.rulesetVersion);
   });
 
-  it("uses only known statuses, with justification where required", () => {
+  it("uses only known statuses, with an independent observation where required", () => {
     const known = new Set(Object.keys(coverage.statuses));
     for (const [id, entry] of Object.entries(coverage.rules)) {
       expect(known, `${id}: unknown status ${entry.status}`).toContain(entry.status);
       if (["valid-covered", "not-applicable", "blocked"].includes(entry.status)) {
-        expect(entry.justification, `${id}: ${entry.status} requires a justification`).not.toBe("");
+        expect(entry.observation, `${id}: ${entry.status} requires an observation`).not.toBe("");
       }
+      expect(entry).not.toHaveProperty("justification");
     }
   });
 

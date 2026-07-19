@@ -30,13 +30,24 @@ export function sha256File(path) {
 }
 
 /** Throws when any pinned artefact on disk differs from the lock file. */
-export function verifyPinnedFiles() {
-  const lock = readLock();
+export function verifyPinnedFiles({ lock = readLock(), baseDir = artefactsDir } = {}) {
   const drifted = [];
+  for (const download of lock.downloads ?? []) {
+    let actual;
+    try {
+      actual = sha256File(`${baseDir.replace(/\/$/, "")}/${download.name}`);
+    } catch {
+      drifted.push(`${download.name}: missing retained download archive`);
+      continue;
+    }
+    if (actual !== download.sha256) {
+      drifted.push(`${download.name}: expected ${download.sha256}, got ${actual}`);
+    }
+  }
   for (const [relative, expected] of Object.entries(lock.files)) {
     let actual;
     try {
-      actual = sha256File(artefactsDir + relative);
+      actual = sha256File(`${baseDir.replace(/\/$/, "")}/${relative}`);
     } catch {
       drifted.push(`${relative}: missing (run \`pnpm --filter @pint-anz/conformance artefacts\`)`);
       continue;

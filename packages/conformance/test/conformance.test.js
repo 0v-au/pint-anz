@@ -9,11 +9,14 @@
  * - rejected fixtures must be stopped by the receiver preflight
  */
 import { fileURLToPath } from "node:url";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import { manifest, fixtureUrl } from "@pint-anz/fixtures";
 import checkedInInventory from "../rule-inventory.json" with { type: "json" };
-import { verifyPinnedFiles } from "../src/artefacts.js";
-import { buildInventory } from "../src/inventory.js";
+import { sha256, verifyPinnedFiles } from "../src/artefacts.js";
+import { buildInventory, buildRuleProjection } from "../src/inventory.js";
 import { validateDocument } from "../src/validate.js";
 
 beforeAll(() => {
@@ -21,13 +24,41 @@ beforeAll(() => {
 });
 
 describe("artefact and inventory drift", () => {
-  it("rule-inventory.json matches the pinned Schematron sources", () => {
-    expect(buildInventory()).toEqual(checkedInInventory);
+  it("the rights-safe rule projection matches the pinned Schematron sources", () => {
+    const inventory = buildInventory();
+    expect(buildRuleProjection(inventory)).toEqual(checkedInInventory);
+    expect(checkedInInventory.rules).toHaveLength(245);
+    for (const rule of checkedInInventory.rules) {
+      expect(Object.keys(rule).sort()).toEqual(["family", "id", "kind", "ruleset", "severity"]);
+    }
   });
 
   it("manifest pins the same ruleset version as the lock file", () => {
     const lock = verifyPinnedFiles();
     expect(manifest.ruleset.version).toBe(lock.rulesetVersion);
+  });
+
+  it("rejects missing and checksum-drifted pinned files", () => {
+    const baseDir = mkdtempSync(join(tmpdir(), "pint-anz-pins-"));
+    writeFileSync(join(baseDir, "drifted.sch"), "different");
+    const lock = { files: {
+      "missing.sch": sha256(Buffer.from("missing")),
+      "drifted.sch": sha256(Buffer.from("expected")),
+    } };
+    expect(() => verifyPinnedFiles({ lock, baseDir })).toThrow(/missing\.sch: missing[\s\S]*drifted\.sch: expected .* got/);
+  });
+
+  it("rejects missing and checksum-drifted retained download archives", () => {
+    const baseDir = mkdtempSync(join(tmpdir(), "pint-anz-downloads-"));
+    writeFileSync(join(baseDir, "drifted.zip"), "different");
+    const lock = {
+      downloads: [
+        { name: "missing.zip", sha256: sha256(Buffer.from("missing")) },
+        { name: "drifted.zip", sha256: sha256(Buffer.from("expected")) },
+      ],
+      files: {},
+    };
+    expect(() => verifyPinnedFiles({ lock, baseDir })).toThrow(/missing\.zip: missing retained download archive[\s\S]*drifted\.zip: expected .* got/);
   });
 });
 

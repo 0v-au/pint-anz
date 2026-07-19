@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, extname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildInventory } from "../packages/conformance/src/inventory.js";
 
 export const defaultRepoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const prohibitedExtensions = new Set([".sch", ".xslt", ".xsl", ".xsd", ".zip", ".gc"]);
@@ -42,6 +43,89 @@ function normalizedText(value) {
     .replace(/<\/?[A-Za-z][^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function decodedBase64Text(value) {
+  const decoded = [];
+  for (const match of String(value).matchAll(/(?<![A-Za-z0-9+/_-])([A-Za-z0-9+/_-]{24,}={0,2})(?![A-Za-z0-9+/_-])/g)) {
+    const token = match[1];
+    try {
+      const normalized = token.replace(/-/g, "+").replace(/_/g, "/");
+      const bytes = Buffer.from(normalized, "base64");
+      const text = decodeText(bytes);
+      if (bytes.length >= 18 && text.length > 0 && [...text].filter((character) => /[\t\n\r\x20-\x7e]/.test(character)).length / text.length >= 0.9) {
+        decoded.push(text);
+      }
+    } catch {
+      // Ignore text that only resembles base64.
+    }
+  }
+  return decoded.join("\n");
+}
+
+export function canonicalXPath(value) {
+  let canonical = decodeEscapes(String(value)).replace(/\s+/g, "").trim();
+  const enclosesWholeExpression = () => {
+    if (!canonical.startsWith("(") || !canonical.endsWith(")")) return false;
+    let depth = 0;
+    let quote = "";
+    for (let index = 0; index < canonical.length; index += 1) {
+      const character = canonical[index];
+      if (quote) {
+        if (character === quote) quote = "";
+        continue;
+      }
+      if (character === "'" || character === '"') quote = character;
+      else if (character === "(") depth += 1;
+      else if (character === ")" && --depth === 0) return index === canonical.length - 1;
+    }
+    return false;
+  };
+  while (enclosesWholeExpression()) canonical = canonical.slice(1, -1);
+  return canonical;
+}
+
+function functionFragments(value) {
+  const fragments = [];
+  for (const match of value.matchAll(/[A-Za-z][\w-]*\s*\(/g)) {
+    const start = match.index;
+    let depth = 0;
+    let quote = "";
+    for (let index = value.indexOf("(", start); index < value.length; index += 1) {
+      const character = value[index];
+      if (quote) {
+        if (character === quote) quote = "";
+        continue;
+      }
+      if (character === "'" || character === '"') quote = character;
+      else if (character === "(") depth += 1;
+      else if (character === ")" && --depth === 0) {
+        fragments.push(value.slice(start, index + 1));
+        break;
+      }
+    }
+  }
+  return fragments;
+}
+
+function xpathSignatures(entries) {
+  const signatures = [];
+  for (const entry of entries) {
+      if (typeof entry.value !== "string" || !/[()[\]=<>|]/.test(entry.value)) continue;
+      for (const candidate of [entry.value, ...functionFragments(entry.value)]) {
+        const canonical = canonicalXPath(candidate);
+        if (canonical.length < 24 || !/[()[\]=<>|]/.test(canonical)) continue;
+        signatures.push({ ruleId: entry.ruleId, kind: entry.kind, canonical });
+      }
+  }
+  return [...new Map(signatures.map((entry) => [`${entry.kind}\0${entry.canonical}`, entry])).values()];
+}
+
+export function protectedXPathSignatures(inventory) {
+  return xpathSignatures(inventory.rules.flatMap((rule) => [
+    { ruleId: rule.id, kind: "assertion", value: rule.test },
+    { ruleId: rule.id, kind: "context", value: rule.context },
+  ]));
 }
 
 /** Layout-insensitive fingerprint; not full W3C XML C14N. */
@@ -118,6 +202,7 @@ export function inspectFiles(files, phrases, fingerprints, repoRoot = defaultRep
   const shortMetadataPhrases = phrases
     .filter((phrase) => phrase.kind !== "message" && normalizedText(phrase.value).length < 24)
     .map((phrase) => ({ ...phrase, normalized: normalizedText(phrase.value) }));
+  const xpathPatterns = xpathSignatures(phrases.filter((phrase) => phrase.kind !== "message"));
   for (const path of files) {
     const lowerName = path.toLowerCase();
     const extension = extname(lowerName);
@@ -138,11 +223,18 @@ export function inspectFiles(files, phrases, fingerprints, repoRoot = defaultRep
       problems.push(`${relative(repoRoot, path)}: reformatted official XML example`);
       continue;
     }
-    const text = decodeEscapes(decodeText(bytes));
+    const rawText = decodeText(bytes);
+    const text = decodeEscapes(`${rawText}\n${decodedBase64Text(rawText)}`);
     const normalized = normalizedText(text);
     const exact = longPhrases.find((phrase) => normalized.includes(normalizedText(phrase.value)));
     if (exact) {
       problems.push(`${relative(repoRoot, path)}: exact official ${exact.ruleId} ${exact.kind}`);
+      continue;
+    }
+    const xpath = canonicalXPath(text);
+    const equivalent = xpathPatterns.find((signature) => xpath.includes(signature.canonical));
+    if (equivalent) {
+      problems.push(`${relative(repoRoot, path)}: formatting-equivalent official ${equivalent.ruleId} ${equivalent.kind}`);
       continue;
     }
     const metadata = metadataValues(text);
@@ -206,11 +298,30 @@ export function npmPackFiles(packageDirectory) {
   });
 }
 
+export function trackedFiles(repoRoot = defaultRepoRoot) {
+  const output = execFileSync("git", ["-C", repoRoot, "ls-files", "-z", "--cached", "--others", "--exclude-standard"], {
+    encoding: "buffer",
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  return output
+    .toString("utf8")
+    .split("\0")
+    .filter(Boolean)
+    .map((path) => join(repoRoot, path));
+}
+
 function lifecycleProblems(repoRoot, packageDirectory, manifest) {
-  const command = "check-published-rights.mjs --package .";
+  const scanner = relative(packageDirectory, join(repoRoot, "scripts/check-published-rights.mjs")).split(sep).join("/");
+  const command = `node ${scanner} --package .`;
   return ["prepack", "prepublishOnly"]
-    .filter((name) => !String(manifest.scripts?.[name] ?? "").includes(command))
-    .map((name) => `${relative(repoRoot, packageDirectory)}/package.json: public package ${name} must run the rights check`);
+    .filter((name) => {
+      const steps = String(manifest.scripts?.[name] ?? "")
+        .split(/\s*&&\s*/)
+        .map((step) => step.trim())
+        .filter(Boolean);
+      return steps.at(-1) !== command;
+    })
+    .map((name) => `${relative(repoRoot, packageDirectory)}/package.json: public package ${name} must finish with the rights check as its final && command`);
 }
 
 function siteFiles(siteDirectory) {
@@ -255,24 +366,35 @@ export function checkPublishedRights({
   repoRoot = defaultRepoRoot,
   packageDirectory,
   siteDirectory,
+  tracked = false,
   verifyFingerprints = false,
+  inventory,
+  loadInventory = buildInventory,
 } = {}) {
-  if (packageDirectory && siteDirectory) throw new Error("use either --package or --site, not both");
-  const inventory = readJson(join(repoRoot, "packages/conformance/rule-inventory.json"));
-  const phrases = protectedPhrases(inventory);
+  if ([packageDirectory, siteDirectory, tracked].filter(Boolean).length > 1) {
+    throw new Error("use only one of --package, --site, or --tracked");
+  }
+  const transientInventory = inventory ?? loadInventory();
+  const phrases = protectedPhrases(transientInventory);
   const fingerprints = fingerprintPolicy(repoRoot);
   const problems = [];
   const files = [];
   if (siteDirectory) {
     files.push(...siteFiles(resolve(siteDirectory)));
+  } else if (tracked) {
+    files.push(...trackedFiles(repoRoot));
+  } else if (packageDirectory) {
+    const manifest = readJson(join(resolve(packageDirectory), "package.json"));
+    if (!manifest.private) files.push(...npmPackFiles(resolve(packageDirectory)));
   } else {
-    const directories = packageDirectory ? [resolve(packageDirectory)] : workspacePackageDirectories(repoRoot);
+    const directories = workspacePackageDirectories(repoRoot);
     for (const directory of directories) {
       const manifest = readJson(join(directory, "package.json"));
       if (manifest.private) continue;
-      if (!packageDirectory) problems.push(...lifecycleProblems(repoRoot, directory, manifest));
+      problems.push(...lifecycleProblems(repoRoot, directory, manifest));
       files.push(...npmPackFiles(directory));
     }
+    files.push(...trackedFiles(repoRoot));
   }
   if (verifyFingerprints) verifyExampleFingerprints(repoRoot);
   problems.push(...inspectFiles(files, phrases, fingerprints, repoRoot));
@@ -292,6 +414,7 @@ if (isMain) {
     const result = checkPublishedRights({
       packageDirectory: optionValue("--package"),
       siteDirectory: optionValue("--site"),
+      tracked: process.argv.includes("--tracked"),
       verifyFingerprints: process.argv.includes("--verify-fingerprints"),
     });
     if (result.problems.length) {

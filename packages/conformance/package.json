@@ -2,7 +2,7 @@
   "name": "@pint-anz/conformance",
   "version": "0.0.0",
   "private": true,
-  "description": "Internal coverage harness: validates the fixtures corpus against the official PINT A-NZ 1.1.2 XSD and Schematron artefacts. Never published; official artefacts are fetched at build time and stay out of every published package.",
+  "description": "Internal coverage harness: validates the fixtures corpus against explicitly provisioned, checksum-pinned PINT A-NZ 1.1.2 XSD and Schematron artefacts. Never published; official artefacts stay out of every published package.",
   "license": "MIT",
   "type": "module",
   "engines": {
@@ -10,12 +10,13 @@
   },
   "scripts": {
     "artefacts": "node scripts/fetch-artefacts.mjs",
+    "verify:artefacts": "node scripts/verify-artefacts.mjs",
     "inventory": "node scripts/build-inventory.mjs",
     "validate": "node scripts/validate-cli.mjs",
     "report": "node scripts/report-coverage.mjs",
-    "gate": "node scripts/release-gate.mjs && node ../../scripts/check-published-rights.mjs --verify-fingerprints",
-    "build": "node scripts/fetch-artefacts.mjs",
-    "pretest": "node scripts/fetch-artefacts.mjs",
+    "gate": "node scripts/verify-artefacts.mjs && node scripts/release-gate.mjs && node ../../scripts/check-published-rights.mjs --verify-fingerprints",
+    "build": "node scripts/verify-artefacts.mjs",
+    "pretest": "node scripts/verify-artefacts.mjs",
     "test": "vitest run"
   },
   "devDependencies": {

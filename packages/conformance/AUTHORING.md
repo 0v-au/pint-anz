@@ -3,6 +3,15 @@
 Working notes for adding fixtures to `packages/fixtures`. Read together with
 the root `CONTRIBUTING.md` and `packages/fixtures/parties.md`.
 
+Provision the gitignored official inputs explicitly before building or testing:
+
+```bash
+pnpm --filter @pint-anz/conformance artefacts
+```
+
+Build, test, and release commands verify this local input set and fail if it is
+missing or drifted; they never download it implicitly.
+
 ## The loop
 
 1. Write the XML under `packages/fixtures/{valid,invalid,malformed,schema-invalid}/`.
@@ -57,12 +66,13 @@ the root `CONTRIBUTING.md` and `packages/fixtures/parties.md`.
 - Email addresses use `example.com`/`example.org`; every name, address,
   reference, and amount is invented.
 
-## Rule inventory
+## Rule projection and local rule source
 
-`packages/conformance/rule-inventory.json` holds all 245 rules with their
-`context` (XPath the rule fires on), `test` (the assert that must hold), and
-`message`. Read the `test` expression carefully — the fixture must make it
-false while every other rule in both rulesets stays true.
+`packages/conformance/rule-inventory.json` holds the rights-safe identities,
+families, severities, and provenance for all 245 rules. It deliberately excludes
+official messages and expressions. Run the artefact fetch, verify the pinned
+checksums, and inspect the exact rule only in the local, gitignored Schematron
+source while authoring a fixture.
 
 ## Coverage statuses
 
@@ -70,13 +80,12 @@ Each rule you are assigned ends in exactly one state:
 
 - `invalid-covered` — you produced ≥1 single-rule negative fixture.
 - `valid-covered` — no isolated negative is possible, but a valid fixture
-  exercises the rule's context. Requires a justification.
-- `blocked` — UBL 2.1 XSD or another rule necessarily fails first (e.g.
-  cardinality already enforced by the schema, or the assert cannot be falsified
-  without also falsifying a broader rule). Requires a justification naming the
-  blocker.
+  exercises the relevant scenario. Requires an independently worded observation.
+- `blocked` — UBL 2.1 XSD, transformation failure, or another rule result
+  prevents isolation. Requires an independently worded observation naming the
+  observed blocker by identity only.
 - `not-applicable` — the rule cannot fire for any PINT A-NZ corpus document.
-  Requires a justification.
+  Requires an independently worded observation.
 
 Prefer `invalid-covered`; claim `blocked`/`not-applicable` only after actually
 trying and observing the blocker in validator output.
@@ -100,7 +109,7 @@ Write one JSON file per batch to the path you were given:
     }
   ],
   "coverage": {
-    "ibr-010": { "status": "invalid-covered", "fixtures": ["ibr-010-missing-currency"], "justification": "" }
+    "ibr-010": { "status": "invalid-covered", "fixtures": ["ibr-010-missing-currency"], "observation": "" }
   }
 }
 ```

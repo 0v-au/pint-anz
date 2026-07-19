@@ -34,7 +34,7 @@ it; it is tracked as not-consumable for coverage purposes.
 | ICD | Added `0241`, `0242`, `0243`, `0244` | accepted-value fixture uses an added ICD on a party identifier |
 | EAS | Added `0244` | accepted-value fixture uses `0244` as an endpoint scheme |
 | ISO 3166 | Updated `BS` entry (still present) | `BS` accepted as an origin-country code |
-| ISO 4217 | Added `CNH`; removed `CUC` | `CNH` accepted by the additions fixture. The `CUC` removal cannot have a single-rule negative fixture: an unlisted currency anywhere always fires at least two rules together (`ibr-cl-03`/`ibr-cl-04`/`ibr-cl-05` are pairwise coupled through the currency-consistency rules `ibr-126` and `ibr-053`) — verified empirically; recorded as blocked with justification in `coverage.json` |
+| ISO 4217 | Added `CNH`; removed `CUC` | `CNH` accepted by the additions fixture. Independent validator experiments found the removal rules inseparable from currency-consistency results; the related identities and blocked state are recorded in `coverage.json`. |
 
 The other 1.1.2 change is the new wildcard rule `IBR-SR-63`
 (`cbc:CustomizationID` must not contain `*`), which has its own negative

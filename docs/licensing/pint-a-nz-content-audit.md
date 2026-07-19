@@ -40,16 +40,17 @@ The exact operative sentence displayed in the official notice is:
 
 ## Repository findings
 
-The manual audit covered all 742 paths reported by `git ls-files` at the time of
-review. The repeatable publication check derives workspace packages from
-`pnpm-workspace.yaml` and asks npm for each public package's actual file list
-with `npm pack --dry-run --json --ignore-scripts`; private packages are skipped.
+The automated whole-repository audit covered 750 tracked and non-ignored
+candidate paths at the time of review. The repeatable publication check derives
+workspace packages from `pnpm-workspace.yaml` and asks npm for each public
+package's actual file list with `npm pack --dry-run --json --ignore-scripts`;
+private packages are skipped.
 
 | Content | Finding | Publication status / action |
 |---|---|---|
-| `packages/conformance/rule-inventory.json` | Contains 245 exact official messages, XPath contexts, and assertion/report tests extracted from the two pinned Schematron files. | High risk. The package is private and the file is not in an npm pack, but it is tracked in the source repository. Keep it out of all published artefacts; replace it with a rights-safe identity projection if the source repository itself is made public or OpenPeppol does not approve this use. |
-| `packages/conformance/coverage.json` and generated `COVERAGE.md` | Project-authored validator observations for 245 rules. Nine justifications include an exact assertion expression; many describe assertion behaviour and XML locations in original technical language. | Not in an npm pack. Preserve the observations as internal evidence, but remove exact XPath quotations before publishing the report or migrate public coverage to status, fixture IDs, and independently written summaries. |
-| `packages/conformance/artefacts.lock.json` | URLs and SHA-256 digests only. Downloaded official archives are under gitignored `artefacts/`. | Rights-safe provenance. Keep the archives untracked and outside package/static roots. |
+| `packages/conformance/rule-inventory.json` | Contains a rights-safe projection of 245 rule identities: ruleset, family, result kind, severity, version, source URL, and source digests. It contains no official message, XPath context, or assertion/report expression. | Suitable as provenance and identity metadata under this project's conservative policy. CI rebuilds it from the local checksum-verified sources and fails on divergence. |
+| `packages/conformance/coverage.json` and generated `COVERAGE.md` | Project-authored evidence for 245 rule identities: coverage state, fixture links, and detailed independent validator observations. | Exact official assertion and context quotations have been replaced with independently worded descriptions. The public report is regenerated deterministically and scanned before release. |
+| `packages/conformance/artefacts.lock.json` | URLs and SHA-256 digests for retained downloads and extracted rule sources, plus deterministic compiled-validator digests tied to the pinned sources and compiler. Downloaded official archives are under gitignored `artefacts/`. | Rights-safe provenance. Build, test, and release verify the retained ZIPs, all extracted UBL XSD members, rule sources, and compiled validators without publishing them. |
 | `packages/conformance/AUTHORING.md` and `CODELISTS.md` | Authoring instructions and project analysis; they refer contributors to locally downloaded rule tests. | Private package/source documentation. Do not copy exact tests into public authoring output. |
 | `packages/fixtures/official-examples-map.md` | Names the 19 official examples and records structural features observed in them. Its former statement that no identifiers were copied was incorrect and was fixed by this audit: the four identifiers in `parties.md` intentionally come from the official examples; party names, addresses, references, and amounts are project-authored. | Excluded by the fixtures package `files` allowlist. Retain as provenance; do not publish it without a separate review. |
 | `packages/fixtures/{valid,invalid,...}`, `parties.md`, and `manifest.json` | 214 project fixtures use targeted, project-authored mutations. The four checksum-valid ABN/NZBN values are official specification fixture identifiers and are reused throughout; provenance, register lookup date, and live-use limits are documented. An exact-message scan found no official rule message outside the inventory. | Published by `@pint-anz/fixtures`. Treat the identifiers as provenance-labelled specification examples, never as reserved or safe for live use. Automated checks cover exact official expressions and archive formats, but authors must still review examples for close derivation because semantic similarity cannot be reliably detected automatically. |
@@ -57,12 +58,13 @@ with `npm pack --dry-run --json --ignore-scripts`; private packages are skipped.
 | `packages/lint-action`, `packages/lookup` | No official rules or examples found. The Action bundle contains only downloader/validator code and dependency licences. | No issue found in the reviewed outputs. |
 | Root docs, prompts, ADRs and task files | Project plans and short references to the copyright restriction; no catalogue of official wording. | Not npm/static output. Maintain attribution and the independent-interpretation terminology. |
 
-The exact-expression scan found no exact official message outside
-`rule-inventory.json`. It found nine exact test expressions in the two coverage
-representations. Simple XML paths are not treated as protected phrases because
-they necessarily occur in synthetic UBL invoices. Distinctive contexts with
-predicates or operators are checked; all contextual reuse remains subject to
-human review when published as prose.
+After the migration, the whole-repository expression scan found no official rule
+message, assertion, distinctive XPath context, or protected XPath fragment in
+tracked or non-ignored candidate files. The scan canonicalises insignificant
+XPath whitespace and redundant outer parentheses. Simple XML paths are not
+treated as protected phrases because they necessarily occur in synthetic UBL
+invoices. All contextual reuse remains subject to human review when published
+as prose.
 
 ## Rights-safe migration plan
 
@@ -70,13 +72,13 @@ Until written permission is recorded:
 
 1. Keep the checksum-verified official archives and the full extracted inventory
    local to the private conformance build. Never commit or pack the archives.
-2. Before a public-source release, replace the tracked full inventory with a
-   deterministic projection containing only rule ID, ruleset family, severity,
-   version, source URL, and source digests. Rebuild and compare that projection
-   against the locally downloaded Schematron in CI so drift detection remains.
-3. Preserve conformance evidence as fixture IDs, observed fired rule IDs,
-   coverage state, tool/version/digest, and independently authored observations.
-   Rewrite the nine exact test quotations and do not publish `COVERAGE.md` as-is.
+2. Keep the tracked deterministic projection limited to rule ID, ruleset family,
+   severity, result kind, version, source URL, and source digests. Rebuild and
+   compare it against the locally downloaded Schematron in CI so drift detection
+   remains.
+3. Preserve conformance evidence as fixture IDs, observed rule IDs, coverage
+   state, version/digest, and independently authored observations. Regenerate
+   `COVERAGE.md` from that evidence and run the tracked-content scan.
 4. Publish only independently authored Project Interpretations. Link to the
    official page and instruct implementers to download, checksum-verify, and
    inspect the exact rule locally. Do not describe these pages as official
@@ -87,12 +89,22 @@ Until written permission is recorded:
    deliberately amend the automated policy; absence of such a record means no
    permission.
 
-The current npm boundary is verified by `pnpm rights:check`. Every public
+The tracked source and current npm boundary are verified by `pnpm rights:check`.
+The scan derives protected expressions transiently from the checksum-verified
+local sources; a missing or drifted artefact fails the check. Every public
 package runs the same focused check from `prepack` and `prepublishOnly`; npm file
 discovery uses `--ignore-scripts`, so that inspection does not recurse into the
 lifecycle hook. The conformance gate additionally uses
-`--verify-fingerprints`, recomputing the complete named set against all 19 XML
-examples in the checksum-pinned local archive.
+`--verify-fingerprints` and the scanner's default mode, recomputing the complete
+named set against all 19 XML examples and inspecting both the tracked repository
+and each public workspace's actual post-build npm pack file list.
+
+The retained resource and UBL ZIPs are verified against tracked SHA-256 values.
+Every extracted `xsd/*` member used by UBL validation is compared byte-for-byte
+with the verified UBL archive. Saxon-JS compilation runs with fixed build-time
+metadata so the complete SEF bytes, including Saxon's internal checksum, are
+deterministic and checked against tracked output digests and a source/compiler
+stamp. The local stamp is corroborating state, not the trust anchor.
 
 The checked-in `official-example-fingerprints.json` records a filename, raw
 SHA-256, and layout-insensitive canonical XML SHA-256 for each example. The
@@ -113,8 +125,9 @@ Those cases require editorial and, where needed, qualified legal review.
 
 ## Release decision
 
-**Conditional pass for current npm packages; fail for publishing the tracked
-full inventory or coverage report.** T009 and the static site may proceed only
-with the rights-safe projection and Project Interpretation model. The repository
-should not be represented as cleared for publication while the full inventory
-is tracked and permission remains unresolved.
+**Conditional pass for the current tracked source, coverage report, and npm
+packages.** The full official inventory remains local and untracked. T009 and
+the static site may proceed only with the rights-safe projection and Project
+Interpretation model. This technical boundary is not legal clearance: permission
+is still unresolved, and broader official content must not be introduced without
+the dated review described above.
