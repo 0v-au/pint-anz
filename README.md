@@ -1,104 +1,145 @@
-# PINT A-NZ Toolkit
+# PINT A-NZ toolkit
 
-Open-source developer tools for [Peppol](https://peppol.org) e-invoicing in Australia and New Zealand.
+Build, test and troubleshoot [Peppol](https://peppol.org) e-invoicing for Australia and New Zealand.
 
-Everything here is built around **PINT A-NZ** — the invoice specification used on the Australian and New Zealand Peppol network since May 2025 — because almost all existing Peppol tooling targets the EU's BIS Billing 3.0 and doesn't understand A-NZ rules, identifiers, or GST.
+This toolkit provides open source, MIT-licensed tools for the PINT A-NZ invoice specification. It helps teams validate documents, test integrations and check advertised receiving capabilities without relying on EU-specific Peppol tooling.
 
-> **Why now?** Australian federal agencies must process 30% of invoices via eInvoicing from July 2026 and support fully automated sending and receiving by **December 2026**. Thousands of suppliers, agencies, and their integrators are wiring this up right now, largely without purpose-built tools.
+Try the linter below, or [make your first contribution](./CONTRIBUTING.md). Bug reports, documentation fixes and small pull requests are welcome.
 
-## Tools
+## Start here
 
-| Package | What it does | Status |
+Validate a UBL invoice or credit note with the PINT A-NZ 1.1.2 ruleset:
+
+```bash
+pnpm add -D @pint-anz/lint
+pnpm exec pint-anz-lint ruleset install 1.1.2
+pnpm exec pint-anz-lint invoice.xml --ruleset-version 1.1.2 --offline
+```
+
+The ruleset installer downloads and verifies the official validation resources. After installation, validation can run without network access.
+
+See the [`@pint-anz/lint` guide](./packages/lint) for library use, CI setup, security details and exit codes.
+
+## Choose a tool
+
+| Package | Use it to | Status |
 |---|---|---|
-| [`lint`](./packages/lint) | Validate UBL invoices and credit notes against pinned PINT A-NZ rules from the CLI or CI. | Implemented |
-| [`lint-action`](./packages/lint-action) | Run the linter as a GitHub Action with pull request annotations, a job summary, and a JSON report. | Implemented |
-| [`fixtures`](./packages/fixtures) | Synthetic valid, invalid, and malformed PINT A-NZ documents with a machine-readable manifest. | Complete for 1.1.2 |
-| [`lookup`](./packages/lookup) | Discover an ABN/NZBN participant and its advertised PINT A-NZ billing capabilities. | Implemented |
-| [`rules`](./packages/rules) | Human-readable explanations of every PINT A-NZ business rule: what it means, a failing example, how to fix it. | Planned |
-| [`mapper`](./packages/mapper) | A typed, minimal JSON schema that compiles to compliant PINT A-NZ UBL XML. | Planned |
-| [`playground`](./packages/playground) | A local fake Peppol counterparty in a Docker container: send it documents, get scripted accepts, rejects, and misbehaviour back. |  Planned |
+| [`lint`](./packages/lint) | validate UBL invoices and credit notes from the CLI, a library or CI | Available |
+| [`lint-action`](./packages/lint-action) | validate pull requests with annotations, a job summary and a JSON report | Available |
+| [`fixtures`](./packages/fixtures) | test against valid, invalid and malformed PINT A-NZ documents | Complete for 1.1.2 |
+| [`lookup`](./packages/lookup) | find an ABN or NZBN participant and its advertised billing capabilities | Available |
+| `rules` | understand each business rule and how to fix a failure | Planned |
+| `mapper` | compile a small, typed JSON model to compliant UBL XML | Planned |
+| `playground` | test against a local fake Peppol counterparty | Planned |
 
-## Lint workflow
+## Use fixtures in tests
 
-Install the exact ruleset from the official source or reviewed local archives:
-
-```bash
-pint-anz-lint ruleset install 1.1.2
-
-# Air-gapped or controlled CI
-pint-anz-lint ruleset install 1.1.2 \
-  --file /tmp/resources.zip \
-  --ubl-file /tmp/UBL-2.1.zip \
-  --offline
-```
-
-Then validate deterministically without network access:
+Install the fixture package:
 
 ```bash
-pint-anz-lint invoice.xml --ruleset-version 1.1.2 --offline
-pint-anz-lint 'test/invoices/**/*.xml' --format json --offline
+pnpm add -D @pint-anz/fixtures vitest
 ```
 
-See the [`@pint-anz/lint` documentation](./packages/lint) for cache, integrity,
-licensing, security, and exit-code behaviour.
-
-Use the current fixture corpus in tests:
+Pass the fixture to the linter like any other file. This Vitest example checks that a known-good Australian invoice passes the full validation pipeline:
 
 ```js
+import { fileURLToPath } from "node:url";
 import { fixtureUrl } from "@pint-anz/fixtures";
+import { validateFile } from "@pint-anz/lint";
+import { expect, test } from "vitest";
 
-const validInvoice = fixtureUrl("invoice-au-standard");
+test("accepts a valid Australian invoice", async () => {
+  const fixture = fileURLToPath(fixtureUrl("invoice-au-standard"));
+  const result = await validateFile(fixture);
+
+  expect(result).toMatchObject({
+    complete: true,
+    valid: true,
+    documentType: "invoice",
+    diagnostics: [],
+  });
+});
 ```
 
-Discover an advertised receiving capability using read-only Peppol SML/SMP
-lookup (outbound DNS and HTTPS; no Access Point required):
+Install the ruleset in the [start here](#start-here) step before running the test.
+
+## Check receiving capabilities
+
+Use `lookup` to check whether a participant advertises support for a PINT A-NZ document. Live lookups use outbound DNS and HTTPS, but do not need a Peppol Access Point.
 
 ```bash
-pint-anz-lookup --abn "$ABN" --capability invoice
+pnpm add -D @pint-anz/lookup
+pnpm exec pint-anz-lookup --abn "$ABN" --capability invoice
 ```
 
-See the [`@pint-anz/lookup` documentation](./packages/lookup) for result-state,
-trust, privacy, caching, acceptable-use, and versioning limits.
+An advertised capability does not prove that an endpoint is operational or that it will accept an invoice. See the [`@pint-anz/lookup` guide](./packages/lookup) for result states, trust, privacy and caching limits.
 
-## What is PINT A-NZ, in one paragraph?
+## How PINT A-NZ works
 
-Peppol documents are UBL 2.1 XML. The structure (XSD) is global, but each jurisdiction layers its own business rules on top. PINT A-NZ is the Australia/New Zealand layer: ABN- and NZBN-based participant identifiers, Australian tax invoice data requirements, GST treatment, and a Schematron ruleset maintained for the A-NZ Peppol Authorities (the ATO and MBIE). An invoice that validates against EU rules can still be rejected on the A-NZ network — which is precisely the gap this toolkit exists to close.
+Peppol invoices use UBL 2.1 XML. UBL defines the shared document structure, while each jurisdiction adds its own business rules.
+
+PINT A-NZ adds the rules used in Australia and New Zealand. These cover participant identifiers such as ABNs and NZBNs, tax invoice data and GST treatment. The A-NZ Peppol Authorities maintain the Schematron ruleset.
+
+An invoice can pass EU validation and still fail on the A-NZ network. This toolkit helps you find those differences before you send it.
 
 ## Design principles
 
-1. **Deterministic setup.** Rulesets are explicitly versioned, integrity-checked, cached, and usable offline after installation.
-2. **Errors a human can act on.** Raw Schematron output tells you *that* rule `aligned-ibrp-052-aunz` failed. We tell you *what that means* and *how to fix it*.
-3. **CI-first.** Exit codes, machine-readable output (`--format json`), and GitHub Actions ship with every tool.
-4. **The fixtures are the spec.** Each rule gets a passing and a failing document. If behaviour is ambiguous, we add a fixture, not a paragraph.
-5. **Track the ruleset.** PINT A-NZ is versioned and moves. Tools pin a ruleset version and digest and make upgrades explicit, so a spec release never silently breaks your build.
+1. Pin every ruleset version. Verify its integrity and make upgrades explicit.
+2. Explain errors in terms people can act on, including what failed and how to fix it.
+3. Support CI with stable exit codes, machine-readable output and GitHub Actions.
+4. Prove behaviour with passing and failing fixtures.
+5. Run offline after the required ruleset has been installed.
 
-## Repo layout
+## Contribute
 
+Contributions of every size are welcome. You do not need to be a Peppol expert to help.
+
+Useful ways to get involved include:
+
+- [report a confusing validation result or integration problem](https://github.com/0v-au/pint-anz/issues/new)
+- improve documentation or error messages
+- add a focused test fixture for a validation failure
+- fix a bug or work on a planned tool
+
+Start with the [contribution guide](./CONTRIBUTING.md). It explains how to prepare fixtures safely, set up the repository and submit a focused pull request.
+
+Never share a real invoice or identifying business data. If you cannot create a safe reproduction, describe the problem instead.
+
+## Develop locally
+
+You need Node.js 20 or later, pnpm 9 or later, and `xmllint` from libxml2.
+
+```bash
+git clone https://github.com/0v-au/pint-anz.git
+cd pint-anz
+pnpm install
+pnpm build
+pnpm test
 ```
+
+This repository uses pnpm workspaces. Each tool lives under `packages/` and can be developed, tested and published independently.
+
+```text
 packages/
-  lint/          CLI + library
+  lint/          CLI and library
   lint-action/   GitHub Action wrapper
-  fixtures/      golden & broken documents (published as a package)
-  lookup/        participant readiness checks
-  rules/         rule documentation (builds the docs site)
-  mapper/        JSON → UBL compiler
+  fixtures/      test documents and manifest
+  lookup/        participant capability checks
+  rules/         business rule documentation
+  mapper/        JSON to UBL compiler
   playground/    local fake counterparty
 ```
 
-## Contributing
+## Project status
 
-Issues and PRs welcome. The most valuable contribution right now is **fixtures**: if you've hit a validation failure in the wild that isn't in the corpus, a minimal reproducing document (with anything sensitive stripped) is gold. See [CONTRIBUTING.md](./CONTRIBUTING.md).
+The PINT A-NZ 1.1.2 fixture corpus, linter and participant lookup are implemented. See [TODO.md](./TODO.md) and the generated conformance reports for coverage details, planned work and known upstream validation limits.
 
-## Status & roadmap
+## Independence and trademarks
 
-The PINT A-NZ 1.1.2 fixture corpus and lint package are implemented. See
-[TODO.md](./TODO.md) and the generated conformance reports for coverage details
-and known upstream validation limits.
+This is an independent open source project. It is not affiliated with or endorsed by OpenPeppol AISBL, the Australian Taxation Office, or the New Zealand Ministry of Business, Innovation and Employment.
 
-## Trademark & affiliation
-
-This is an independent open-source project. It is **not** affiliated with or endorsed by OpenPeppol AISBL, the Australian Taxation Office, or the NZ Ministry of Business, Innovation & Employment. "Peppol" is a registered trademark of OpenPeppol AISBL, used here only to describe interoperability.
+Peppol is a registered trademark of OpenPeppol AISBL. The name is used here only to describe interoperability.
 
 ## License
 
-[MIT](./LICENSE)
+Use, change and share this project under the [MIT License](./LICENSE).
