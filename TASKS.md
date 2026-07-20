@@ -1,6 +1,6 @@
 # Tasks
 > Sources: SPEC.md and prompts/README.md · Loop started: 2026-07-16
-> Progress: 10/18 done · 0 in-progress · 0 blocked · 8 todo
+> Progress: 10/18 done · 1 in-progress · 0 blocked · 7 todo
 
 ---
 
@@ -137,7 +137,7 @@
 ---
 
 ## T009 — Scaffold the rights-safe rule catalogue and typed API
-- **Status**: todo
+- **Status**: in-progress
 - **Prompt ref**: `prompts/rules.md`
 - **Acceptance**: `@pint-anz/rules` builds and packs a version-pinned, rights-safe snapshot containing exactly the 245 official rule identities and reviewed coverage records; its schema keeps `official`, `coverage`, `applicability`, and optional project-authored `guidance` structures distinct; each record has one reviewed primary topic and zero or more related topics from a controlled vocabulary; the typed API exposes a readonly `rules` collection, `getRule(id)` returning `undefined` for unknown identifiers, and `findRules(filters)` for version, jurisdiction, document type, topic, severity, family, coverage, and editorial state; schema, provenance, duplicate-ID, fixture-reference, export, and published-content checks pass without a runtime dependency on private conformance data.
 - **Depends on**: T008, T012, T018; existing `@pint-anz/fixtures` and `@pint-anz/lint`
