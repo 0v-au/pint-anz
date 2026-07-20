@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "topics": [
+    "allowances-and-charges",
+    "amounts-and-totals",
+    "attachments",
+    "codelists",
+    "dates-and-periods",
+    "general",
+    "identifiers",
+    "invoice-lines",
+    "parties-and-addresses",
+    "payment",
+    "references",
+    "tax",
+    "unclassified"
+  ],
+  "jurisdictions": ["AU", "NZ", "A-NZ", "unknown"],
+  "documentTypes": ["invoice", "credit-note", "unknown"],
+  "editorialStates": ["pending", "reviewed"]
+}

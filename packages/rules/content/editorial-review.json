@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "rulesetVersion": "1.1.2",
+  "reviewedAt": "2026-07-20",
+  "reviewBasis": "Human editorial review of the checksum-verified, locally provisioned PINT A-NZ ruleset. This file records only project classifications and does not reproduce official wording or expressions.",
+  "guidanceState": "pending",
+  "groups": [
+    { "primaryTopic": "identifiers", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-001-aunz", "aligned-ibrp-002", "aligned-ibrp-sr-12-aunz", "aligned-ibrp-sr-13-aunz", "ibr-001", "ibr-002", "ibr-062", "ibr-063", "ibr-064", "ibr-065", "ibr-068", "ibr-069", "ibr-070", "ibr-076", "ibr-080", "ibr-081", "ibr-100", "ibr-103", "ibr-104", "ibr-105", "ibr-106", "ibr-113", "ibr-114", "ibr-115", "ibr-116", "ibr-120", "ibr-127", "ibr-co-26", "ibr-sr-16", "ibr-sr-23", "ibr-sr-57", "ibr-sr-63"
+    ] },
+    { "primaryTopic": "identifiers", "jurisdictions": ["AU"], "documentTypes": ["invoice", "credit-note"], "ruleIds": ["aligned-ibr-001-aunz", "aligned-ibr-004-aunz"] },
+    { "primaryTopic": "identifiers", "jurisdictions": ["NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": ["aligned-ibr-002-aunz", "aligned-ibr-005-aunz"] },
+    { "primaryTopic": "references", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-003", "aligned-ibrp-060", "aligned-ibrp-sr-43", "ibr-055", "ibr-071", "ibr-072", "ibr-078", "ibr-089", "ibr-090", "ibr-092", "ibr-094", "ibr-095", "ibr-096", "ibr-109", "ibr-cl-07", "ibr-sr-06", "ibr-sr-07", "ibr-sr-39", "ibr-sr-52", "ibr-sr-62"
+    ] },
+    { "primaryTopic": "amounts-and-totals", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-004", "aligned-ibrp-005", "aligned-ibrp-021", "aligned-ibrp-022", "aligned-ibrp-045", "aligned-ibrp-046", "aligned-ibrp-051-aunz", "aligned-ibrp-053", "ibr-012", "ibr-013", "ibr-014", "ibr-015", "ibr-024", "ibr-027", "ibr-028", "ibr-053", "ibr-084", "ibr-087", "ibr-088", "ibr-091", "ibr-093", "ibr-111", "ibr-121", "ibr-122", "ibr-123", "ibr-124", "ibr-125", "ibr-126", "ibr-co-10", "ibr-co-11", "ibr-co-12", "ibr-co-13", "ibr-co-14", "ibr-co-15", "ibr-co-16"
+    ] },
+    { "primaryTopic": "dates-and-periods", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-006", "ibr-003", "ibr-029", "ibr-030", "ibr-073", "ibr-085", "ibr-086", "ibr-097", "ibr-110", "ibr-119", "ibr-co-19", "ibr-co-20", "ibr-sr-45", "ibr-sr-49"
+    ] },
+    { "primaryTopic": "payment", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-008", "aligned-ibrp-016", "aligned-ibrp-018", "aligned-ibrp-065", "ibr-049", "ibr-066", "ibr-067", "ibr-sr-05", "ibr-sr-27", "ibr-sr-28", "ibr-sr-46", "ibr-sr-59", "ibr-sr-60"
+    ] },
+    { "primaryTopic": "payment", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice"], "ruleIds": ["aligned-ibrp-061"] },
+    { "primaryTopic": "tax", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-032-aunz", "aligned-ibrp-037-aunz", "aligned-ibrp-047-aunz", "aligned-ibrp-048-aunz", "aligned-ibrp-050-aunz", "aligned-ibrp-e-01-aunz", "aligned-ibrp-e-05-aunz", "aligned-ibrp-e-06-aunz", "aligned-ibrp-e-07-aunz", "aligned-ibrp-e-08-aunz", "aligned-ibrp-e-09-aunz", "aligned-ibrp-g-01-aunz", "aligned-ibrp-g-05-aunz", "aligned-ibrp-g-06-aunz", "aligned-ibrp-g-07-aunz", "aligned-ibrp-g-08-aunz", "aligned-ibrp-g-09-aunz", "aligned-ibrp-o-01-aunz", "aligned-ibrp-o-05-aunz", "aligned-ibrp-o-06-aunz", "aligned-ibrp-o-07-aunz", "aligned-ibrp-o-08-aunz", "aligned-ibrp-o-09-aunz", "aligned-ibrp-o-11-aunz", "aligned-ibrp-o-12-aunz", "aligned-ibrp-o-13-aunz", "aligned-ibrp-o-14-aunz", "aligned-ibrp-s-01-aunz", "aligned-ibrp-s-05-aunz", "aligned-ibrp-s-06-aunz", "aligned-ibrp-s-07-aunz", "aligned-ibrp-s-08-aunz", "aligned-ibrp-s-09-aunz", "aligned-ibrp-s-10-aunz", "aligned-ibrp-z-01-aunz", "aligned-ibrp-z-05-aunz", "aligned-ibrp-z-06-aunz", "aligned-ibrp-z-07-aunz", "aligned-ibrp-z-08-aunz", "aligned-ibrp-z-09-aunz", "aligned-ibrp-z-10-aunz", "ibr-056", "ibr-077", "ibr-sr-22", "ibr-sr-32", "ibr-sr-38", "ibr-sr-42", "ibr-sr-58", "ibr-sr-61"
+    ] },
+    { "primaryTopic": "allowances-and-charges", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-054", "aligned-ibrp-055", "aligned-ibrp-057", "aligned-ibrp-058", "ibr-031", "ibr-033", "ibr-036", "ibr-038", "ibr-041", "ibr-042", "ibr-043", "ibr-044", "ibr-082", "ibr-083", "ibr-sr-30", "ibr-sr-31"
+    ] },
+    { "primaryTopic": "invoice-lines", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-059", "ibr-016", "ibr-021", "ibr-022", "ibr-023", "ibr-025", "ibr-026", "ibr-054", "ibr-sr-34", "ibr-sr-50"
+    ] },
+    { "primaryTopic": "parties-and-addresses", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "ibr-006", "ibr-007", "ibr-008", "ibr-009", "ibr-010", "ibr-011", "ibr-017", "ibr-018", "ibr-019", "ibr-020", "ibr-057", "ibr-098", "ibr-099", "ibr-101", "ibr-102", "ibr-107", "ibr-108", "ibr-112", "ibr-sr-19", "ibr-sr-53", "ibr-sr-54", "ibr-sr-55", "ibr-sr-56"
+    ] },
+    { "primaryTopic": "attachments", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-cl-04", "ibr-052", "ibr-074", "ibr-075", "ibr-cl-24", "ibr-sr-33"
+    ] },
+    { "primaryTopic": "codelists", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": [
+      "aligned-ibrp-cl-01-aunz", "aligned-ibrp-cl-02", "ibr-004", "ibr-005", "ibr-cl-01", "ibr-cl-03", "ibr-cl-04", "ibr-cl-05", "ibr-cl-10", "ibr-cl-11", "ibr-cl-13", "ibr-cl-14", "ibr-cl-15", "ibr-cl-16", "ibr-cl-19", "ibr-cl-20", "ibr-cl-21", "ibr-cl-23", "ibr-cl-25", "ibr-cl-26"
+    ] },
+    { "primaryTopic": "general", "jurisdictions": ["A-NZ"], "documentTypes": ["invoice", "credit-note"], "ruleIds": ["ibr-079", "ibr-sr-51"] }
+  ]
+}

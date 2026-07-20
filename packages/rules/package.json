@@ -1,0 +1,48 @@
+{
+  "name": "@pint-anz/rules",
+  "version": "0.1.0",
+  "description": "Rights-safe, versioned catalogue of PINT A-NZ rule identities and project coverage.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./rules.json": "./dist/rules.snapshot.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "generate": "node scripts/build-snapshot.mjs",
+    "check:snapshot": "node scripts/build-snapshot.mjs --check",
+    "build": "pnpm check:snapshot && tsc -p tsconfig.build.json",
+    "test": "pnpm build && vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint src test scripts",
+    "prepack": "pnpm test && node ../../scripts/check-published-rights.mjs --package .",
+    "prepublishOnly": "pnpm build && pnpm test && node ../../scripts/check-published-rights.mjs --package ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/node": "^22.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.6.0",
+    "typescript-eslint": "^8.64.0",
+    "vitest": "^2.1.0"
+  },
+  "pintAnz": {
+    "rulesetVersion": "1.1.2",
+    "rulesetStatus": "active",
+    "rulesetSource": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
+    "rulesetResources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

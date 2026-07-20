@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pint-anz.0v.com.au/schema/rule-catalogue-entry.json",
+  "title": "PINT A-NZ Rule Catalogue Entry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["official", "coverage", "applicability", "editorial"],
+  "properties": {
+    "official": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rulesetVersion", "ruleset", "family", "kind", "severity", "source"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "rulesetVersion": { "type": "string", "minLength": 1 },
+        "ruleset": { "enum": ["pint", "aligned"] },
+        "family": { "type": "string", "minLength": 1 },
+        "kind": { "enum": ["assert", "report"] },
+        "severity": { "type": "string", "minLength": 1 },
+        "source": { "type": "string", "format": "uri" }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "fixtureIds"],
+      "properties": {
+        "status": { "enum": ["invalid-covered", "valid-covered", "not-applicable", "blocked", "unreviewed"] },
+        "fixtureIds": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "applicability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jurisdictions", "documentTypes"],
+      "properties": {
+        "jurisdictions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["AU", "NZ", "A-NZ", "unknown"] } },
+        "documentTypes": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "enum": ["invoice", "credit-note", "unknown"] } }
+      }
+    },
+    "editorial": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primaryTopic", "relatedTopics", "state"],
+      "properties": {
+        "primaryTopic": { "type": "string", "minLength": 1 },
+        "relatedTopics": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "state": { "enum": ["pending", "reviewed"] }
+      }
+    },
+    "guidance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "commonCauses", "fix"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "commonCauses": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "fix": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
