@@ -165,9 +165,12 @@ You need Node.js 20 or later, pnpm 9 or later, and `xmllint` from libxml2.
 git clone https://github.com/0v-au/pint-anz.git
 cd pint-anz
 pnpm install
+pnpm --filter @pint-anz/conformance run artefacts
 pnpm build
 pnpm test
 ```
+
+The artefacts step fetches and verifies the pinned official validation resources that `@pint-anz/conformance` builds against; the workspace build fails without it, so run it first, exactly as CI does (`.github/workflows/ci.yml`).
 
 This repository uses pnpm workspaces. Each tool lives under `packages/` and can be developed, tested and published independently.
 
