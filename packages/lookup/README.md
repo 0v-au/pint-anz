@@ -26,12 +26,14 @@ No Peppol Directory or general business register is searched.
 
 ## CLI
 
-Pass exactly one input form:
+`@pint-anz/lookup` is not yet published to npm. Build the CLI from a clone of
+this repository (`pnpm --filter @pint-anz/lookup build`), then pass exactly one
+input form:
 
 ```bash
-pint-anz-lookup --abn "$ABN"
-pint-anz-lookup --nzbn "$NZBN" --capability credit-note
-pint-anz-lookup \
+node packages/lookup/bin/cli.js --abn "$ABN"
+node packages/lookup/bin/cli.js --nzbn "$NZBN" --capability credit-note
+node packages/lookup/bin/cli.js \
   --participant 'iso6523-actorid-upis::<scheme>:<value>' \
   --format json
 ```
