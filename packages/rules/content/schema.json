@@ -43,8 +43,8 @@
       "additionalProperties": false,
       "required": ["primaryTopic", "relatedTopics", "state"],
       "properties": {
-        "primaryTopic": { "type": "string", "minLength": 1 },
-        "relatedTopics": { "type": "array", "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "primaryTopic": { "enum": ["allowances-and-charges", "amounts-and-totals", "attachments", "codelists", "dates-and-periods", "general", "identifiers", "invoice-lines", "parties-and-addresses", "payment", "references", "tax", "unclassified"] },
+        "relatedTopics": { "type": "array", "uniqueItems": true, "items": { "enum": ["allowances-and-charges", "amounts-and-totals", "attachments", "codelists", "dates-and-periods", "general", "identifiers", "invoice-lines", "parties-and-addresses", "payment", "references", "tax", "unclassified"] } },
         "state": { "enum": ["pending", "reviewed"] }
       }
     },

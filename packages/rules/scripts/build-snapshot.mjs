@@ -24,6 +24,66 @@ function assertAllowed(values, allowed, label) {
   for (const value of values) if (!allowed.includes(value)) fail(`${label} contains unknown value ${value}`);
 }
 
+function assertArray(value, label) {
+  if (!Array.isArray(value)) fail(`${label} must be an array`);
+}
+
+function assertNonEmptyString(value, label) {
+  if (typeof value !== "string" || value.length === 0) fail(`${label} must be a non-empty string`);
+}
+
+function assertUri(value, label) {
+  assertNonEmptyString(value, label);
+  try {
+    new URL(value);
+  } catch {
+    fail(`${label} must be an absolute URI`);
+  }
+}
+
+function assertExactKeys(value, required, optional, label) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) fail(`${label} must be an object`);
+  const allowed = new Set([...required, ...optional]);
+  for (const key of required) if (!(key in value)) fail(`${label} is missing ${key}`);
+  for (const key of Object.keys(value)) if (!allowed.has(key)) fail(`${label} has unexpected ${key}`);
+}
+
+function validateCatalogueEntry(entry, vocabulary, label) {
+  assertExactKeys(entry, ["official", "coverage", "applicability", "editorial"], ["guidance"], label);
+  assertExactKeys(entry.official, ["id", "rulesetVersion", "ruleset", "family", "kind", "severity", "source"], [], `${label}.official`);
+  for (const key of ["id", "rulesetVersion", "family", "severity", "source"]) assertNonEmptyString(entry.official[key], `${label}.official.${key}`);
+  assertUri(entry.official.source, `${label}.official.source`);
+  assertAllowed([entry.official.ruleset], ["pint", "aligned"], `${label}.official.ruleset`);
+  assertAllowed([entry.official.kind], ["assert", "report"], `${label}.official.kind`);
+  assertExactKeys(entry.coverage, ["status", "fixtureIds"], [], `${label}.coverage`);
+  assertAllowed([entry.coverage.status], vocabulary.coverageStatuses, `${label}.coverage.status`);
+  assertArray(entry.coverage.fixtureIds, `${label}.coverage.fixtureIds`);
+  unique(entry.coverage.fixtureIds, `${label}.coverage.fixtureIds`);
+  for (const fixtureId of entry.coverage.fixtureIds) assertNonEmptyString(fixtureId, `${label}.coverage.fixtureId`);
+  assertExactKeys(entry.applicability, ["jurisdictions", "documentTypes"], [], `${label}.applicability`);
+  for (const [key, allowed] of [["jurisdictions", vocabulary.jurisdictions], ["documentTypes", vocabulary.documentTypes]]) {
+    const values = entry.applicability[key];
+    assertArray(values, `${label}.applicability.${key}`);
+    if (values.length === 0) fail(`${label}.applicability.${key} must not be empty`);
+    unique(values, `${label}.applicability.${key}`);
+    assertAllowed(values, allowed, `${label}.applicability.${key}`);
+  }
+  assertExactKeys(entry.editorial, ["primaryTopic", "relatedTopics", "state"], [], `${label}.editorial`);
+  assertAllowed([entry.editorial.primaryTopic], vocabulary.topics, `${label}.editorial.primaryTopic`);
+  assertArray(entry.editorial.relatedTopics, `${label}.editorial.relatedTopics`);
+  unique(entry.editorial.relatedTopics, `${label}.editorial.relatedTopics`);
+  assertAllowed(entry.editorial.relatedTopics, vocabulary.topics, `${label}.editorial.relatedTopics`);
+  if (entry.editorial.relatedTopics.includes(entry.editorial.primaryTopic)) fail(`${label}.editorial.relatedTopics repeats the primary topic`);
+  assertAllowed([entry.editorial.state], vocabulary.editorialStates, `${label}.editorial.state`);
+  if (entry.guidance !== undefined) {
+    assertExactKeys(entry.guidance, ["summary", "commonCauses", "fix"], [], `${label}.guidance`);
+    assertNonEmptyString(entry.guidance.summary, `${label}.guidance.summary`);
+    assertNonEmptyString(entry.guidance.fix, `${label}.guidance.fix`);
+    assertArray(entry.guidance.commonCauses, `${label}.guidance.commonCauses`);
+    for (const cause of entry.guidance.commonCauses) assertNonEmptyString(cause, `${label}.guidance.commonCause`);
+  }
+}
+
 export function buildSnapshot(root = repoRoot) {
   const inventory = readJson(join(root, "packages/conformance/rule-inventory.json"));
   const coverage = readJson(join(root, "packages/conformance/coverage.json"));
@@ -42,6 +102,20 @@ export function buildSnapshot(root = repoRoot) {
     ["editorial review", review.rulesetVersion],
   ]) if (candidate !== version) fail(`${label} version ${candidate} does not match ${version}`);
 
+  const resources = lock.downloads.find((download) => download.name === "resources.zip");
+  if (!resources) fail("artefact lock does not contain resources.zip");
+  if (inventory.resourcesUrl !== resources.url || inventory.resourcesSha256 !== resources.sha256) {
+    fail("inventory resources provenance does not match the artefact lock");
+  }
+  if (!["aligned", "pint"].every((ruleset) => ruleset in inventory.sources) || Object.keys(inventory.sources).length !== 2) {
+    fail("inventory source provenance must contain exactly aligned and pint records");
+  }
+  for (const [ruleset, source] of Object.entries(inventory.sources)) {
+    if (lock.files[source.path] !== source.sha256) {
+      fail(`${ruleset} source provenance does not match the artefact lock`);
+    }
+  }
+
   if (inventory.rules.length !== 245 || inventory.counts.total !== 245) {
     fail(`expected exactly 245 identities, found ${inventory.rules.length}`);
   }
@@ -50,6 +124,7 @@ export function buildSnapshot(root = repoRoot) {
 
   const reviewById = new Map();
   for (const group of review.groups) {
+    assertArray(group.ruleIds, "editorial review rule IDs");
     assertAllowed([group.primaryTopic], vocabulary.topics, "primary topic");
     assertAllowed(group.jurisdictions, vocabulary.jurisdictions, `${group.primaryTopic} jurisdictions`);
     assertAllowed(group.documentTypes, vocabulary.documentTypes, `${group.primaryTopic} document types`);
@@ -64,6 +139,7 @@ export function buildSnapshot(root = repoRoot) {
   if (missingReviews.length > 0) fail(`missing explicit editorial review: ${missingReviews.join(", ")}`);
   if (unknownReviews.length > 0) fail(`editorial review contains unknown identities: ${unknownReviews.join(", ")}`);
 
+  unique(manifest.fixtures.map((fixture) => fixture.id), "fixture identifiers");
   const fixtureById = new Map(manifest.fixtures.map((fixture) => [fixture.id, fixture]));
   const coverageIds = Object.keys(coverage.rules);
   unique(coverageIds, "coverage identities");
@@ -72,9 +148,11 @@ export function buildSnapshot(root = repoRoot) {
   }
 
   const source = packageJson.pintAnz.rulesetSource;
+  assertNonEmptyString(source, "package ruleset source");
   const rules = inventory.rules.map((official) => {
     const evidence = coverage.rules[official.id];
     if (!evidence) fail(`missing coverage for ${official.id}`);
+    if (evidence.status === "unreviewed") fail(`${official.id} has unreviewed coverage`);
     unique(evidence.fixtures, `${official.id} fixture references`);
     for (const fixtureId of evidence.fixtures) {
       const fixture = fixtureById.get(fixtureId);
@@ -82,10 +160,16 @@ export function buildSnapshot(root = repoRoot) {
       if (!fixture.expectedRules.includes(official.id)) {
         fail(`${fixtureId} does not declare ${official.id} in expectedRules`);
       }
+      unique(fixture.expectedRules, `${fixtureId} expected rules`);
       if (fixture.rulesetVersion !== version) fail(`${fixtureId} has mismatched ruleset version`);
     }
     const editorial = reviewById.get(official.id);
-    return {
+    const relatedTopics = editorial.relatedTopics ?? [];
+    assertArray(relatedTopics, `${official.id} related topics`);
+    assertAllowed(relatedTopics, vocabulary.topics, `${official.id} related topics`);
+    unique(relatedTopics, `${official.id} related topics`);
+    if (relatedTopics.includes(editorial.primaryTopic)) fail(`${official.id} related topics repeats primary topic`);
+    const rule = {
       official: {
         id: official.id,
         rulesetVersion: version,
@@ -105,10 +189,12 @@ export function buildSnapshot(root = repoRoot) {
       },
       editorial: {
         primaryTopic: editorial.primaryTopic,
-        relatedTopics: [],
+        relatedTopics: [...relatedTopics],
         state: review.guidanceState,
       },
     };
+    validateCatalogueEntry(rule, vocabulary, `rule ${official.id}`);
+    return rule;
   });
 
   return {

@@ -1,4 +1,5 @@
 import snapshot from "./rules.snapshot.json" with { type: "json" };
+import { matchesRuleFilters } from "./matches.js";
 import type { RuleCatalogueEntry, RuleFilters } from "./types.js";
 
 function deepFreeze<T>(value: T): Readonly<T> {
@@ -23,19 +24,7 @@ export function getRule(id: string): RuleCatalogueEntry | undefined {
 
 /** Find Rule Catalogue Entries matching every supplied filter. */
 export function findRules(filters: RuleFilters = {}): readonly RuleCatalogueEntry[] {
-  return rules.filter((rule) => {
-    const topics = [rule.editorial.primaryTopic, ...rule.editorial.relatedTopics];
-    return (
-      (filters.version === undefined || rule.official.rulesetVersion === filters.version) &&
-      (filters.jurisdiction === undefined || rule.applicability.jurisdictions.includes(filters.jurisdiction)) &&
-      (filters.documentType === undefined || rule.applicability.documentTypes.includes(filters.documentType)) &&
-      (filters.topic === undefined || topics.includes(filters.topic)) &&
-      (filters.severity === undefined || rule.official.severity === filters.severity) &&
-      (filters.family === undefined || rule.official.family === filters.family) &&
-      (filters.coverage === undefined || rule.coverage.status === filters.coverage) &&
-      (filters.editorialState === undefined || rule.editorial.state === filters.editorialState)
-    );
-  });
+  return rules.filter((rule) => matchesRuleFilters(rule, filters));
 }
 
 export type {
@@ -48,7 +37,7 @@ export type {
   RuleDocumentType,
   RuleEditorial,
   RuleFilters,
-  RuleGuidance,
+  ProjectInterpretation,
   RuleJurisdiction,
   RuleTopic,
 } from "./types.js";

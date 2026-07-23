@@ -11,6 +11,6 @@ export default defineConfig(
   {
     files: ["scripts/**/*.mjs"],
     extends: [js.configs.recommended],
-    languageOptions: { globals: { process: "readonly" } },
+    languageOptions: { globals: { console: "readonly", process: "readonly", URL: "readonly" } },
   },
 );

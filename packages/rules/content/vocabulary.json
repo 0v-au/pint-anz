@@ -17,5 +17,6 @@
   ],
   "jurisdictions": ["AU", "NZ", "A-NZ", "unknown"],
   "documentTypes": ["invoice", "credit-note", "unknown"],
+  "coverageStatuses": ["invalid-covered", "valid-covered", "not-applicable", "blocked", "unreviewed"],
   "editorialStates": ["pending", "reviewed"]
 }

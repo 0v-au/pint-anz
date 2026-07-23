@@ -45,7 +45,7 @@ export interface OfficialRule {
   readonly kind: "assert" | "report";
   /** Official diagnostic severity. @example "fatal" */
   readonly severity: string;
-  /** Authoritative versioned ruleset URL. @example "https://docs.peppol.eu/poac/aunz/pint-aunz/1.1.2/" */
+  /** Authoritative ruleset URL, pinned by rulesetVersion and provenance digest. @example "https://docs.peppol.eu/poac/aunz/pint-aunz/" */
   readonly source: string;
 }
 
@@ -53,13 +53,13 @@ export interface OfficialRule {
 export interface RuleCoverage {
   /** Coverage classification. @example "invalid-covered" */
   readonly status: RuleCoverageStatus;
-  /** Fixture identifiers supporting the classification. @example ["ibr-004-missing-type-code"] */
+  /** Fixture identifiers supporting the classification. @example ["ibr-004"] */
   readonly fixtureIds: readonly string[];
 }
 
 /** Explicitly reviewed applicability; unknown values are retained rather than inferred. */
 export interface RuleApplicability {
-  /** Applicable jurisdictions. @example ["unknown"] */
+  /** Applicable jurisdictions. @example ["A-NZ"] */
   readonly jurisdictions: readonly RuleJurisdiction[];
   /** Applicable billing document types. @example ["unknown"] */
   readonly documentTypes: readonly RuleDocumentType[];
@@ -67,7 +67,7 @@ export interface RuleApplicability {
 
 /** Project-controlled classification, separate from official and conformance facts. */
 export interface RuleEditorial {
-  /** Single primary topic. @example "unclassified" */
+  /** Single primary topic. @example "codelists" */
   readonly primaryTopic: RuleTopic;
   /** Additional controlled topics. @example [] */
   readonly relatedTopics: readonly RuleTopic[];
@@ -76,7 +76,7 @@ export interface RuleEditorial {
 }
 
 /** Optional independently authored Project Interpretation. */
-export interface RuleGuidance {
+export interface ProjectInterpretation {
   /** Concise project interpretation, not official wording. @example "Check the invoice type code." */
   readonly summary: string;
   /** Independently observed causes. @example ["The type code is absent."] */
@@ -87,16 +87,16 @@ export interface RuleGuidance {
 
 /** Public, rights-safe record for one Official Rule. */
 export interface RuleCatalogueEntry {
-  /** Official identity and source provenance. */
+  /** Official identity and source provenance. @example {"id":"ibr-004","rulesetVersion":"1.1.2"} */
   readonly official: OfficialRule;
-  /** Reviewed conformance evidence. */
+  /** Reviewed conformance evidence. @example {"status":"invalid-covered","fixtureIds":["ibr-004"]} */
   readonly coverage: RuleCoverage;
-  /** Explicit project applicability review. */
+  /** Explicit project applicability review. @example {"jurisdictions":["A-NZ"],"documentTypes":["invoice","credit-note"]} */
   readonly applicability: RuleApplicability;
-  /** Project editorial classification and readiness. */
+  /** Project editorial classification and readiness. @example {"primaryTopic":"codelists","relatedTopics":[],"state":"pending"} */
   readonly editorial: RuleEditorial;
-  /** Optional Project Interpretation; absent while pending. */
-  readonly guidance?: RuleGuidance;
+  /** Optional Project Interpretation; absent while pending. @example {"summary":"Check the invoice type code.","commonCauses":["The type code is absent."],"fix":"Add a supported type code and validate again."} */
+  readonly guidance?: ProjectInterpretation;
 }
 
 /** Filters supported by {@link findRules}; all supplied fields are combined with AND. */
