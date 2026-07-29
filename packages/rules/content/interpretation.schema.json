@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://pint-anz.0v.com.au/schema/project-interpretation-metadata.json",
+  "title": "PINT A-NZ Project Interpretation metadata",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ruleId",
+    "rulesetVersion",
+    "editorialState",
+    "jurisdictions",
+    "documentTypes",
+    "affectedTerms",
+    "officialRuleUrl",
+    "example"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "ruleId": { "type": "string", "minLength": 1 },
+    "rulesetVersion": { "type": "string", "minLength": 1 },
+    "editorialState": { "enum": ["draft", "reviewed"] },
+    "reviewedAt": { "type": "string", "format": "date" },
+    "jurisdictions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["AU", "NZ", "A-NZ", "unknown"] }
+    },
+    "documentTypes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "enum": ["invoice", "credit-note", "unknown"] }
+    },
+    "affectedTerms": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "officialRuleUrl": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://docs\\.peppol\\.eu/poac/aunz/2025-Q4/pint-aunz/trn-(invoice|creditnote)/rule/[^/]+/$"
+    },
+    "example": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixtureId", "patches"],
+      "properties": {
+        "fixtureId": { "type": "string", "minLength": 1 },
+        "patches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["find", "replace"],
+            "properties": {
+              "find": { "type": "string", "minLength": 1 },
+              "replace": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "editorialState": { "const": "reviewed" } },
+        "required": ["editorialState"]
+      },
+      "then": {
+        "properties": {
+          "reviewedAt": { "type": "string", "format": "date" }
+        },
+        "required": ["reviewedAt"]
+      }
+    }
+  ]
+}

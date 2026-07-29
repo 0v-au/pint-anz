@@ -16,6 +16,15 @@ describe("Rule Catalogue API", () => {
     expect(Object.isFrozen(example?.coverage.fixtureIds)).toBe(true);
     expect(Object.isFrozen(example?.applicability.jurisdictions)).toBe(true);
     expect(Object.isFrozen(example?.editorial.relatedTopics)).toBe(true);
+    expect(Object.isFrozen(example?.guidance)).toBe(true);
+    expect(Object.isFrozen(example?.guidance?.commonCauses)).toBe(true);
+  });
+
+  it("exposes the reviewed launch tranche without presenting pending rules as guidance", () => {
+    const reviewed = rules.filter((rule) => rule.editorial.state === "reviewed");
+    expect(reviewed).toHaveLength(15);
+    expect(reviewed.every((rule) => rule.guidance !== undefined)).toBe(true);
+    expect(rules.filter((rule) => rule.editorial.state === "pending").every((rule) => rule.guidance === undefined)).toBe(true);
   });
 
   it("returns an entry by identifier and undefined for an Unknown Rule", () => {

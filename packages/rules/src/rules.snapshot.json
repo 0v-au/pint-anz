@@ -6,8 +6,8 @@
   },
   "provenance": {
     "rulesetVersion": "1.1.2",
-    "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/",
-    "resources": "https://docs.peppol.eu/poac/aunz/pint-aunz/resources.zip",
+    "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/",
+    "resources": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/resources.zip",
     "resourcesSha256": "5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a",
     "sources": {
       "pint": {
@@ -30,7 +30,7 @@
         "family": "aligned-jurisdiction",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -50,7 +50,30 @@
       "editorial": {
         "primaryTopic": "identifiers",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Match an Australian seller identifier to its scheme",
+        "summary": "When the seller address identifies Australia, the legal identifier needs to be an\nABN carried under the ABN scheme. A syntactically valid identifier from another\nscheme does not become an ABN merely because it is placed in the seller record.",
+        "commonCauses": [
+          "A New Zealand party template was reused for an Australian seller.",
+          "The identifier value was changed without changing its scheme.",
+          "Country-specific party data was mapped after a generic identifier block had already been produced."
+        ],
+        "fix": "Read the seller country and legal registration data from the same verified party\nrecord. For an Australian seller, emit the verified ABN with scheme `0151`, then\nvalidate the complete document again. The fixture values are official published\nexamples whose provenance and registry-check limits are documented in\n`packages/fixtures/parties.md`; do not use them for a live transaction.",
+        "affectedTerms": [
+          "Seller country code",
+          "Seller legal identifier",
+          "Seller legal identifier scheme"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibr-001-aunz/",
+        "failingExample": {
+          "fixtureId": "aligned-ibr-001-aunz-wrong-scheme",
+          "xml": "<cac:PartyLegalEntity>\n  <cbc:CompanyID schemeID=\"0088\">9429033821733</cbc:CompanyID>\n</cac:PartyLegalEntity>"
+        },
+        "correctedExample": {
+          "xml": "<cac:PartyLegalEntity>\n  <cbc:CompanyID schemeID=\"0151\">47555222000</cbc:CompanyID>\n</cac:PartyLegalEntity>"
+        }
       }
     },
     {
@@ -61,7 +84,7 @@
         "family": "aligned-jurisdiction",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -81,7 +104,30 @@
       "editorial": {
         "primaryTopic": "identifiers",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Label a New Zealand seller's NZBN correctly",
+        "summary": "For a seller located in New Zealand, the legal identifier and its scheme must\ndescribe an NZBN consistently. The validator uses the country, identifier value,\nand scheme together rather than treating the scheme as optional metadata.",
+        "commonCauses": [
+          "A local company-number scheme was used where the interoperable NZBN scheme was needed.",
+          "The NZBN value was supplied but a default scheme remained on the XML element.",
+          "Seller country and registration fields came from different source records."
+        ],
+        "fix": "Confirm the seller's NZBN in the authoritative party data and carry it under\nscheme `0088`. Revalidate the complete document after changing the scheme. The\nfixture's NZBN is an official published example with provenance and live-use\nlimits recorded in `packages/fixtures/parties.md`.",
+        "affectedTerms": [
+          "Seller country code",
+          "Seller legal identifier",
+          "Seller legal identifier scheme"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibr-002-aunz/",
+        "failingExample": {
+          "fixtureId": "aligned-ibr-002-aunz",
+          "xml": "<cbc:CompanyID schemeID=\"0002\">9429033821733</cbc:CompanyID>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:CompanyID schemeID=\"0088\">9429033821733</cbc:CompanyID>"
+        }
       }
     },
     {
@@ -92,7 +138,7 @@
         "family": "aligned-jurisdiction",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -123,7 +169,7 @@
         "family": "aligned-jurisdiction",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -154,7 +200,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -185,7 +231,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -216,7 +262,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -236,7 +282,29 @@
       "editorial": {
         "primaryTopic": "references",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Give the buyer a routing reference",
+        "summary": "The document needs at least one buyer-facing reference that can connect it to the\nbuyer's process. A buyer reference can provide that routing key when there is no\npurchase order reference.",
+        "commonCauses": [
+          "A non-order invoice was generated with the order block omitted and no alternative buyer reference.",
+          "A reference exists in the source system but was mapped only into free text.",
+          "Empty reference values were removed during XML cleanup."
+        ],
+        "fix": "Use a real reference supplied or agreed by the buyer. Put it in either the buyer\nreference or purchase order reference location as appropriate; do not invent an\norder number merely to pass validation. Revalidate the whole document.",
+        "affectedTerms": [
+          "Buyer reference",
+          "Purchase order reference"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibrp-003/",
+        "failingExample": {
+          "fixtureId": "aligned-ibrp-003",
+          "xml": "<cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>\n<cac:AccountingSupplierParty>...</cac:AccountingSupplierParty>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>\n<cbc:BuyerReference>BUYER-ROUTING-001</cbc:BuyerReference>\n<cac:AccountingSupplierParty>...</cac:AccountingSupplierParty>"
+        }
       }
     },
     {
@@ -247,7 +315,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -278,7 +346,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -309,7 +377,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -340,7 +408,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -371,7 +439,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -400,7 +468,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -420,7 +488,29 @@
       "editorial": {
         "primaryTopic": "payment",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Include the destination account for a credit transfer",
+        "summary": "Selecting credit transfer as the payment method is not enough to tell the payer\nwhere funds should go. The payment block also needs the payee account identifier\nused for that transfer.",
+        "commonCauses": [
+          "Payment method and bank details were mapped by separate integrations.",
+          "Account data was suppressed while the credit-transfer code remained.",
+          "A payment block was copied from a non-bank payment flow."
+        ],
+        "fix": "If credit transfer is the intended method, add the payee's verified account\nidentifier in the financial account block. Otherwise select the payment method\nthat describes the real arrangement. Never fabricate account details, and\nrevalidate the complete document.",
+        "affectedTerms": [
+          "Payment means code",
+          "Payee financial account identifier"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibrp-018/",
+        "failingExample": {
+          "fixtureId": "aligned-ibrp-018",
+          "xml": "<cac:PaymentMeans>\n  <cbc:PaymentMeansCode>30</cbc:PaymentMeansCode>\n</cac:PaymentMeans>"
+        },
+        "correctedExample": {
+          "xml": "<cac:PaymentMeans>\n  <cbc:PaymentMeansCode>30</cbc:PaymentMeansCode>\n  <cac:PayeeFinancialAccount>\n    <cbc:ID>SYNTHETIC-ACCOUNT-001</cbc:ID>\n  </cac:PayeeFinancialAccount>\n</cac:PaymentMeans>"
+        }
       }
     },
     {
@@ -431,7 +521,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -462,7 +552,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -493,7 +583,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -524,7 +614,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -555,7 +645,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -584,7 +674,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -613,7 +703,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -642,7 +732,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -671,7 +761,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -691,7 +781,30 @@
       "editorial": {
         "primaryTopic": "tax",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Keep line tax classification under GST",
+        "summary": "An A-NZ line tax classification is interpreted within the GST tax scheme. A\ncategory and percentage attached to a different scheme do not form the expected\nline GST classification.",
+        "commonCauses": [
+          "A European invoice template supplied `VAT` as a global default.",
+          "Tax scheme and category were populated from different tax engines.",
+          "A label intended for display was reused as the scheme code."
+        ],
+        "fix": "Map the line's tax decision as one coherent set: category, rate where applicable,\nand scheme. Use `GST` only when that reflects the source transaction and relevant\nauthoritative requirements; this validation result is not tax advice. Revalidate\nthe entire document because the category must also agree with its tax breakdown.",
+        "affectedTerms": [
+          "Invoice line tax category code",
+          "Invoice line tax rate",
+          "Invoice line tax scheme"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibrp-050-aunz/",
+        "failingExample": {
+          "fixtureId": "aligned-ibrp-050-aunz",
+          "xml": "<cac:ClassifiedTaxCategory>\n  <cbc:ID>S</cbc:ID>\n  <cbc:Percent>10</cbc:Percent>\n  <cac:TaxScheme><cbc:ID>VAT</cbc:ID></cac:TaxScheme>\n</cac:ClassifiedTaxCategory>"
+        },
+        "correctedExample": {
+          "xml": "<cac:ClassifiedTaxCategory>\n  <cbc:ID>S</cbc:ID>\n  <cbc:Percent>10</cbc:Percent>\n  <cac:TaxScheme><cbc:ID>GST</cbc:ID></cac:TaxScheme>\n</cac:ClassifiedTaxCategory>"
+        }
       }
     },
     {
@@ -702,7 +815,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -731,7 +844,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -751,7 +864,34 @@
       "editorial": {
         "primaryTopic": "amounts-and-totals",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Reconcile quantity, price, and line net amount",
+        "summary": "The line's stated net amount needs to reconcile its priced quantity and any\nline-level adjustments. Start with quantity multiplied by the unit price after\nallowing for a price base quantity, add line charges, and subtract line\nallowances. Changing document totals to match a wrong line amount does not repair\nthe line calculation.",
+        "commonCauses": [
+          "A unit price was rounded or converted independently from the line total.",
+          "The source quantity changed after the total was calculated.",
+          "A price base quantity was ignored by the mapping.",
+          "A line allowance or charge was included in the XML but omitted from the line-net calculation."
+        ],
+        "fix": "Recalculate from the authoritative line inputs, keeping currency precision and\nthe price base quantity consistent. Include each line charge as an addition and\neach line allowance as a subtraction exactly once. This minimal fixture has no\nline adjustments, so two units at `50.00` produce the stated `100.00` line net\namount. Revalidate all totals after the correction.",
+        "affectedTerms": [
+          "Invoice line quantity",
+          "Invoice line net amount",
+          "Item net price",
+          "Item price base quantity",
+          "Invoice line charge amount",
+          "Invoice line allowance amount"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibrp-053/",
+        "failingExample": {
+          "fixtureId": "aligned-ibrp-053",
+          "xml": "<cbc:InvoicedQuantity unitCode=\"EA\">2</cbc:InvoicedQuantity>\n<cbc:LineExtensionAmount currencyID=\"AUD\">100.00</cbc:LineExtensionAmount>\n<cac:Price>\n  <cbc:PriceAmount currencyID=\"AUD\">40.00</cbc:PriceAmount>\n</cac:Price>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:InvoicedQuantity unitCode=\"EA\">2</cbc:InvoicedQuantity>\n<cbc:LineExtensionAmount currencyID=\"AUD\">100.00</cbc:LineExtensionAmount>\n<cac:Price>\n  <cbc:PriceAmount currencyID=\"AUD\">50.00</cbc:PriceAmount>\n</cac:Price>"
+        }
       }
     },
     {
@@ -762,7 +902,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -793,7 +933,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -824,7 +964,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -855,7 +995,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -886,7 +1026,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -917,7 +1057,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -948,7 +1088,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -978,7 +1118,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1009,7 +1149,7 @@
         "family": "aligned-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1040,7 +1180,7 @@
         "family": "aligned-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1071,7 +1211,7 @@
         "family": "aligned-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1091,7 +1231,29 @@
       "editorial": {
         "primaryTopic": "attachments",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Use a supported media type for embedded evidence",
+        "summary": "The A-NZ profile narrows the media types accepted for an embedded supporting\ndocument. The declared media type must describe both an allowed format and the\nbytes that were actually encoded.",
+        "commonCauses": [
+          "An internal XML export was attached directly.",
+          "A filename extension was changed without converting the content.",
+          "A broader UBL media-type list was used instead of the A-NZ subset."
+        ],
+        "fix": "Convert the supporting material to a supported format, then update its filename,\nmedia type, and base64 payload together. Do not merely relabel unchanged bytes.\nThe corrected fixture uses a tiny synthetic CSV payload. Revalidate the complete\ndocument and test that the decoded attachment opens as declared.",
+        "affectedTerms": [
+          "Embedded supporting document media type",
+          "Embedded supporting document filename"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/aligned-ibrp-cl-04/",
+        "failingExample": {
+          "fixtureId": "aligned-ibrp-cl-04-disallowed-mime-code",
+          "xml": "<cbc:EmbeddedDocumentBinaryObject\n  mimeCode=\"application/xml\"\n  filename=\"synthetic-supporting-doc.xml\">PHN5bnRoZXRpYyBzdXBwb3J0aW5nIGRvY3VtZW50Lz4=</cbc:EmbeddedDocumentBinaryObject>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:EmbeddedDocumentBinaryObject\n  mimeCode=\"text/csv\"\n  filename=\"synthetic-supporting-doc.csv\">Y29sdW1uCnZhbHVlCg==</cbc:EmbeddedDocumentBinaryObject>"
+        }
       }
     },
     {
@@ -1102,7 +1264,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1133,7 +1295,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1164,7 +1326,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1195,7 +1357,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1226,7 +1388,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1257,7 +1419,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -1286,7 +1448,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1317,7 +1479,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1348,7 +1510,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1379,7 +1541,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1410,7 +1572,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1441,7 +1603,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1472,7 +1634,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1503,7 +1665,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1534,7 +1696,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1565,7 +1727,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1596,7 +1758,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1627,7 +1789,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1658,7 +1820,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1689,7 +1851,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -1718,7 +1880,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -1747,7 +1909,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -1776,7 +1938,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1807,7 +1969,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1838,7 +2000,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1869,7 +2031,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1900,7 +2062,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1931,7 +2093,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -1960,7 +2122,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -1991,7 +2153,7 @@
         "family": "aligned-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2022,7 +2184,7 @@
         "family": "aligned-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2053,7 +2215,7 @@
         "family": "aligned-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2084,7 +2246,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2115,7 +2277,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2146,7 +2308,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2177,7 +2339,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2208,7 +2370,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2239,7 +2401,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2268,7 +2430,7 @@
         "family": "aligned-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2299,7 +2461,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2328,7 +2490,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2357,7 +2519,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2386,7 +2548,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2406,7 +2568,29 @@
       "editorial": {
         "primaryTopic": "codelists",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "State what kind of billing document this is",
+        "summary": "The document root distinguishes invoice XML from credit-note XML, but the\nbusiness document also needs its functional type code in the matching type-code\nelement.",
+        "commonCauses": [
+          "The type code was treated as redundant with the XML root.",
+          "A source document type had no mapping to the PINT code list.",
+          "An empty code was removed by serialization."
+        ],
+        "fix": "Choose the code that accurately represents the business document and place it in\nthe type-code element for that document root. The fixture is an ordinary invoice,\nso it uses `380`. Do not copy this value to a credit note without mapping its real\ntype. Revalidate the complete document.",
+        "affectedTerms": [
+          "Invoice type code",
+          "Credit note type code"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-004/",
+        "failingExample": {
+          "fixtureId": "ibr-004-missing-type-code",
+          "xml": "<cbc:DueDate>2026-07-31</cbc:DueDate>\n<cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:DueDate>2026-07-31</cbc:DueDate>\n<cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>\n<cbc:DocumentCurrencyCode>AUD</cbc:DocumentCurrencyCode>"
+        }
       }
     },
     {
@@ -2417,7 +2601,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2446,7 +2630,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2466,7 +2650,29 @@
       "editorial": {
         "primaryTopic": "parties-and-addresses",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Include the seller's registered name",
+        "summary": "A seller legal identifier does not substitute for the seller name. The legal\nentity block needs the name by which the seller is identified in the transaction.",
+        "commonCauses": [
+          "Only identifier fields were selected from the supplier master record.",
+          "A trading name was mapped elsewhere while the legal name was left empty.",
+          "Whitespace-only names were removed during serialization."
+        ],
+        "fix": "Populate the seller registration name from verified party data and keep the\nidentifier as a separate field. Confirm that the chosen name is appropriate for\nthe transaction; validation cannot establish legal identity. Revalidate the\ncomplete document.",
+        "affectedTerms": [
+          "Seller registered name",
+          "Seller legal entity"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-006/",
+        "failingExample": {
+          "fixtureId": "ibr-006-missing-seller-name",
+          "xml": "<cac:PartyLegalEntity>\n  <cbc:CompanyID schemeID=\"0151\">47555222000</cbc:CompanyID>\n</cac:PartyLegalEntity>"
+        },
+        "correctedExample": {
+          "xml": "<cac:PartyLegalEntity>\n  <cbc:RegistrationName>Example AU Supplier Pty Ltd</cbc:RegistrationName>\n  <cbc:CompanyID schemeID=\"0151\">47555222000</cbc:CompanyID>\n</cac:PartyLegalEntity>"
+        }
       }
     },
     {
@@ -2477,7 +2683,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2508,7 +2714,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2539,7 +2745,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2570,7 +2776,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2601,7 +2807,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2632,7 +2838,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2661,7 +2867,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2690,7 +2896,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2719,7 +2925,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2748,7 +2954,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2777,7 +2983,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2808,7 +3014,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2839,7 +3045,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2870,7 +3076,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2901,7 +3107,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2930,7 +3136,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -2959,7 +3165,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -2979,7 +3185,29 @@
       "editorial": {
         "primaryTopic": "invoice-lines",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Give every line quantity a unit",
+        "summary": "A numeric line quantity is ambiguous without a unit of measure. The unit belongs\non the quantity element as a code, not in the item description.",
+        "commonCauses": [
+          "The source system stores quantity but leaves its unit implicit.",
+          "A display label such as “each” was not mapped to a unit code.",
+          "The serializer emitted the quantity text but dropped its attribute."
+        ],
+        "fix": "Map the source unit to the appropriate supported code. `EA` is correct only for\nthe synthetic fixture's count of individual items; choose the unit that describes\nthe actual line. Recalculate any unit-dependent prices and revalidate the whole\ndocument.",
+        "affectedTerms": [
+          "Invoice line quantity",
+          "Invoice line quantity unit code"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-023/",
+        "failingExample": {
+          "fixtureId": "ibr-023-missing-quantity-unit-code",
+          "xml": "<cbc:InvoicedQuantity>2</cbc:InvoicedQuantity>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:InvoicedQuantity unitCode=\"EA\">2</cbc:InvoicedQuantity>"
+        }
       }
     },
     {
@@ -2990,7 +3218,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3019,7 +3247,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3050,7 +3278,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3079,7 +3307,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3110,7 +3338,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3141,7 +3369,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3161,7 +3389,29 @@
       "editorial": {
         "primaryTopic": "dates-and-periods",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Put document-period dates in chronological order",
+        "summary": "When both boundaries of the document period are present, the end cannot precede\nthe start. This check concerns ordering; it does not decide which service dates\nthe transaction should use.",
+        "commonCauses": [
+          "Start and end fields were swapped during mapping.",
+          "A date range crossed a month boundary and the month was copied incorrectly.",
+          "Locale-specific input was parsed with the wrong day and month order."
+        ],
+        "fix": "Return to the source period, correct the mapped dates, and serialize them as ISO\ndates. Do not reverse values automatically without confirming their meaning. The\nfixture is corrected to end after it starts, then the complete document is\nrevalidated.",
+        "affectedTerms": [
+          "Document period start date",
+          "Document period end date"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-029/",
+        "failingExample": {
+          "fixtureId": "ibr-029-end-before-start",
+          "xml": "<cac:InvoicePeriod>\n  <cbc:StartDate>2026-07-15</cbc:StartDate>\n  <cbc:EndDate>2026-07-01</cbc:EndDate>\n</cac:InvoicePeriod>"
+        },
+        "correctedExample": {
+          "xml": "<cac:InvoicePeriod>\n  <cbc:StartDate>2026-07-15</cbc:StartDate>\n  <cbc:EndDate>2026-07-31</cbc:EndDate>\n</cac:InvoicePeriod>"
+        }
       }
     },
     {
@@ -3172,7 +3422,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3203,7 +3453,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3232,7 +3482,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3252,7 +3502,30 @@
       "editorial": {
         "primaryTopic": "allowances-and-charges",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Explain a document-level allowance",
+        "summary": "A document-level reduction needs a reason that a receiver can understand or\nprocess. Its amount and percentage describe the calculation, not why the\nallowance exists.",
+        "commonCauses": [
+          "The source discount has an amount but no mapped reason.",
+          "A reason code was stored in an internal field and omitted from the export.",
+          "Calculation fields were copied without their business context."
+        ],
+        "fix": "Provide the genuine allowance reason as text or, where suitable, a supported\nreason code. Do not invent a commercial reason. The synthetic fixture adds text;\nafter any correction, recheck the allowance arithmetic, tax category, and\ndocument totals.",
+        "affectedTerms": [
+          "Document-level allowance indicator",
+          "Document-level allowance reason",
+          "Document-level allowance reason code"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-033/",
+        "failingExample": {
+          "fixtureId": "ibr-033-doc-allowance-no-reason",
+          "xml": "<cac:AllowanceCharge>\n  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>\n  <cbc:MultiplierFactorNumeric>5</cbc:MultiplierFactorNumeric>\n</cac:AllowanceCharge>"
+        },
+        "correctedExample": {
+          "xml": "<cac:AllowanceCharge>\n  <cbc:ChargeIndicator>false</cbc:ChargeIndicator>\n  <cbc:AllowanceChargeReason>Promotional discount</cbc:AllowanceChargeReason>\n  <cbc:MultiplierFactorNumeric>5</cbc:MultiplierFactorNumeric>\n</cac:AllowanceCharge>"
+        }
       }
     },
     {
@@ -3263,7 +3536,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3292,7 +3565,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3321,7 +3594,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3350,7 +3623,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3381,7 +3654,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3410,7 +3683,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3441,7 +3714,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3470,7 +3743,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3499,7 +3772,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3528,7 +3801,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3559,7 +3832,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -3588,7 +3861,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3619,7 +3892,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3650,7 +3923,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3681,7 +3954,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3712,7 +3985,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3743,7 +4016,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3774,7 +4047,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3805,7 +4078,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3836,7 +4109,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3867,7 +4140,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3898,7 +4171,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3929,7 +4202,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3960,7 +4233,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -3991,7 +4264,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4022,7 +4295,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4051,7 +4324,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4082,7 +4355,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4111,7 +4384,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4142,7 +4415,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4173,7 +4446,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4204,7 +4477,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4235,7 +4508,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4266,7 +4539,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4295,7 +4568,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4326,7 +4599,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4357,7 +4630,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4388,7 +4661,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4419,7 +4692,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4450,7 +4723,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4481,7 +4754,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4512,7 +4785,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4532,7 +4805,29 @@
       "editorial": {
         "primaryTopic": "references",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Keep one project reference",
+        "summary": "A billing document has one project-reference slot in the semantic model. In a\ncredit note, that reference is represented through a specially typed additional\ndocument reference; adding a second one creates another project reference rather\nthan extra description for the first.",
+        "commonCauses": [
+          "Several project codes from a source record were exported independently.",
+          "An existing reference was appended instead of replaced during an update.",
+          "A generic supporting-document loop emitted more than one project-typed entry."
+        ],
+        "fix": "Select the single project that the billing document actually concerns. If other\nreferences are needed, map them only to their correct business terms rather than\nlabelling them as projects. The corrected synthetic credit note removes the\nduplicate and is revalidated in full.",
+        "affectedTerms": [
+          "Project reference",
+          "Supporting document type code"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-creditnote/rule/ibr-090/",
+        "failingExample": {
+          "fixtureId": "ibr-090-duplicate-project-reference",
+          "xml": "<cac:AdditionalDocumentReference>\n  <cbc:ID>PROJ-A</cbc:ID>\n  <cbc:DocumentTypeCode>50</cbc:DocumentTypeCode>\n</cac:AdditionalDocumentReference>\n<cac:AdditionalDocumentReference>\n  <cbc:ID>PROJ-B</cbc:ID>\n  <cbc:DocumentTypeCode>50</cbc:DocumentTypeCode>\n</cac:AdditionalDocumentReference>"
+        },
+        "correctedExample": {
+          "xml": "<cac:AdditionalDocumentReference>\n  <cbc:ID>PROJ-A</cbc:ID>\n  <cbc:DocumentTypeCode>50</cbc:DocumentTypeCode>\n</cac:AdditionalDocumentReference>"
+        }
       }
     },
     {
@@ -4543,7 +4838,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4572,7 +4867,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4603,7 +4898,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4634,7 +4929,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4665,7 +4960,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4696,7 +4991,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4727,7 +5022,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4758,7 +5053,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4787,7 +5082,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4818,7 +5113,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4847,7 +5142,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4878,7 +5173,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4907,7 +5202,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -4936,7 +5231,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4967,7 +5262,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -4998,7 +5293,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5029,7 +5324,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5060,7 +5355,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5091,7 +5386,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5122,7 +5417,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5153,7 +5448,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5184,7 +5479,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5215,7 +5510,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5246,7 +5541,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5277,7 +5572,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5308,7 +5603,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5339,7 +5634,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5368,7 +5663,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5399,7 +5694,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5428,7 +5723,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5457,7 +5752,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5486,7 +5781,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5515,7 +5810,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5544,7 +5839,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5575,7 +5870,7 @@
         "family": "pint-business",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5606,7 +5901,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5637,7 +5932,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5666,7 +5961,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5695,7 +5990,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -5724,7 +6019,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5755,7 +6050,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5786,7 +6081,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5817,7 +6112,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5848,7 +6143,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5879,7 +6174,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5910,7 +6205,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5930,7 +6225,28 @@
       "editorial": {
         "primaryTopic": "codelists",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Map the payment method to a supported code",
+        "summary": "The payment means value is a code, not a free internal payment-method identifier.\nIt must come from the supported external list and describe the actual arrangement.",
+        "commonCauses": [
+          "An ERP's internal numeric payment code was copied directly.",
+          "A display label was converted to an arbitrary number.",
+          "Code-list validation was omitted from the outbound mapping."
+        ],
+        "fix": "Map the source payment method to the matching supported code. The synthetic\nfixture uses `10` for a cash scenario; choose a different code when the real\npayment method differs. Add any details required by that method and revalidate\nthe complete document.",
+        "affectedTerms": [
+          "Payment means code"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-cl-16/",
+        "failingExample": {
+          "fixtureId": "ibr-cl-16",
+          "xml": "<cbc:PaymentMeansCode>999</cbc:PaymentMeansCode>"
+        },
+        "correctedExample": {
+          "xml": "<cbc:PaymentMeansCode>10</cbc:PaymentMeansCode>"
+        }
       }
     },
     {
@@ -5941,7 +6257,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -5972,7 +6288,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6003,7 +6319,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6034,7 +6350,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6065,7 +6381,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6094,7 +6410,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6125,7 +6441,7 @@
         "family": "pint-codelist",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6156,7 +6472,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6176,7 +6492,32 @@
       "editorial": {
         "primaryTopic": "amounts-and-totals",
         "relatedTopics": [],
-        "state": "pending"
+        "state": "reviewed"
+      },
+      "guidance": {
+        "title": "Rebuild totals from the lines",
+        "summary": "The document's line-net total is a roll-up of the individual line net amounts.\nCompensating other totals to agree with an incorrect roll-up may hide additional\nerrors, but it does not make the roll-up correct.",
+        "commonCauses": [
+          "A deleted or filtered line remained in a cached header total.",
+          "Header totals and lines were rounded or converted in separate operations.",
+          "A manual total override bypassed recalculation."
+        ],
+        "fix": "Recompute the line-net total from the final serialized lines, then recalculate the\ndependent tax-exclusive, tax-inclusive, and payable values from their own source\nterms. The synthetic fixture has one `100.00` line and is corrected consistently.\nRevalidate the complete totals chain.",
+        "affectedTerms": [
+          "Invoice line net amount",
+          "Sum of invoice line net amounts",
+          "Tax-exclusive amount",
+          "Tax-inclusive amount",
+          "Amount due"
+        ],
+        "officialRuleUrl": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/trn-invoice/rule/ibr-co-10/",
+        "failingExample": {
+          "fixtureId": "ibr-co-10-line-sum-mismatch",
+          "xml": "<cac:LegalMonetaryTotal>\n  <cbc:LineExtensionAmount currencyID=\"AUD\">105.00</cbc:LineExtensionAmount>\n  <cbc:TaxExclusiveAmount currencyID=\"AUD\">105.00</cbc:TaxExclusiveAmount>\n  <cbc:TaxInclusiveAmount currencyID=\"AUD\">115.00</cbc:TaxInclusiveAmount>\n  <cbc:PayableAmount currencyID=\"AUD\">115.00</cbc:PayableAmount>\n</cac:LegalMonetaryTotal>"
+        },
+        "correctedExample": {
+          "xml": "<cac:LegalMonetaryTotal>\n  <cbc:LineExtensionAmount currencyID=\"AUD\">100.00</cbc:LineExtensionAmount>\n  <cbc:TaxExclusiveAmount currencyID=\"AUD\">100.00</cbc:TaxExclusiveAmount>\n  <cbc:TaxInclusiveAmount currencyID=\"AUD\">110.00</cbc:TaxInclusiveAmount>\n  <cbc:PayableAmount currencyID=\"AUD\">110.00</cbc:PayableAmount>\n</cac:LegalMonetaryTotal>"
+        }
       }
     },
     {
@@ -6187,7 +6528,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6218,7 +6559,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6249,7 +6590,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6280,7 +6621,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6311,7 +6652,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6342,7 +6683,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6373,7 +6714,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6404,7 +6745,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6435,7 +6776,7 @@
         "family": "pint-calculation",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6464,7 +6805,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6495,7 +6836,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6524,7 +6865,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6553,7 +6894,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6584,7 +6925,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6615,7 +6956,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6644,7 +6985,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "not-applicable",
@@ -6673,7 +7014,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6702,7 +7043,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6731,7 +7072,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6762,7 +7103,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6793,7 +7134,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6824,7 +7165,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6855,7 +7196,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6886,7 +7227,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -6917,7 +7258,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6946,7 +7287,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -6975,7 +7316,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -7004,7 +7345,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "not-applicable",
@@ -7033,7 +7374,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7064,7 +7405,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7095,7 +7436,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7126,7 +7467,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7157,7 +7498,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7188,7 +7529,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7219,7 +7560,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7250,7 +7591,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7281,7 +7622,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7312,7 +7653,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -7341,7 +7682,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7372,7 +7713,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7403,7 +7744,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",
@@ -7434,7 +7775,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "blocked",
@@ -7463,7 +7804,7 @@
         "family": "pint-syntax",
         "kind": "assert",
         "severity": "fatal",
-        "source": "https://docs.peppol.eu/poac/aunz/pint-aunz/"
+        "source": "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/"
       },
       "coverage": {
         "status": "invalid-covered",

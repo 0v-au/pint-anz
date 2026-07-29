@@ -51,12 +51,46 @@
     "guidance": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["summary", "commonCauses", "fix"],
+      "required": ["title", "summary", "commonCauses", "fix", "affectedTerms", "officialRuleUrl", "failingExample", "correctedExample"],
       "properties": {
+        "title": { "type": "string", "minLength": 1 },
         "summary": { "type": "string", "minLength": 1 },
-        "commonCauses": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "fix": { "type": "string", "minLength": 1 }
+        "commonCauses": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } },
+        "fix": { "type": "string", "minLength": 1 },
+        "affectedTerms": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "minLength": 1 } },
+        "officialRuleUrl": { "type": "string", "format": "uri" },
+        "failingExample": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fixtureId", "xml"],
+          "properties": {
+            "fixtureId": { "type": "string", "minLength": 1 },
+            "xml": { "type": "string", "minLength": 1 }
+          }
+        },
+        "correctedExample": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["xml"],
+          "properties": {
+            "xml": { "type": "string", "minLength": 1 }
+          }
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "editorial": {
+            "properties": { "state": { "const": "reviewed" } },
+            "required": ["state"]
+          }
+        },
+        "required": ["editorial"]
+      },
+      "then": { "required": ["guidance"] }
+    }
+  ]
 }

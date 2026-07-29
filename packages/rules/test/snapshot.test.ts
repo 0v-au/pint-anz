@@ -1,6 +1,7 @@
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
@@ -27,6 +28,11 @@ function withTemporaryProjection(test: (root: string, input: Record<string, unkn
     review: JSON.parse(readFileSync(new URL("../content/editorial-review.json", import.meta.url), "utf8")),
   };
   try {
+    cpSync(
+      fileURLToPath(new URL("../content/interpretations", import.meta.url)),
+      join(root, "packages/rules/content/interpretations"),
+      { recursive: true },
+    );
     test(root, input);
   } finally {
     rmSync(root, { force: true, recursive: true });
@@ -63,13 +69,15 @@ describe("generated rule snapshot", () => {
     expect(snapshot.provenance).toEqual({
       rulesetVersion: inventory.rulesetVersion,
       source: packageJson.pintAnz.rulesetSource,
-      resources: inventory.resourcesUrl,
+      resources: packageJson.pintAnz.rulesetResources,
       resourcesSha256: inventory.resourcesSha256,
       sources: inventory.sources,
     });
     expect(snapshot.provenance.rulesetVersion).toBe(lock.rulesetVersion);
     const resources = lock.downloads.find((download: { name: string }) => download.name === "resources.zip");
     expect(resources).toMatchObject({ url: inventory.resourcesUrl, sha256: inventory.resourcesSha256 });
+    expect(snapshot.provenance.source).toBe("https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/");
+    expect(snapshot.provenance.resources).toBe("https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/resources.zip");
     for (const source of Object.values(inventory.sources) as Array<{ path: string; sha256: string }>) {
       expect(lock.files[source.path]).toBe(source.sha256);
     }
@@ -81,7 +89,10 @@ describe("generated rule snapshot", () => {
     expect(snapshot.rules.map((rule) => rule.official.id)).toEqual(inventory.rules.map((rule) => rule.id));
     expect(new Set(snapshot.rules.map((rule) => rule.official.id)).size).toBe(245);
     for (const rule of snapshot.rules) {
-      expect(Object.keys(rule).sort()).toEqual(["applicability", "coverage", "editorial", "official"]);
+      const expectedKeys = rule.editorial.state === "reviewed"
+        ? ["applicability", "coverage", "editorial", "guidance", "official"]
+        : ["applicability", "coverage", "editorial", "official"];
+      expect(Object.keys(rule).sort()).toEqual(expectedKeys);
       expect(Object.keys(rule.official).sort()).toEqual(["family", "id", "kind", "ruleset", "rulesetVersion", "severity", "source"]);
       expect(Object.keys(rule.coverage).sort()).toEqual(["fixtureIds", "status"]);
     }
@@ -161,12 +172,22 @@ describe("generated rule snapshot", () => {
     });
   });
 
-  it("rejects a malformed public source URI", () => {
+  it("rejects a fixture-backed draft from the publishable snapshot", () => {
+    withTemporaryProjection((root, input) => {
+      writeTemporaryInput(root, input);
+      const path = join(root, "packages/rules/content/interpretations/1.1.2/ibr-004.md");
+      const source = readFileSync(path, "utf8");
+      writeFileSync(path, source.replace('"editorialState": "reviewed"', '"editorialState": "draft"'));
+      expect(() => buildSnapshot(root)).toThrow(/fixture-backed interpretation must be reviewed/);
+    });
+  });
+
+  it("rejects mutable or malformed package provenance", () => {
     withTemporaryProjection((root, input) => {
       const candidate = input.packageJson as { pintAnz: { rulesetSource: string } };
       candidate.pintAnz.rulesetSource = "not a URI";
       writeTemporaryInput(root, input);
-      expect(() => buildSnapshot(root)).toThrow(/official.source must be an absolute URI/);
+      expect(() => buildSnapshot(root)).toThrow(/package provenance must use the immutable 2025-Q4 archive/);
     });
   });
 

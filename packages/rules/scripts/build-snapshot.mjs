@@ -3,9 +3,13 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { interpretationMetadataKeys, loadInterpretations } from "./interpretations.mjs";
+
 const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const repoRoot = resolve(packageRoot, "../..");
 const outputPath = join(packageRoot, "src/rules.snapshot.json");
+const gapReportPath = join(packageRoot, "content/interpretation-gaps.generated.json");
+const immutableReleaseRoot = "https://docs.peppol.eu/poac/aunz/2025-Q4/pint-aunz/";
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
@@ -76,11 +80,36 @@ function validateCatalogueEntry(entry, vocabulary, label) {
   if (entry.editorial.relatedTopics.includes(entry.editorial.primaryTopic)) fail(`${label}.editorial.relatedTopics repeats the primary topic`);
   assertAllowed([entry.editorial.state], vocabulary.editorialStates, `${label}.editorial.state`);
   if (entry.guidance !== undefined) {
-    assertExactKeys(entry.guidance, ["summary", "commonCauses", "fix"], [], `${label}.guidance`);
-    assertNonEmptyString(entry.guidance.summary, `${label}.guidance.summary`);
-    assertNonEmptyString(entry.guidance.fix, `${label}.guidance.fix`);
+    assertExactKeys(
+      entry.guidance,
+      [
+        "title",
+        "summary",
+        "commonCauses",
+        "fix",
+        "affectedTerms",
+        "officialRuleUrl",
+        "failingExample",
+        "correctedExample",
+      ],
+      [],
+      `${label}.guidance`,
+    );
+    for (const key of ["title", "summary", "fix"]) {
+      assertNonEmptyString(entry.guidance[key], `${label}.guidance.${key}`);
+    }
     assertArray(entry.guidance.commonCauses, `${label}.guidance.commonCauses`);
     for (const cause of entry.guidance.commonCauses) assertNonEmptyString(cause, `${label}.guidance.commonCause`);
+    assertArray(entry.guidance.affectedTerms, `${label}.guidance.affectedTerms`);
+    if (entry.guidance.affectedTerms.length === 0) fail(`${label}.guidance.affectedTerms must not be empty`);
+    unique(entry.guidance.affectedTerms, `${label}.guidance.affectedTerms`);
+    for (const term of entry.guidance.affectedTerms) assertNonEmptyString(term, `${label}.guidance.affectedTerm`);
+    assertUri(entry.guidance.officialRuleUrl, `${label}.guidance.officialRuleUrl`);
+    assertExactKeys(entry.guidance.failingExample, ["fixtureId", "xml"], [], `${label}.guidance.failingExample`);
+    assertNonEmptyString(entry.guidance.failingExample.fixtureId, `${label}.guidance.failingExample.fixtureId`);
+    assertNonEmptyString(entry.guidance.failingExample.xml, `${label}.guidance.failingExample.xml`);
+    assertExactKeys(entry.guidance.correctedExample, ["xml"], [], `${label}.guidance.correctedExample`);
+    assertNonEmptyString(entry.guidance.correctedExample.xml, `${label}.guidance.correctedExample.xml`);
   }
 }
 
@@ -92,6 +121,7 @@ export function buildSnapshot(root = repoRoot) {
   const packageJson = readJson(join(root, "packages/rules/package.json"));
   const vocabulary = readJson(join(root, "packages/rules/content/vocabulary.json"));
   const review = readJson(join(root, "packages/rules/content/editorial-review.json"));
+  const interpretations = loadInterpretations(join(root, "packages/rules"));
 
   const version = inventory.rulesetVersion;
   for (const [label, candidate] of [
@@ -107,6 +137,10 @@ export function buildSnapshot(root = repoRoot) {
   if (inventory.resourcesUrl !== resources.url || inventory.resourcesSha256 !== resources.sha256) {
     fail("inventory resources provenance does not match the artefact lock");
   }
+  if (
+    packageJson.pintAnz.rulesetSource !== immutableReleaseRoot
+    || packageJson.pintAnz.rulesetResources !== `${immutableReleaseRoot}resources.zip`
+  ) fail(`package provenance must use the immutable 2025-Q4 archive for ruleset ${version}`);
   if (!["aligned", "pint"].every((ruleset) => ruleset in inventory.sources) || Object.keys(inventory.sources).length !== 2) {
     fail("inventory source provenance must contain exactly aligned and pint records");
   }
@@ -139,6 +173,52 @@ export function buildSnapshot(root = repoRoot) {
   if (missingReviews.length > 0) fail(`missing explicit editorial review: ${missingReviews.join(", ")}`);
   if (unknownReviews.length > 0) fail(`editorial review contains unknown identities: ${unknownReviews.join(", ")}`);
 
+  const interpretationsById = new Map();
+  for (const interpretation of interpretations) {
+    const { metadata } = interpretation;
+    assertExactKeys(metadata, interpretationMetadataKeys.filter((key) => key !== "reviewedAt"), ["reviewedAt"], `interpretation ${metadata.ruleId ?? "unknown"}`);
+    if (metadata.schemaVersion !== 1) fail(`${metadata.ruleId}: unsupported interpretation schema version`);
+    assertNonEmptyString(metadata.ruleId, "interpretation ruleId");
+    if (interpretationsById.has(metadata.ruleId)) fail(`duplicate interpretation ${metadata.ruleId}`);
+    if (!identityIds.includes(metadata.ruleId)) fail(`interpretation contains Unknown Rule ${metadata.ruleId}`);
+    if (metadata.rulesetVersion !== version) fail(`${metadata.ruleId}: interpretation version does not match ${version}`);
+    if (metadata.editorialState !== "reviewed") fail(`${metadata.ruleId}: fixture-backed interpretation must be reviewed`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(metadata.reviewedAt)) fail(`${metadata.ruleId}: reviewedAt must use yyyy-mm-dd`);
+    assertArray(metadata.jurisdictions, `${metadata.ruleId} jurisdictions`);
+    assertArray(metadata.documentTypes, `${metadata.ruleId} document types`);
+    assertAllowed(metadata.jurisdictions, vocabulary.jurisdictions, `${metadata.ruleId} jurisdictions`);
+    assertAllowed(metadata.documentTypes, vocabulary.documentTypes, `${metadata.ruleId} document types`);
+    unique(metadata.jurisdictions, `${metadata.ruleId} jurisdictions`);
+    unique(metadata.documentTypes, `${metadata.ruleId} document types`);
+    assertArray(metadata.affectedTerms, `${metadata.ruleId} affected terms`);
+    if (metadata.affectedTerms.length === 0) fail(`${metadata.ruleId}: affected terms must not be empty`);
+    for (const term of metadata.affectedTerms) assertNonEmptyString(term, `${metadata.ruleId} affected term`);
+    assertUri(metadata.officialRuleUrl, `${metadata.ruleId} officialRuleUrl`);
+    const officialRuleUrl = new URL(metadata.officialRuleUrl);
+    if (
+      officialRuleUrl.protocol !== "https:"
+      || officialRuleUrl.hostname !== "docs.peppol.eu"
+      || !officialRuleUrl.pathname.startsWith("/poac/aunz/2025-Q4/pint-aunz/")
+      || !officialRuleUrl.pathname.endsWith(`/rule/${metadata.ruleId}/`)
+      || !/\/trn-(?:invoice|creditnote)\/rule\//.test(officialRuleUrl.pathname)
+    ) {
+      fail(`${metadata.ruleId}: officialRuleUrl must identify that rule on an authoritative OpenPeppol transaction page`);
+    }
+    assertExactKeys(metadata.example, ["fixtureId", "patches"], [], `${metadata.ruleId} example`);
+    assertNonEmptyString(metadata.example.fixtureId, `${metadata.ruleId} example fixtureId`);
+    assertArray(metadata.example.patches, `${metadata.ruleId} example patches`);
+    if (metadata.example.patches.length === 0) fail(`${metadata.ruleId}: example patches must not be empty`);
+    for (const [index, patch] of metadata.example.patches.entries()) {
+      assertExactKeys(patch, ["find", "replace"], [], `${metadata.ruleId} patch ${index}`);
+      assertNonEmptyString(patch.find, `${metadata.ruleId} patch ${index} find`);
+      if (typeof patch.replace !== "string") fail(`${metadata.ruleId} patch ${index} replace must be a string`);
+    }
+    interpretationsById.set(metadata.ruleId, interpretation);
+  }
+  if (interpretations.length < 15 || interpretations.length > 25) {
+    fail(`launch tranche must contain 15–25 Project Interpretations, found ${interpretations.length}`);
+  }
+
   unique(manifest.fixtures.map((fixture) => fixture.id), "fixture identifiers");
   const fixtureById = new Map(manifest.fixtures.map((fixture) => [fixture.id, fixture]));
   const coverageIds = Object.keys(coverage.rules);
@@ -164,6 +244,7 @@ export function buildSnapshot(root = repoRoot) {
       if (fixture.rulesetVersion !== version) fail(`${fixtureId} has mismatched ruleset version`);
     }
     const editorial = reviewById.get(official.id);
+    const interpretation = interpretationsById.get(official.id);
     const relatedTopics = editorial.relatedTopics ?? [];
     assertArray(relatedTopics, `${official.id} related topics`);
     assertAllowed(relatedTopics, vocabulary.topics, `${official.id} related topics`);
@@ -190,9 +271,34 @@ export function buildSnapshot(root = repoRoot) {
       editorial: {
         primaryTopic: editorial.primaryTopic,
         relatedTopics: [...relatedTopics],
-        state: review.guidanceState,
+        state: interpretation ? interpretation.metadata.editorialState : review.guidanceState,
       },
     };
+    if (interpretation) {
+      if (evidence.status !== "invalid-covered") fail(`${official.id}: interpretation is not fixture-backed`);
+      if (!evidence.fixtures.includes(interpretation.metadata.example.fixtureId)) {
+        fail(`${official.id}: example fixture is absent from reviewed coverage`);
+      }
+      if (
+        JSON.stringify(interpretation.metadata.jurisdictions) !== JSON.stringify(editorial.jurisdictions)
+        || JSON.stringify(interpretation.metadata.documentTypes) !== JSON.stringify(editorial.documentTypes)
+      ) fail(`${official.id}: interpretation applicability differs from editorial review`);
+      rule.guidance = {
+        title: interpretation.title,
+        summary: interpretation.summary,
+        commonCauses: interpretation.commonCauses,
+        fix: interpretation.fix,
+        affectedTerms: [...interpretation.metadata.affectedTerms],
+        officialRuleUrl: interpretation.metadata.officialRuleUrl,
+        failingExample: {
+          fixtureId: interpretation.metadata.example.fixtureId,
+          xml: interpretation.failingXml,
+        },
+        correctedExample: {
+          xml: interpretation.correctedXml,
+        },
+      };
+    }
     validateCatalogueEntry(rule, vocabulary, `rule ${official.id}`);
     return rule;
   });
@@ -206,7 +312,7 @@ export function buildSnapshot(root = repoRoot) {
     provenance: {
       rulesetVersion: version,
       source,
-      resources: inventory.resourcesUrl,
+      resources: packageJson.pintAnz.rulesetResources,
       resourcesSha256: inventory.resourcesSha256,
       sources: inventory.sources,
     },
@@ -219,14 +325,66 @@ export function serializedSnapshot(root = repoRoot) {
   return `${JSON.stringify(buildSnapshot(root), null, 2)}\n`;
 }
 
+export function buildGapReport(root = repoRoot) {
+  const snapshot = buildSnapshot(root);
+  const manifest = readJson(join(root, "packages/fixtures/manifest.json"));
+  const fixtureById = new Map(manifest.fixtures.map((fixture) => [fixture.id, fixture]));
+  const launch = snapshot.rules.filter((rule) => rule.guidance !== undefined);
+  const count = (values) => Object.fromEntries(
+    [...new Set(values)].sort().map((value) => [value, values.filter((candidate) => candidate === value).length]),
+  );
+  const fixtureEvidence = launch.flatMap((rule) => rule.coverage.fixtureIds.map((id) => fixtureById.get(id)));
+  return {
+    _generated: {
+      notice: "Generated by packages/rules/scripts/build-snapshot.mjs; do not edit by hand.",
+      schemaVersion: 1,
+    },
+    rulesetVersion: snapshot.provenance.rulesetVersion,
+    launch: {
+      targetRange: { minimum: 15, maximum: 25 },
+      selectedCount: launch.length,
+      selectedRuleIds: launch.map((rule) => rule.official.id),
+      rulesets: count(launch.map((rule) => rule.official.ruleset)),
+      primaryTopics: count(launch.map((rule) => rule.editorial.primaryTopic)),
+      applicability: {
+        jurisdictions: [...new Set(launch.flatMap((rule) => rule.applicability.jurisdictions))].sort(),
+        documentTypes: [...new Set(launch.flatMap((rule) => rule.applicability.documentTypes))].sort(),
+      },
+      fixtureEvidence: {
+        jurisdictions: count(fixtureEvidence.map((fixture) => fixture.jurisdiction)),
+        documentTypes: count(fixtureEvidence.map((fixture) => fixture.documentType)),
+      },
+    },
+    remaining: {
+      fixtureBackedWithoutInterpretation: snapshot.rules
+        .filter((rule) => rule.coverage.status === "invalid-covered" && rule.guidance === undefined)
+        .map((rule) => rule.official.id),
+      blockedWithoutFixture: snapshot.rules
+        .filter((rule) => rule.coverage.status === "blocked")
+        .map((rule) => rule.official.id),
+      notApplicable: snapshot.rules
+        .filter((rule) => rule.coverage.status === "not-applicable")
+        .map((rule) => rule.official.id),
+    },
+  };
+}
+
+export function serializedGapReport(root = repoRoot) {
+  return `${JSON.stringify(buildGapReport(root), null, 2)}\n`;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const expected = serializedSnapshot();
+  const expectedGapReport = serializedGapReport();
   if (process.argv.includes("--check")) {
     const actual = readFileSync(outputPath, "utf8");
     if (actual !== expected) fail("generated snapshot is stale; run pnpm --filter @pint-anz/rules generate");
-    console.log("Rule snapshot is current: 245 rights-safe records.");
+    const actualGapReport = readFileSync(gapReportPath, "utf8");
+    if (actualGapReport !== expectedGapReport) fail("generated interpretation gap report is stale; run pnpm --filter @pint-anz/rules generate");
+    console.log("Rule snapshot and interpretation gap report are current.");
   } else {
     writeFileSync(outputPath, expected);
-    console.log("Generated 245 rights-safe rule records.");
+    writeFileSync(gapReportPath, expectedGapReport);
+    console.log("Generated 245 rights-safe rule records and the interpretation gap report.");
   }
 }

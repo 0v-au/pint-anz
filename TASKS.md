@@ -1,6 +1,6 @@
 # Tasks
 > Sources: SPEC.md and prompts/README.md · Loop started: 2026-07-16
-> Progress: 12/18 done · 1 in-progress · 0 blocked · 5 todo
+> Progress: 13/18 done · 0 in-progress · 0 blocked · 5 todo
 
 ---
 
@@ -161,13 +161,13 @@
 - **Review cycles**: 1
 
 ## T014 — Author the initial 15–25 rule interpretations
-- **Status**: in-progress
+- **Status**: done
 - **Prompt ref**: `prompts/rules.md` staged launch content
 - **Acceptance**: A representative launch set of 15–25 high-value fixture-backed rules has schema-valid, reviewed, versioned plain-Markdown records spanning A-NZ-aligned and shared PINT families, AU and NZ relevance, invoice and credit-note applicability, and the major implementer topics; each has an independently written project interpretation, common causes, safe fix guidance, and minimal failing/corrected XML fragments backed by complete synthetic documents exercised against the pinned validator; selection criteria and remaining gaps are reported explicitly.
 - **Depends on**: T009, T012
 - **Priority**: critical-path
-- **Output**: 15–25 launch-ready rule interpretations, validated correction examples, launch content tests and selection report
-- **Notes**: Editorial state is `draft` or `reviewed`, and release builds reject fixture-backed drafts. Reviewer identity remains in pull-request history. Content must call itself a project interpretation and link to the copyrighted original. Source hierarchy is OpenPeppol for rules/PINT semantics, ATO for Australian tax context, Inland Revenue for New Zealand tax context, and project fixtures/validator observations for implementation behaviour; do not use unsourced blogs or vendor interpretations.
+- **Output**: 15 reviewed interpretations under `packages/rules/content/interpretations/1.1.2`, metadata schema/parser, gap report, selection report, validator-backed tests
+- **Notes**: Launch content uses immutable OpenPeppol `2025-Q4` links and 30 checksum-verified document validations; T015 must deliberately expand the current 15–25 tranche gate.
 - **Retries**: 0
 - **Review cycles**: 1
 
