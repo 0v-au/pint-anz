@@ -1,6 +1,6 @@
 # Tasks
 > Sources: SPEC.md and prompts/README.md · Loop started: 2026-07-16
-> Progress: 11/18 done · 0 in-progress · 0 blocked · 7 todo
+> Progress: 12/18 done · 1 in-progress · 0 blocked · 5 todo
 
 ---
 
@@ -150,18 +150,18 @@
 ---
 
 ## T013 — Add remediation links and local official-rule inspection
-- **Status**: todo
+- **Status**: done
 - **Prompt ref**: `prompts/rules.md` diagnostic-link integration
 - **Acceptance**: Every `@pint-anz/lint` business-rule diagnostic with a rule ID receives the canonical versioned `pint-anz.0v.com.au` remediation URL without a runtime dependency on `@pint-anz/rules`; `pint-anz-lint ruleset show <rule-id>` reads only from the installed checksum-verified OpenPeppol artefact and supports human and `--json` output containing ID, severity, official message, XPath context/test, version/digest, source, and copyright notice; stable exits are `0` found, `1` unknown, and `2` unavailable/unverified/tool failure; unit, CLI integration, and URL contract tests pass.
 - **Depends on**: T009, T012
 - **Priority**: critical-path
-- **Output**: linter remediation URL helper, `ruleset show` CLI command, tests and user documentation
-- **Notes**: The CLI is a local viewer for content the user downloaded from OpenPeppol; do not bundle, proxy, cache separately, or publish the displayed official text. Canonical URLs use `https://pint-anz.0v.com.au/rules/<version>/<rule-id>`.
+- **Output**: `packages/lint/src/remediation.ts`, `packages/lint/src/rule-inspection.ts`, CLI integration, tests, documentation, regenerated Action bundle
+- **Notes**: Diagnostics use canonical versioned URLs; `ruleset show` reads and re-hashes only the user's verified local artefacts and never bundles official text.
 - **Retries**: 0
-- **Review cycles**: 0
+- **Review cycles**: 1
 
 ## T014 — Author the initial 15–25 rule interpretations
-- **Status**: todo
+- **Status**: in-progress
 - **Prompt ref**: `prompts/rules.md` staged launch content
 - **Acceptance**: A representative launch set of 15–25 high-value fixture-backed rules has schema-valid, reviewed, versioned plain-Markdown records spanning A-NZ-aligned and shared PINT families, AU and NZ relevance, invoice and credit-note applicability, and the major implementer topics; each has an independently written project interpretation, common causes, safe fix guidance, and minimal failing/corrected XML fragments backed by complete synthetic documents exercised against the pinned validator; selection criteria and remaining gaps are reported explicitly.
 - **Depends on**: T009, T012
@@ -169,7 +169,7 @@
 - **Output**: 15–25 launch-ready rule interpretations, validated correction examples, launch content tests and selection report
 - **Notes**: Editorial state is `draft` or `reviewed`, and release builds reject fixture-backed drafts. Reviewer identity remains in pull-request history. Content must call itself a project interpretation and link to the copyrighted original. Source hierarchy is OpenPeppol for rules/PINT semantics, ATO for Australian tax context, Inland Revenue for New Zealand tax context, and project fixtures/validator observations for implementation behaviour; do not use unsourced blogs or vendor interpretations.
 - **Retries**: 0
-- **Review cycles**: 0
+- **Review cycles**: 1
 
 ## T015 — Expand interpretations using observed demand
 - **Status**: todo

@@ -1,6 +1,7 @@
 import { Command, InvalidArgumentError } from "commander";
 import { resolve } from "node:path";
 import { expandPatternsChecked } from "./globs.js";
+import { inspectInstalledRule, type InspectedOfficialRule } from "./rule-inspection.js";
 import {
   defaultCacheDirectory,
   installRuleset,
@@ -28,8 +29,24 @@ function renderHuman(result: ValidationResult): string {
     const location = item.location ? ` at ${item.location}` : "";
     lines.push(`  ${item.severity.toUpperCase()}${rule} [${item.stage}]${location}`);
     lines.push(`    ${item.message}`);
+    if (item.remediationUrl) lines.push(`    Guidance: ${item.remediationUrl}`);
   }
   return lines.join("\n");
+}
+
+function renderInspectedRule(rule: InspectedOfficialRule): string {
+  return [
+    `${rule.id} (${rule.severity})`,
+    `Message: ${rule.message}`,
+    `Context: ${rule.context}`,
+    `Test: ${rule.test}`,
+    `Ruleset: PINT A-NZ ${rule.rulesetVersion}`,
+    `Resources SHA-256: ${rule.rulesetDigest}`,
+    `Source: ${rule.source.resourcesUrl}`,
+    `Local source: ${rule.source.path}`,
+    `Local source SHA-256: ${rule.source.sha256}`,
+    `Copyright: ${rule.copyrightNotice}`,
+  ].join("\n");
 }
 
 function parseFailure(program: Command, error: unknown): number {
@@ -144,7 +161,49 @@ async function runRuleset(argv: readonly string[]): Promise<number> {
     }
   }
 
-  process.stderr.write("Usage: pint-anz-lint ruleset <install|list|verify>\n");
+  if (command === "show") {
+    const program = new Command()
+      .name("pint-anz-lint ruleset show")
+      .argument("<rule-id>")
+      .option("--json", "emit a machine-readable rule record")
+      .option("--cache-dir <directory>")
+      .option("--ruleset-dir <directory>")
+      .exitOverride();
+    try {
+      program.parse(argv.slice(1), { from: "user" });
+    } catch (error) {
+      return parseFailure(program, error);
+    }
+    const [ruleId] = program.args;
+    const options = program.opts<{
+      json?: boolean;
+      cacheDir?: string;
+      rulesetDir?: string;
+    }>();
+    try {
+      const inspected = await inspectInstalledRule(ruleId, {
+        cacheDirectory: options.cacheDir && resolve(options.cacheDir),
+        rulesetDirectory: options.rulesetDir && resolve(options.rulesetDir),
+      });
+      if (!inspected) {
+        process.stderr.write(
+          `Unknown rule ${ruleId} in PINT A-NZ ${RULESET_VERSION}.\n`,
+        );
+        return 1;
+      }
+      process.stdout.write(
+        options.json
+          ? `${JSON.stringify(inspected)}\n`
+          : `${renderInspectedRule(inspected)}\n`,
+      );
+      return 0;
+    } catch (error) {
+      process.stderr.write(`Rule inspection failed: ${(error as Error).message}\n`);
+      return 2;
+    }
+  }
+
+  process.stderr.write("Usage: pint-anz-lint ruleset <install|list|verify|show>\n");
   return 2;
 }
 
@@ -167,7 +226,7 @@ export async function run(argv: readonly string[]): Promise<number> {
     .option("--format <format>", "human or json", "human")
     .addHelpText(
       "after",
-      "\nRulesets:\n  pint-anz-lint ruleset <install|list|verify> [options]\n",
+      "\nRulesets:\n  pint-anz-lint ruleset <install|list|verify|show> [options]\n",
     )
     .exitOverride();
 

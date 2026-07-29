@@ -38,6 +38,10 @@ export const RULESET_PROVENANCE = {
     sha256: "60b80d76394a8a2add90723ecb8e0e2e9d826775de9749df37a72d60703f86ed",
   },
   files: {
+    "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch":
+      "9248a6e29dafb857993e6915b5fa47bae38091c74fdfe1014faa1744700936ac",
+    "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.sch":
+      "5016cb5aec7945185955e0950d2825ea83caa91c328d683a5c351bbe5733cd75",
     "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.xslt":
       "14da33f835748e8c23bf14ae15a4e80bf3134033fe7e35c5dec43c560831c9d1",
     "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.xslt":

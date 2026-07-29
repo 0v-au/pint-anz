@@ -12,6 +12,13 @@ describe("public API fixture contract", () => {
         rulesetDirectory,
       });
       const ruleIds = [...new Set(validation.diagnostics.flatMap((item) => item.ruleId ?? []))].sort();
+      for (const diagnostic of validation.diagnostics) {
+        if (diagnostic.stage === "business-rule" && diagnostic.ruleId) {
+          expect(diagnostic.remediationUrl, fixture.id).toBe(
+            `https://pint-anz.0v.com.au/rules/1.1.2/${diagnostic.ruleId}`,
+          );
+        }
+      }
 
       if (fixture.expectation === "valid") {
         expect(validation, fixture.id).toMatchObject({ complete: true, valid: true });

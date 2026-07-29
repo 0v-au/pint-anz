@@ -36,6 +36,13 @@ describe("lint vertical slice", () => {
     expect(validation.complete).toBe(true);
     expect(validation.valid).toBe(false);
     expect(validation.diagnostics.map((item) => item.ruleId)).toContain("aligned-ibr-001-aunz");
+    expect(
+      validation.diagnostics.find((item) => item.ruleId === "aligned-ibr-001-aunz"),
+    ).toMatchObject({
+      stage: "business-rule",
+      remediationUrl:
+        "https://pint-anz.0v.com.au/rules/1.1.2/aligned-ibr-001-aunz",
+    });
   });
 
   it("validates a credit note through the same complete pipeline", async () => {
@@ -88,6 +95,7 @@ describe("lint vertical slice", () => {
 
     expect(validation).toMatchObject({ complete: true, valid: false, documentType: "credit-note" });
     expect(validation.diagnostics[0]).toMatchObject({ stage: "schema", ruleId: null });
+    expect(validation.diagnostics[0]).not.toHaveProperty("remediationUrl");
   });
 
   it("reports malformed XML as a completed document failure rather than a tool failure", async () => {
@@ -142,10 +150,21 @@ describe("lint vertical slice", () => {
                 document: invalid,
                 rulesetVersion: "1.1.2",
                 stage: "business-rule",
+                remediationUrl:
+                  "https://pint-anz.0v.com.au/rules/1.1.2/aligned-ibr-001-aunz",
               }),
             ]),
           }),
         ],
+      });
+
+      await expect(
+        execFileAsync(process.execPath, [cli, invalid, "--ruleset-dir", rulesetDirectory]),
+      ).rejects.toMatchObject({
+        code: 1,
+        stdout: expect.stringContaining(
+          "Guidance: https://pint-anz.0v.com.au/rules/1.1.2/aligned-ibr-001-aunz",
+        ),
       });
     }
   });

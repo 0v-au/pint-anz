@@ -2195,17 +2195,23 @@ async function expandPatterns(patterns, cwd = process.cwd()) {
   return [...expanded].sort((left, right) => left.localeCompare(right, "en"));
 }
 
+// ../lint/dist/types.js
+var RULESET_VERSION = "1.1.2";
+var RULESET_NAME = "PINT A-NZ Billing";
+var RULESET_DIGEST = "5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a";
+
+// ../lint/dist/remediation.js
+var REMEDIATION_ORIGIN = "https://pint-anz.0v.com.au";
+function ruleRemediationUrl(ruleId) {
+  return `${REMEDIATION_ORIGIN}/rules/${RULESET_VERSION}/${encodeURIComponent(ruleId)}`;
+}
+
 // ../lint/dist/validate.js
 var import_promises3 = require("node:fs/promises");
 var import_node_module2 = require("node:module");
 var import_node_path3 = require("node:path");
 var import_fast_xml_parser = __toESM(require_fxp(), 1);
 var import_xmllint_wasm = require("xmllint-wasm");
-
-// ../lint/dist/types.js
-var RULESET_VERSION = "1.1.2";
-var RULESET_NAME = "PINT A-NZ Billing";
-var RULESET_DIGEST = "5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a";
 
 // ../lint/dist/rulesets.js
 var import_node_child_process = require("node:child_process");
@@ -2230,6 +2236,8 @@ var RULESET_PROVENANCE = {
     sha256: "60b80d76394a8a2add90723ecb8e0e2e9d826775de9749df37a72d60703f86ed"
   },
   files: {
+    "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.sch": "9248a6e29dafb857993e6915b5fa47bae38091c74fdfe1014faa1744700936ac",
+    "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.sch": "5016cb5aec7945185955e0950d2825ea83caa91c328d683a5c351bbe5733cd75",
     "resources/trn-invoice/schematron/PINT-UBL-validation-preprocessed.xslt": "14da33f835748e8c23bf14ae15a4e80bf3134033fe7e35c5dec43c560831c9d1",
     "resources/trn-invoice/schematron/PINT-jurisdiction-aligned-rules.xslt": "109989ddd7ffcf5ee230496633aa3f0918de5fa0283fb2476c5e0afb282818e7"
   }
@@ -2608,15 +2616,17 @@ async function xsdValidate(bytes, schemaRelativePath, rulesetDirectory) {
   });
 }
 function diagnostic(document, stage, message, overrides = {}) {
+  const ruleId = overrides.ruleId ?? null;
   return {
     severity: overrides.severity ?? "error",
-    ruleId: overrides.ruleId ?? null,
+    ruleId,
     message,
     location: overrides.location ?? null,
     document,
     rulesetVersion: RULESET_VERSION,
     rulesetDigest: RULESET_DIGEST,
-    stage
+    stage,
+    ...stage === "business-rule" && ruleId ? { remediationUrl: ruleRemediationUrl(ruleId) } : {}
   };
 }
 function result(document, documentType, complete, diagnostics) {

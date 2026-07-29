@@ -60,7 +60,15 @@ this stable batch envelope:
 Each result contains `document`, `documentType`, `rulesetVersion`,
 `rulesetDigest`, `complete`, `valid`, and `diagnostics`. Each diagnostic contains
 `severity`, `ruleId`, `message`, `location`, `document`, `rulesetVersion`,
-`rulesetDigest`, and `stage`.
+`rulesetDigest`, and `stage`. A business-rule diagnostic with a rule ID also
+contains a canonical, versioned `remediationUrl`, for example:
+
+```text
+https://pint-anz.0v.com.au/rules/1.1.2/ibr-004
+```
+
+That page is an independently authored Project Interpretation. It is not the
+copyrighted official rule text or a substitute for the official specification.
 
 Exit codes are stable:
 
@@ -76,10 +84,30 @@ Ruleset administration is explicit:
 pint-anz-lint ruleset list
 pint-anz-lint ruleset verify 1.1.2
 pint-anz-lint ruleset install 1.1.2
+pint-anz-lint ruleset show ibr-004
+pint-anz-lint ruleset show ibr-004 --json
 ```
 
 `--ruleset-dir` can point validation or verification at a controlled prepared
 directory. `PINT_ANZ_CACHE_DIR` overrides the default cache root.
+
+`ruleset show` is a local viewer for the exact official rule that you installed
+from OpenPeppol. It first verifies the installed ruleset, then re-hashes and
+reads the local Schematron source. Human and JSON output include the official
+ID, severity, message, XPath context and test, pinned ruleset version and
+archive digest, exact source-file provenance, and a copyright notice.
+
+The command does not fetch, bundle, copy, separately cache, or proxy official
+text. Install the ruleset first, or point at a prepared installation:
+
+```bash
+pint-anz-lint ruleset show aligned-ibr-001-aunz \
+  --ruleset-dir /controlled/pint-anz/1.1.2
+```
+
+For `ruleset show`, exit `0` means the rule was found, exit `1` means the ID is
+an Unknown Rule in the pinned ruleset, and exit `2` means the installation is
+missing or unverified, arguments are invalid, or the inspection tool failed.
 
 ## Library API
 

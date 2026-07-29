@@ -1,4 +1,5 @@
 export { expandPatterns } from "./globs.js";
+export { REMEDIATION_ORIGIN, ruleRemediationUrl } from "./remediation.js";
 export { validateDocument, validateFile } from "./validate.js";
 export {
   defaultCacheDirectory,

@@ -16,6 +16,7 @@ import {
   type ValidationResult,
 } from "./types.js";
 import { resolveRulesetDirectory } from "./rulesets.js";
+import { ruleRemediationUrl } from "./remediation.js";
 
 const require = createRequire(import.meta.url);
 const SaxonJS = require("saxon-js") as {
@@ -119,15 +120,19 @@ function diagnostic(
   message: string,
   overrides: Partial<Pick<Diagnostic, "severity" | "ruleId" | "location">> = {},
 ): Diagnostic {
+  const ruleId = overrides.ruleId ?? null;
   return {
     severity: overrides.severity ?? "error",
-    ruleId: overrides.ruleId ?? null,
+    ruleId,
     message,
     location: overrides.location ?? null,
     document,
     rulesetVersion: RULESET_VERSION,
     rulesetDigest: RULESET_DIGEST,
     stage,
+    ...(stage === "business-rule" && ruleId
+      ? { remediationUrl: ruleRemediationUrl(ruleId) }
+      : {}),
   };
 }
 

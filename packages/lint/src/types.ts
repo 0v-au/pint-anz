@@ -16,7 +16,7 @@ export interface Diagnostic {
   readonly rulesetVersion: typeof RULESET_VERSION;
   readonly rulesetDigest: typeof RULESET_DIGEST;
   readonly stage: ValidationStage;
-  /** A rule explanation URL when one is available. */
+  /** Canonical versioned Project Interpretation URL for a business-rule diagnostic. @example "https://pint-anz.0v.com.au/rules/1.1.2/ibr-004" */
   readonly remediationUrl?: string;
 }
 
