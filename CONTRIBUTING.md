@@ -55,13 +55,11 @@ Check that it is available before you install the project:
 xmllint --version
 ```
 
-See the [`@pint-anz/lint` development prerequisites](./packages/lint/README.md#install-xmllint)
-for other platforms.
-
 ```bash
 git clone <repo-url>
 cd <repo>
 pnpm install
+pnpm --filter @pint-anz/conformance run artefacts   # fetch pinned official resources first
 pnpm build        # builds all packages
 pnpm test         # runs all tests, including fixture verification
 ```

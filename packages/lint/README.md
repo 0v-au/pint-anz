@@ -9,9 +9,12 @@ Schematron. It never reports a partial run as a compliant document.
 
 ## Install
 
+`@pint-anz/lint` is not yet published to npm. Build the CLI from a clone of
+this repository, then install the pinned ruleset:
+
 ```bash
-pnpm add -D @pint-anz/lint
-pnpm exec pint-anz-lint ruleset install 1.1.2
+pnpm --filter @pint-anz/lint build
+node packages/lint/bin/cli.js ruleset install 1.1.2
 ```
 
 The second command downloads the two pinned official archives, verifies their
@@ -25,7 +28,7 @@ official distribution rather than copied into this npm package. For a fully
 air-gapped installation, supply both previously reviewed archives:
 
 ```bash
-pint-anz-lint ruleset install 1.1.2 \
+node packages/lint/bin/cli.js ruleset install 1.1.2 \
   --file /controlled/resources.zip \
   --ubl-file /controlled/UBL-2.1.zip \
   --offline
@@ -37,10 +40,10 @@ pinned digests as downloaded bytes.
 ## CLI
 
 ```bash
-pint-anz-lint invoice.xml --offline
-pint-anz-lint invoice.xml credit-note.xml --offline
-pint-anz-lint 'test/invoices/**/*.xml' --offline
-pint-anz-lint 'test/invoices/**/*.xml' --format json --offline
+node packages/lint/bin/cli.js invoice.xml --offline
+node packages/lint/bin/cli.js invoice.xml credit-note.xml --offline
+node packages/lint/bin/cli.js 'test/invoices/**/*.xml' --offline
+node packages/lint/bin/cli.js 'test/invoices/**/*.xml' --format json --offline
 ```
 
 Quoted glob patterns support `*`, `**`, `?`, and character classes. Inputs are
@@ -81,11 +84,11 @@ Exit codes are stable:
 Ruleset administration is explicit:
 
 ```bash
-pint-anz-lint ruleset list
-pint-anz-lint ruleset verify 1.1.2
-pint-anz-lint ruleset install 1.1.2
-pint-anz-lint ruleset show ibr-004
-pint-anz-lint ruleset show ibr-004 --json
+node packages/lint/bin/cli.js ruleset list
+node packages/lint/bin/cli.js ruleset verify 1.1.2
+node packages/lint/bin/cli.js ruleset install 1.1.2
+node packages/lint/bin/cli.js ruleset show ibr-004
+node packages/lint/bin/cli.js ruleset show ibr-004 --json
 ```
 
 `--ruleset-dir` can point validation or verification at a controlled prepared
@@ -101,7 +104,7 @@ The command does not fetch, bundle, copy, separately cache, or proxy official
 text. Install the ruleset first, or point at a prepared installation:
 
 ```bash
-pint-anz-lint ruleset show aligned-ibr-001-aunz \
+node packages/lint/bin/cli.js ruleset show aligned-ibr-001-aunz \
   --ruleset-dir /controlled/pint-anz/1.1.2
 ```
 

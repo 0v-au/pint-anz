@@ -30,11 +30,14 @@ jobs:
           path: ~/.cache/pint-anz
           key: pint-anz-ruleset-1.1.2
 
-      - uses: 0v-au/pint-anz/packages/lint-action@lint-action-v0
+      - uses: 0v-au/pint-anz/packages/lint-action@main
         with:
           files: |
             invoices/**/*.xml
 ```
+
+This pins the action to `main` because no release tag is published yet; pin to
+a released tag once one exists (see [Releasing](#releasing)).
 
 No other setup is required: the runner's Node.js runs the committed bundle
 directly, and XML schema validation uses a bundled WebAssembly libxml2, so
