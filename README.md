@@ -52,6 +52,7 @@ FAIL packages/fixtures/invalid/aligned-ibr-001-aunz.wrong-scheme.xml (PINT A-NZ 
   RULESET SHA-256 5750a93fe98c4e1bad1d1030f749a473d4b2c3afc5bdeb5372889804b4273d1a
   ERROR aligned-ibr-001-aunz [business-rule] at /*:Invoice[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:Invoice-2'][1]/*:AccountingSupplierParty[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]/*:Party[namespace-uri()='urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2'][1]
     [aligned-ibr-001-aunz]-An invoice must contain the Seller's ABN (ibt-030) if Seller country (ibt-040) is Australia
+    Guidance: https://pint-anz.0v.com.au/rules/1.1.2/aligned-ibr-001-aunz
 ```
 
 ## Choose a tool
